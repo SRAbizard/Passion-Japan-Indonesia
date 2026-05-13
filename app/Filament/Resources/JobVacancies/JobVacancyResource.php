@@ -1,0 +1,127 @@
+<?php
+
+namespace App\Filament\Resources\JobVacancies;
+
+use App\Filament\Resources\JobVacancies\Pages;
+use App\Filament\Support\TranslatableTabs;
+use App\Models\Company;
+use App\Models\JobCategory;
+use App\Models\JobVacancy;
+use App\Models\VisaCategory;
+use BackedEnum;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Table;
+use Illuminate\Support\Str;
+use UnitEnum;
+
+class JobVacancyResource extends Resource
+{
+    protected static ?string $model = JobVacancy::class;
+    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-briefcase';
+    protected static string | UnitEnum | null $navigationGroup = 'Recruitment';
+    protected static ?int $navigationSort = 5;
+
+    public static function getNavigationLabel(): string { return __('Job Vacancies'); }
+    public static function getNavigationGroup(): ?string { return __('Recruitment'); }
+    public static function getModelLabel(): string { return __('Job Vacancy'); }
+
+    public static function form(Schema $schema): Schema
+    {
+        return $schema->components([
+            Section::make(__('Basics'))->columns(2)->components([
+                TextInput::make('slug')->required()->unique(ignoreRecord: true)->maxLength(120)
+                    ->live(onBlur: true)->afterStateUpdated(fn ($s, $set) => $set('slug', Str::slug($s))),
+                Select::make('company_id')->label(__('Company'))->required()
+                    ->options(fn () => Company::orderBy('name')->pluck('name', 'id'))->searchable(),
+                Select::make('job_category_id')->label(__('Job Category'))
+                    ->options(fn () => JobCategory::orderBy('sort_order')->get()->mapWithKeys(fn ($c) => [$c->id => $c->t('name')]))->searchable(),
+                Select::make('visa_category_id')->label(__('Visa Category'))
+                    ->options(fn () => VisaCategory::orderBy('sort_order')->get()->mapWithKeys(fn ($c) => [$c->id => $c->t('name')]))->searchable(),
+                Select::make('employment_type')
+                    ->options([
+                        'fulltime'   => __('Full-time'),
+                        'parttime'   => __('Part-time'),
+                        'contract'   => __('Contract'),
+                        'internship' => __('Internship'),
+                    ])->default('fulltime')->required(),
+                TextInput::make('positions')->numeric()->default(1)->minValue(1),
+            ]),
+            TranslatableTabs::for('title', TextInput::class, label: __('Title'), required: true),
+            TranslatableTabs::for('description', RichEditor::class, label: __('Description'), required: true),
+            TranslatableTabs::for('requirements', RichEditor::class, label: __('Requirements')),
+            TranslatableTabs::for('benefits', RichEditor::class, label: __('Benefits')),
+            Section::make(__('Location'))->columns(2)->components([
+                TextInput::make('location_city')->label(__('City'))->maxLength(80),
+                TextInput::make('location_prefecture')->label(__('Prefecture'))->maxLength(80),
+            ]),
+            Section::make(__('Salary'))->columns(4)->components([
+                TextInput::make('salary_min')->numeric()->label(__('Min')),
+                TextInput::make('salary_max')->numeric()->label(__('Max')),
+                Select::make('salary_currency')->options(['JPY' => 'JPY', 'IDR' => 'IDR', 'USD' => 'USD'])->default('JPY'),
+                Select::make('salary_period')->options([
+                    'monthly' => __('Monthly'),
+                    'yearly'  => __('Yearly'),
+                    'hourly'  => __('Hourly'),
+                ])->default('monthly'),
+            ]),
+            Section::make(__('Publishing'))->columns(3)->components([
+                DateTimePicker::make('published_at')->seconds(false)->default(now()),
+                DatePicker::make('expires_at'),
+                Toggle::make('is_featured')->inline(false),
+            ]),
+        ]);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return $table->columns([
+            TextColumn::make('title')->label(__('Title'))
+                ->formatStateUsing(fn ($state, $record) => $record->t('title'))
+                ->searchable(query: fn ($q, $search) => $q->where('title->id', 'like', "%{$search}%")->orWhere('title->en', 'like', "%{$search}%"))
+                ->limit(50)->wrap(),
+            TextColumn::make('company.name')->label(__('Company'))->searchable()->toggleable(),
+            TextColumn::make('jobCategory.name')->label(__('Category'))
+                ->formatStateUsing(fn ($state, $record) => $record->jobCategory?->t('name') ?? '—')
+                ->badge(),
+            TextColumn::make('visaCategory.name')->label(__('Visa'))
+                ->formatStateUsing(fn ($state, $record) => $record->visaCategory?->t('name') ?? '—')
+                ->badge()->color('primary'),
+            TextColumn::make('location_city')->label(__('Location'))->toggleable(),
+            TextColumn::make('salary_range')->label(__('Salary'))
+                ->formatStateUsing(fn ($state, $record) => $record->salary_range ?? '—')
+                ->color('success'),
+            TextColumn::make('applications_count')->counts('applications')->label(__('Applicants'))->badge(),
+            IconColumn::make('is_featured')->boolean()->label('★'),
+            TextColumn::make('published_at')->dateTime('d M Y')->sortable()->toggleable(),
+        ])
+        ->defaultSort('published_at', 'desc')
+        ->filters([
+            SelectFilter::make('visa_category_id')->label(__('Visa Category'))
+                ->options(fn () => VisaCategory::all()->mapWithKeys(fn ($v) => [$v->id => $v->t('name')])),
+            SelectFilter::make('job_category_id')->label(__('Job Category'))
+                ->options(fn () => JobCategory::all()->mapWithKeys(fn ($c) => [$c->id => $c->t('name')])),
+            SelectFilter::make('company_id')->label(__('Company'))
+                ->options(fn () => Company::orderBy('name')->pluck('name', 'id'))->searchable(),
+        ]);
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index'  => Pages\ListJobVacancies::route('/'),
+            'create' => Pages\CreateJobVacancy::route('/create'),
+            'edit'   => Pages\EditJobVacancy::route('/{record}/edit'),
+        ];
+    }
+}

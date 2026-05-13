@@ -1,0 +1,370 @@
+@extends('layouts.app')
+
+@section('title', __('Passion Japan Indonesia') . ' — ' . __('Step Toward a Successful Career in Japan'))
+
+@php
+    use App\Models\Faq;
+    use App\Models\JobVacancy;
+    use App\Models\Testimonial;
+    use App\Models\VisaCategory;
+    use App\Support\HomepageDemoData as Demo;
+
+    // Phase 3+4: FAQ, Testimonial, Jobs come from DB; fall back to Demo helper when empty.
+    // Benefits/Programs/Courses/Workflow still come from Demo until later phases.
+    $benefits = Demo::benefits();
+    $programs = Demo::programs();
+    $courses  = Demo::courses();
+    $workflow = Demo::workflow();
+
+    $dbFaqs = Faq::published()->get();
+    $faqs   = $dbFaqs->isNotEmpty()
+        ? $dbFaqs->map(fn ($f) => ['q' => $f->getTranslations('question'), 'a' => $f->getTranslations('answer')])->all()
+        : Demo::faqs();
+
+    $companyT = Testimonial::published()->companies()->get();
+    $studentT = Testimonial::published()->students()->get();
+    $testimonials = ($companyT->isNotEmpty() || $studentT->isNotEmpty())
+        ? [
+            'company' => $companyT->map(fn ($t) => ['name' => $t->name, 'role' => $t->getTranslations('role'), 'quote' => $t->getTranslations('quote')])->all(),
+            'student' => $studentT->map(fn ($t) => ['name' => $t->name, 'role' => $t->getTranslations('role'), 'quote' => $t->getTranslations('quote')])->all(),
+        ]
+        : Demo::testimonials();
+
+    // Phase 4: homepage Jobs preview from DB, grouped by visa category.
+    $dbJobsByVisa = JobVacancy::published()
+        ->with('company', 'jobCategory', 'visaCategory')
+        ->orderByDesc('is_featured')
+        ->orderByDesc('published_at')
+        ->get()
+        ->groupBy(fn ($v) => $v->visaCategory?->slug);
+
+    if ($dbJobsByVisa->isNotEmpty()) {
+        $jobs = VisaCategory::orderBy('sort_order')->get()
+            ->map(function ($visa) use ($dbJobsByVisa) {
+                $items = ($dbJobsByVisa->get($visa->slug) ?? collect())->take(3)
+                    ->map(fn ($v) => [
+                        'title'    => $v->getTranslations('title'),
+                        'company'  => $v->company->name,
+                        'location' => $v->location_display,
+                        'salary'   => $v->salary_range ?? '—',
+                        'visa'     => $v->visaCategory?->t('name') ?? '',
+                        'tag'      => ['id' => $v->jobCategory?->t('name', 'id') ?? '', 'en' => $v->jobCategory?->t('name', 'en') ?? '', 'ja' => $v->jobCategory?->t('name', 'ja') ?? ''],
+                        'slug'     => $v->slug,
+                    ])->all();
+
+                return ['category' => $visa->t('name'), 'items' => $items];
+            })
+            ->filter(fn ($section) => count($section['items']) > 0)
+            ->values()
+            ->all();
+    } else {
+        $jobs = Demo::jobs();
+    }
+@endphp
+
+@section('content')
+
+{{-- ========== HERO ========== --}}
+<section class="relative overflow-hidden">
+    <div class="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[40rem] w-[40rem] rounded-full bg-brand-700/25 blur-3xl"></div>
+    <div class="pointer-events-none absolute -bottom-40 right-0 h-[28rem] w-[28rem] rounded-full bg-brand-900/40 blur-3xl"></div>
+
+    <div class="relative mx-auto max-w-7xl px-6 pt-14 pb-20 lg:pt-20 lg:pb-28">
+        <div class="grid gap-12 lg:grid-cols-2 lg:items-center">
+            <div>
+                <div class="inline-flex items-center gap-2 rounded-full border border-brand-700/40 bg-brand-700/10 px-3 py-1 text-xs font-medium text-brand-300">
+                    <span class="h-1.5 w-1.5 rounded-full bg-brand-400 animate-pulse"></span>
+                    {{ __('Japan Career Ecosystem Platform') }}
+                </div>
+
+                <h1 class="mt-6 font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.05]">
+                    {{ __('Step Toward a Successful Career in Japan') }}
+                </h1>
+                <p class="mt-6 max-w-xl text-lg text-surface-300 leading-relaxed">
+                    {{ __('We accompany you from language training and work skills, to official job placement in Japan.') }}
+                </p>
+
+                <div class="mt-8 flex flex-wrap gap-3">
+                    <a href="/admin/login" class="btn-brand">
+                        {{ __('Get Started') }}
+                        <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
+                    </a>
+                    <a href="#jobs" class="btn-ghost">{{ __('Search jobs') }}</a>
+                </div>
+            </div>
+
+            <div class="relative">
+                <div class="glass-card p-8 lg:p-10">
+                    <p class="text-xs uppercase tracking-wider text-brand-400 font-semibold">{{ __('Trusted by') }}</p>
+                    <p class="mt-2 font-display text-2xl text-white">{{ __('Thousands of Indonesian workers and dozens of partner companies in Japan.') }}</p>
+                    <div class="mt-6 grid grid-cols-3 gap-4 text-center">
+                        <div class="rounded-2xl border border-surface-700/60 bg-surface-900/40 p-4">
+                            <p class="font-display text-2xl font-bold text-white">{{ config('passion.stats.students') }}</p>
+                            <p class="mt-1 text-xs text-surface-400 uppercase tracking-wider">{{ __('Trained Students') }}</p>
+                        </div>
+                        <div class="rounded-2xl border border-surface-700/60 bg-surface-900/40 p-4">
+                            <p class="font-display text-2xl font-bold text-white">{{ config('passion.stats.workers') }}</p>
+                            <p class="mt-1 text-xs text-surface-400 uppercase tracking-wider">{{ __('Workers') }}</p>
+                        </div>
+                        <div class="rounded-2xl border border-surface-700/60 bg-surface-900/40 p-4">
+                            <p class="font-display text-2xl font-bold text-white">{{ config('passion.stats.companies') }}</p>
+                            <p class="mt-1 text-xs text-surface-400 uppercase tracking-wider">{{ __('Partner Companies') }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{{-- ========== BENEFITS — "Mengapa Passion Japan?" ========== --}}
+<section id="about" class="relative py-20 bg-surface-900/40">
+    <div class="mx-auto max-w-7xl px-6">
+        <div class="text-center max-w-2xl mx-auto">
+            <p class="text-xs uppercase tracking-wider text-brand-400 font-semibold">{{ __('Why Us') }}</p>
+            <h2 class="mt-2 font-display text-3xl sm:text-4xl font-bold text-white">
+                {{ __('Why') }} <span class="text-brand-500">Passion Japan?</span>
+            </h2>
+            <p class="mt-4 text-surface-400">{{ __('Three reasons thousands of students choose us.') }}</p>
+        </div>
+
+        <div class="mt-12 grid gap-6 md:grid-cols-3">
+            @foreach($benefits as $benefit)
+                <div class="glass-card p-7 hover:border-brand-500/40 transition">
+                    <div class="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-brand-600/15 text-brand-400">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $benefit['icon'] }}"/></svg>
+                    </div>
+                    <h3 class="mt-5 font-display text-lg font-semibold text-white">{{ Demo::pick($benefit['title']) }}</h3>
+                    <p class="mt-2 text-sm text-surface-400 leading-relaxed">{{ Demo::pick($benefit['desc']) }}</p>
+                </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+
+{{-- ========== POPULAR PROGRAMS ========== --}}
+<section class="py-20">
+    <div class="mx-auto max-w-7xl px-6">
+        <div class="flex items-end justify-between flex-wrap gap-4">
+            <div>
+                <p class="text-xs uppercase tracking-wider text-brand-400 font-semibold">{{ __('Programs') }}</p>
+                <h2 class="mt-2 font-display text-3xl sm:text-4xl font-bold text-white">{{ __('Popular Programs') }}</h2>
+            </div>
+            <a href="#" class="text-sm text-brand-400 hover:text-brand-300">{{ __('See all') }} →</a>
+        </div>
+
+        <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            @foreach($programs as $program)
+                <div class="glass-card p-6 hover:border-brand-500/40 transition group">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] uppercase tracking-wider font-semibold px-2 py-1 rounded-md bg-brand-600/15 text-brand-300">{{ Demo::pick($program['tag']) }}</span>
+                        <svg class="h-5 w-5 text-surface-500 group-hover:text-brand-400 group-hover:translate-x-1 transition" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
+                    </div>
+                    <h3 class="mt-3 font-display text-lg font-semibold text-white">{{ $program['name'] }}</h3>
+                    <p class="mt-2 text-sm text-surface-400">{{ Demo::pick($program['desc']) }}</p>
+                </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+
+{{-- ========== JOB PORTAL ========== --}}
+<section id="jobs" class="py-20 bg-surface-900/40">
+    <div class="mx-auto max-w-7xl px-6">
+        <div class="text-center max-w-2xl mx-auto">
+            <p class="text-xs uppercase tracking-wider text-brand-400 font-semibold">{{ __('Careers') }}</p>
+            <h2 class="mt-2 font-display text-3xl sm:text-4xl font-bold text-white">
+                <span class="text-brand-500">Job</span> {{ __('Portal') }}
+            </h2>
+            <p class="mt-3 text-surface-400">{{ __('Explore Job Opportunities in Japan.') }}</p>
+        </div>
+
+        @foreach($jobs as $section)
+            <div class="mt-12">
+                <div class="flex items-baseline justify-between flex-wrap gap-2">
+                    <h3 class="font-display text-xl font-semibold text-white">{{ $section['category'] }}</h3>
+                    <a href="{{ route('job.index') }}" class="text-sm text-brand-400 hover:text-brand-300">{{ __('See all') }} →</a>
+                </div>
+
+                <div class="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    @foreach($section['items'] as $job)
+                        <a href="{{ isset($job['slug']) ? route('job.show', $job['slug']) : route('job.index') }}" class="glass-card p-5 block hover:border-brand-500/50 transition group">
+                            <div class="flex items-start gap-3">
+                                <div class="h-12 w-12 rounded-xl bg-gradient-to-br from-brand-600 to-brand-800 flex items-center justify-center font-display font-bold text-white text-sm shrink-0">
+                                    {{ \Illuminate\Support\Str::of($job['company'])->substr(0,1)->upper() }}
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <h4 class="font-semibold text-white truncate group-hover:text-brand-400 transition">{{ Demo::pick($job['title']) }}</h4>
+                                    <p class="text-xs text-surface-400 truncate">{{ $job['company'] }}</p>
+                                </div>
+                            </div>
+                            <div class="mt-4 flex flex-wrap gap-1.5">
+                                <span class="text-[10px] uppercase tracking-wider font-semibold px-2 py-1 rounded-md bg-surface-800 text-surface-300">{{ Demo::pick($job['tag']) }}</span>
+                                <span class="text-[10px] uppercase tracking-wider font-semibold px-2 py-1 rounded-md bg-brand-600/15 text-brand-300">{{ $job['visa'] }}</span>
+                            </div>
+                            <div class="mt-4 grid grid-cols-2 gap-2 text-xs text-surface-400">
+                                <span class="flex items-center gap-1">
+                                    <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.828 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                    {{ $job['location'] }}
+                                </span>
+                                <span class="flex items-center gap-1 text-emerald-400">
+                                    <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.66 0-3 .9-3 2s1.34 2 3 2 3 .9 3 2-1.34 2-3 2m0-8v1m0 14v1m0-16a8 8 0 100 16 8 8 0 000-16z"/></svg>
+                                    {{ $job['salary'] }}
+                                </span>
+                            </div>
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+        @endforeach
+    </div>
+</section>
+
+{{-- ========== E-LEARNING ========== --}}
+<section id="learning" class="py-20">
+    <div class="mx-auto max-w-7xl px-6">
+        <div class="text-center max-w-2xl mx-auto">
+            <p class="text-xs uppercase tracking-wider text-brand-400 font-semibold">{{ __('Learn') }}</p>
+            <h2 class="mt-2 font-display text-3xl sm:text-4xl font-bold text-white">
+                <span class="text-brand-500">E</span>-Learning
+            </h2>
+            <p class="mt-3 text-surface-400">{{ __('Master Japanese language and work culture on your own schedule.') }}</p>
+        </div>
+
+        <div class="mt-12 grid gap-6 md:grid-cols-2 max-w-4xl mx-auto">
+            @foreach($courses as $course)
+                <div class="relative overflow-hidden glass-card p-8 hover:border-brand-500/40 transition">
+                    <div class="absolute -top-12 -right-12 h-40 w-40 rounded-full bg-gradient-to-br {{ $course['color'] }} opacity-30 blur-3xl"></div>
+                    <div class="relative">
+                        <span class="inline-block text-[10px] uppercase tracking-wider font-semibold px-2 py-1 rounded-md bg-brand-600/15 text-brand-300">JLPT</span>
+                        <h3 class="mt-3 font-display text-2xl font-bold text-white">{{ $course['name'] }}</h3>
+                        <p class="mt-1 text-xs text-surface-400">{{ Demo::pick($course['duration']) }} · {{ Demo::pick($course['chapters']) }}</p>
+                        <p class="mt-4 text-sm text-surface-300 leading-relaxed">{{ Demo::pick($course['desc']) }}</p>
+                        <a href="#" class="mt-6 btn-brand text-sm">
+                            {{ __('Join Now') }}
+                            <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
+                        </a>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+
+{{-- ========== FAQ ========== --}}
+<section class="py-20 bg-surface-900/40">
+    <div class="mx-auto max-w-3xl px-6">
+        <div class="text-center">
+            <p class="text-xs uppercase tracking-wider text-brand-400 font-semibold">{{ __('FAQ') }}</p>
+            <h2 class="mt-2 font-display text-3xl sm:text-4xl font-bold text-white">
+                <span class="text-brand-500">FAQ</span> ({{ __('Frequently Asked Questions') }})
+            </h2>
+        </div>
+
+        <div class="mt-10 space-y-3">
+            @foreach($faqs as $faq)
+                <details class="group glass-card p-5 transition">
+                    <summary class="flex items-center justify-between cursor-pointer list-none">
+                        <span class="font-semibold text-white">{{ Demo::pick($faq['q']) }}</span>
+                        <svg class="h-5 w-5 text-brand-400 transition group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </summary>
+                    <p class="mt-3 text-sm text-surface-400 leading-relaxed">{{ Demo::pick($faq['a']) }}</p>
+                </details>
+            @endforeach
+        </div>
+    </div>
+</section>
+
+{{-- ========== TESTIMONIALS ========== --}}
+<section class="py-20">
+    <div class="mx-auto max-w-7xl px-6">
+        <div class="text-center max-w-2xl mx-auto">
+            <p class="text-xs uppercase tracking-wider text-brand-400 font-semibold">{{ __('Testimonials') }}</p>
+            <h2 class="mt-2 font-display text-3xl sm:text-4xl font-bold text-white">{{ __('What people say about us') }}</h2>
+        </div>
+
+        <div class="mt-12 grid gap-10 lg:grid-cols-2">
+            <div>
+                <h3 class="font-display text-xl font-semibold text-white mb-5">{{ __('Partner Companies') }}</h3>
+                <div class="space-y-4">
+                    @foreach($testimonials['company'] as $t)
+                        <div class="glass-card p-6">
+                            <p class="text-sm text-surface-200 leading-relaxed">&ldquo;{{ Demo::pick($t['quote']) }}&rdquo;</p>
+                            <div class="mt-4 flex items-center gap-3">
+                                <div class="h-10 w-10 rounded-full bg-gradient-to-br from-brand-600 to-brand-800 flex items-center justify-center font-bold text-white">{{ \Illuminate\Support\Str::of($t['name'])->substr(0,1)->upper() }}</div>
+                                <div>
+                                    <p class="text-sm font-semibold text-white">{{ $t['name'] }}</p>
+                                    <p class="text-xs text-surface-400">{{ Demo::pick($t['role']) }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
+            <div>
+                <h3 class="font-display text-xl font-semibold text-white mb-5">{{ __('Students') }}</h3>
+                <div class="space-y-4">
+                    @foreach($testimonials['student'] as $t)
+                        <div class="glass-card p-6">
+                            <p class="text-sm text-surface-200 leading-relaxed">&ldquo;{{ Demo::pick($t['quote']) }}&rdquo;</p>
+                            <div class="mt-4 flex items-center gap-3">
+                                <div class="h-10 w-10 rounded-full bg-gradient-to-br from-brand-600 to-brand-800 flex items-center justify-center font-bold text-white">{{ \Illuminate\Support\Str::of($t['name'])->substr(0,1)->upper() }}</div>
+                                <div>
+                                    <p class="text-sm font-semibold text-white">{{ $t['name'] }}</p>
+                                    <p class="text-xs text-surface-400">{{ Demo::pick($t['role']) }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{{-- ========== ALUR KERJA ========== --}}
+<section class="py-20 bg-surface-900/40">
+    <div class="mx-auto max-w-7xl px-6">
+        <div class="text-center max-w-2xl mx-auto">
+            <p class="text-xs uppercase tracking-wider text-brand-400 font-semibold">{{ __('Process') }}</p>
+            <h2 class="mt-2 font-display text-3xl sm:text-4xl font-bold text-white">
+                <span class="text-brand-500">{{ __('Workflow') }}</span>
+            </h2>
+            <p class="mt-3 text-surface-400">{{ __('Ten clear steps from consultation to arrival in Japan.') }}</p>
+        </div>
+
+        <div class="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+            @foreach($workflow as $step)
+                <div class="relative glass-card p-5 hover:border-brand-500/40 transition">
+                    <div class="absolute -top-3 -left-3 h-9 w-9 rounded-xl bg-brand-600 flex items-center justify-center font-display font-bold text-white text-sm shadow-lg shadow-brand-600/40">
+                        {{ $step['step'] }}
+                    </div>
+                    <h3 class="mt-2 font-semibold text-white text-sm leading-snug">{{ Demo::pick($step['title']) }}</h3>
+                    <p class="mt-2 text-xs text-surface-400 leading-relaxed">{{ Demo::pick($step['desc']) }}</p>
+                </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+
+{{-- ========== CTA ========== --}}
+<section class="py-20">
+    <div class="mx-auto max-w-5xl px-6">
+        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-700 via-brand-800 to-surface-900 p-10 lg:p-14">
+            <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.08),transparent_40%)]"></div>
+            <div class="relative flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                <div>
+                    <h2 class="font-display text-3xl lg:text-4xl font-bold text-white max-w-xl">{{ __('Ready to start your career in Japan?') }}</h2>
+                    <p class="mt-3 text-brand-100 max-w-xl">{{ __('Free consultation. Talk to our team and get a clear path within 24 hours.') }}</p>
+                </div>
+                <a href="https://wa.me/{{ config('passion.contact.whatsapp') }}" target="_blank" rel="noopener" class="inline-flex shrink-0 items-center gap-2 px-7 py-3.5 rounded-xl bg-white text-brand-700 font-semibold hover:bg-brand-50 transition shadow-xl">
+                    {{ __('Talk to us on WhatsApp') }}
+                    <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+@endsection

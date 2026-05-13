@@ -1,0 +1,24 @@
+<?php
+
+namespace App\Filament\Student\Pages;
+
+use Filament\Pages\Dashboard as BaseDashboard;
+
+class StudentDashboard extends BaseDashboard
+{
+    public function getTitle(): string
+    {
+        return __('Student Dashboard');
+    }
+
+    public function getHeading(): string
+    {
+        $name = optional(auth()->user())->name ?? __('Student');
+        return __('Welcome back, :name', ['name' => $name]);
+    }
+
+    public function getSubheading(): ?string
+    {
+        return __('Your gateway to a career in Japan.');
+    }
+}
