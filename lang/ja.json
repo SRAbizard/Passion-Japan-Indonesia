@@ -406,6 +406,40 @@
     "Issued on": "発行日",
     "Certificate number": "証明書番号",
     "Download PDF": "PDFダウンロード",
-    "Verify this certificate at": "認証先 URL"
+    "Verify this certificate at": "認証先 URL",
+
+    "Students": "生徒",
+    "Student Documents": "生徒書類",
+    "Student Document": "生徒書類",
+    "My Profile": "マイプロフィール",
+    "My Applications": "応募履歴",
+    "My Classes": "受講中のコース",
+    "My Documents": "マイ書類",
+    "Account": "アカウント",
+    "Biodata": "個人情報",
+    "Address": "住所",
+    "Education": "学歴",
+    "Work experience": "職歴",
+    "Family": "家族",
+    "Languages": "言語",
+    "Health": "健康情報",
+
+    "document.type.ktp": "ID（KTP）",
+    "document.type.kk": "家族カード",
+    "document.type.passport": "パスポート",
+    "document.type.ijazah": "卒業証書",
+    "document.type.transcript": "成績証明",
+    "document.type.cv": "履歴書",
+    "document.type.photo": "写真",
+    "document.type.medical_check": "健康診断書",
+    "document.type.sktm": "貧困証明書",
+    "document.type.sktm_polri": "警察証明書",
+    "document.type.jlpt_certificate": "JLPT証書",
+    "document.type.skill_certificate": "スキル証書",
+    "document.type.other": "その他",
+
+    "document.status.pending": "確認待ち",
+    "document.status.verified": "確認済み",
+    "document.status.rejected": "却下"
 }
 

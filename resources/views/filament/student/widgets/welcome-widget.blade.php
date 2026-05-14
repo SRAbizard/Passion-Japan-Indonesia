@@ -29,7 +29,7 @@
             </div>
 
             <div class="flex flex-wrap gap-2">
-                <a href="{{ filament()->getProfileUrl() }}" class="fi-btn fi-btn-color-primary inline-flex items-center gap-2 rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-700 transition">
+                <a href="{{ $profileUrl }}" class="fi-btn fi-btn-color-primary inline-flex items-center gap-2 rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-700 transition">
                     {{ __('Edit profile') }}
                 </a>
                 <a href="{{ url('/') }}" class="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800 transition">

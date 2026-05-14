@@ -15,23 +15,18 @@ class WelcomeWidget extends Widget
     {
         /** @var User $user */
         $user = auth()->user();
+        $user?->load('studentProfile');
 
-        $profileFields = [
-            'name'        => filled($user?->name),
-            'email'       => filled($user?->email) && $user?->hasVerifiedEmail(),
-            'phone'       => filled($user?->phone),
-            'avatar'      => filled($user?->avatar_path),
-            'locale'      => filled($user?->locale),
-        ];
-
-        $completed = collect($profileFields)->filter()->count();
-        $total     = count($profileFields);
-        $percent   = $total > 0 ? (int) round($completed / $total * 100) : 0;
+        // Profile completion: prefer detailed StudentProfile fields if present
+        $percent = $user?->studentProfile
+            ? $user->studentProfile->completionPct()
+            : 0;
 
         return [
-            'user'     => $user,
-            'percent'  => $percent,
-            'verified' => $user?->hasVerifiedEmail() ?? false,
+            'user'        => $user,
+            'percent'     => $percent,
+            'verified'    => $user?->hasVerifiedEmail() ?? false,
+            'profileUrl'  => \App\Filament\Student\Pages\Profile::getUrl(),
         ];
     }
 }

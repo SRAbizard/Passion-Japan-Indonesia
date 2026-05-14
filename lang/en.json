@@ -359,6 +359,32 @@
     "Issued on": "Issued on",
     "Certificate number": "Certificate number",
     "Download PDF": "Download PDF",
-    "Verify this certificate at": "Verify this certificate at"
+    "Verify this certificate at": "Verify this certificate at",
+
+    "Students": "Students",
+    "Student Documents": "Student Documents",
+    "Student Document": "Student Document",
+    "My Profile": "My Profile",
+    "My Applications": "My Applications",
+    "My Classes": "My Classes",
+    "My Documents": "My Documents",
+
+    "document.type.ktp": "ID Card (KTP)",
+    "document.type.kk": "Family Card",
+    "document.type.passport": "Passport",
+    "document.type.ijazah": "Diploma",
+    "document.type.transcript": "Academic Transcript",
+    "document.type.cv": "CV / Resume",
+    "document.type.photo": "Photograph",
+    "document.type.medical_check": "Medical Check-up",
+    "document.type.sktm": "Letter of Indigence",
+    "document.type.sktm_polri": "Police Clearance",
+    "document.type.jlpt_certificate": "JLPT Certificate",
+    "document.type.skill_certificate": "Skill Certificate",
+    "document.type.other": "Other",
+
+    "document.status.pending": "Pending",
+    "document.status.verified": "Verified",
+    "document.status.rejected": "Rejected"
 }
 

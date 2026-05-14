@@ -36,6 +36,12 @@ class Certificate extends Model
                 $certificate->issued_at = now();
             }
         });
+
+        static::created(function (self $certificate) {
+            if ($certificate->user) {
+                $certificate->user->notify(new \App\Notifications\CertificateIssued($certificate));
+            }
+        });
     }
 
     public function user(): BelongsTo

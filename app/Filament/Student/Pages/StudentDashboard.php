@@ -21,4 +21,12 @@ class StudentDashboard extends BaseDashboard
     {
         return __('Your gateway to a career in Japan.');
     }
+
+    public function getWidgets(): array
+    {
+        return [
+            \App\Filament\Student\Widgets\WelcomeWidget::class,
+            \App\Filament\Student\Widgets\StatsWidget::class,
+        ];
+    }
 }

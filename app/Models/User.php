@@ -11,6 +11,8 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\URL;
@@ -88,6 +90,25 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     public function preferredLocale(): string
     {
         return $this->locale ?: config('app.locale');
+    }
+
+    // ─── Student profile relations ──────────────────────────────────────
+    public function studentProfile(): HasOne     { return $this->hasOne(StudentProfile::class); }
+    public function educations(): HasMany        { return $this->hasMany(StudentEducation::class)->orderByDesc('end_year'); }
+    public function workExperiences(): HasMany   { return $this->hasMany(StudentWorkExperience::class)->orderByDesc('start_date'); }
+    public function familyMembers(): HasMany     { return $this->hasMany(StudentFamilyMember::class); }
+    public function languages(): HasMany         { return $this->hasMany(StudentLanguage::class); }
+    public function studentDocuments(): HasMany  { return $this->hasMany(StudentDocument::class)->latest(); }
+    public function applications(): HasMany      { return $this->hasMany(Application::class)->latest(); }
+    public function enrollments(): HasMany       { return $this->hasMany(Enrollment::class)->latest('last_activity_at'); }
+    public function certificates(): HasMany      { return $this->hasMany(Certificate::class)->latest('issued_at'); }
+
+    /**
+     * Convenience: get or auto-create the 1:1 profile row.
+     */
+    public function profile(): StudentProfile
+    {
+        return $this->studentProfile()->firstOrCreate([]);
     }
 
     /**

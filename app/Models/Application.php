@@ -47,6 +47,22 @@ class Application extends Model
         return $this->belongsTo(JobVacancy::class, 'job_vacancy_id');
     }
 
+    /** Alias for vacancy() — easier-to-read in student-facing code. */
+    public function jobVacancy(): BelongsTo
+    {
+        return $this->vacancy();
+    }
+
+    protected static function booted(): void
+    {
+        static::updated(function (self $app) {
+            if ($app->wasChanged('status') && $app->user) {
+                $old = $app->getOriginal('status');
+                $app->user->notify(new \App\Notifications\ApplicationStatusChanged($app, $old, $app->status));
+            }
+        });
+    }
+
     public function reviewer(): BelongsTo
     {
         return $this->belongsTo(User::class, 'reviewed_by');
