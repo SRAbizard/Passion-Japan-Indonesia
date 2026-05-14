@@ -33,8 +33,17 @@ class StudentResource extends Resource
     {
         return parent::getEloquentQuery()
             ->whereHas('roles', fn ($q) => $q->where('name', 'student'))
+            ->with('studentProfile.primaryVisa')
             ->withCount(['applications', 'studentDocuments', 'enrollments']);
     }
+
+    public static function getNavigationBadge(): ?string
+    {
+        $count = \App\Models\StudentProfile::whereIn('visa_target_status', ['pending', 'changed'])->count();
+        return $count > 0 ? (string) $count : null;
+    }
+
+    public static function getNavigationBadgeColor(): ?string { return 'warning'; }
 
     public static function form(Schema $schema): Schema
     {
@@ -75,16 +84,21 @@ class StudentResource extends Resource
                         };
                     }),
 
-                TextColumn::make('target_visas')
-                    ->label(__('Target visa'))
+                TextColumn::make('studentProfile.primaryVisa.name')
+                    ->label(__('Visa target'))
                     ->state(function (User $r): string {
-                        $slugs = StudentDocumentProgress::targetVisaSlugs($r);
-                        if (empty($slugs)) return '—';
-                        return VisaCategory::whereIn('slug', $slugs)->get()
-                            ->map(fn ($v) => $v->t('name'))
-                            ->join(', ');
+                        return $r->studentProfile?->primaryVisa?->t('name') ?? '—';
                     })
-                    ->badge()->color('info')
+                    ->description(function (User $r): ?string {
+                        $s = $r->studentProfile?->visa_target_status;
+                        if (! $s) return __('Not selected');
+                        return __('visa.target.status.'.$s);
+                    })
+                    ->badge()
+                    ->color(function (User $r) {
+                        $s = $r->studentProfile?->visa_target_status;
+                        return \App\Models\StudentProfile::VISA_TARGET_STATUS_COLORS[$s] ?? 'gray';
+                    })
                     ->wrap(),
 
                 TextColumn::make('applications_count')->label(__('Applications'))
@@ -103,14 +117,28 @@ class StudentResource extends Resource
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([
+                SelectFilter::make('visa_target_status')
+                    ->label(__('Visa target status'))
+                    ->options(collect(\App\Models\StudentProfile::VISA_TARGET_STATUSES)
+                        ->mapWithKeys(fn ($s) => [$s => __('visa.target.status.'.$s)])
+                        ->prepend(__('Not selected'), 'none'))
+                    ->query(function (Builder $q, array $data) {
+                        if (! filled($data['value'])) return $q;
+                        if ($data['value'] === 'none') {
+                            return $q->whereDoesntHave('studentProfile',
+                                fn ($qq) => $qq->whereNotNull('visa_target_status'));
+                        }
+                        return $q->whereHas('studentProfile',
+                            fn ($qq) => $qq->where('visa_target_status', $data['value']));
+                    }),
                 SelectFilter::make('visa')
                     ->label(__('Targeting visa'))
                     ->options(fn () => VisaCategory::orderBy('sort_order')->get()
-                        ->mapWithKeys(fn ($v) => [$v->slug => $v->t('name')]))
+                        ->mapWithKeys(fn ($v) => [$v->id => $v->t('name')]))
                     ->query(function (Builder $q, array $data) {
                         if (! filled($data['value'])) return $q;
-                        return $q->whereHas('applications.vacancy.visaCategory',
-                            fn ($qq) => $qq->where('slug', $data['value']));
+                        return $q->whereHas('studentProfile',
+                            fn ($qq) => $qq->where('primary_visa_category_id', $data['value']));
                     }),
                 SelectFilter::make('email_verified')
                     ->label(__('Email status'))

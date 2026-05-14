@@ -22,12 +22,24 @@ class StudentDocumentProgress
     public const DEFAULT_REQUIRED = ['ktp', 'passport', 'ijazah', 'photo'];
 
     /**
-     * Visa category slugs the student is targeting (via their applications).
+     * Visa category slugs the student is targeting.
+     *
+     * Resolution order:
+     *   1. The student_profile.primary_visa_category_id IF status='confirmed'
+     *      (admin-approved authoritative target)
+     *   2. Otherwise, the union of visa categories from the student's job
+     *      applications (best-effort inference)
      *
      * @return array<int, string>
      */
     public static function targetVisaSlugs(User $user): array
     {
+        $user->loadMissing('studentProfile.primaryVisa');
+
+        if ($user->studentProfile?->hasConfirmedVisa()) {
+            return [$user->studentProfile->primaryVisa->slug];
+        }
+
         return $user->applications()
             ->with('vacancy.visaCategory')
             ->get()
@@ -61,6 +73,22 @@ class StudentDocumentProgress
     }
 
     /**
+     * How was the target determined? Useful for UI labelling.
+     * Returns one of: 'confirmed', 'applications', 'default'.
+     */
+    public static function targetSource(User $user): string
+    {
+        $user->loadMissing('studentProfile');
+        if ($user->studentProfile?->hasConfirmedVisa()) {
+            return 'confirmed';
+        }
+        if ($user->applications()->exists()) {
+            return 'applications';
+        }
+        return 'default';
+    }
+
+    /**
      * Compute progress: required types vs uploaded vs verified.
      *
      * @return array{
@@ -74,6 +102,7 @@ class StudentDocumentProgress
      *     missing_count: int,
      *     pct: int,
      *     using_default: bool,
+     *     source: string,
      * }
      */
     public static function for(User $user): array
@@ -107,6 +136,7 @@ class StudentDocumentProgress
             'missing_count'   => count($missingTypes),
             'pct'             => $pct,
             'using_default'   => $usingDefault,
+            'source'          => static::targetSource($user),
         ];
     }
 }

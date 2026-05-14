@@ -3,7 +3,69 @@
         $progress       = $this->getProgress();
         $profilePct     = $this->getProfileCompletion();
         $student        = $this->record;
+        $vp             = $student->studentProfile;
+        $vStatus        = $vp?->visa_target_status;
+        $vColors = [
+            'pending'   => ['bg' => 'bg-amber-50 dark:bg-amber-500/10', 'text' => 'text-amber-700 dark:text-amber-400'],
+            'confirmed' => ['bg' => 'bg-emerald-50 dark:bg-emerald-500/10', 'text' => 'text-emerald-700 dark:text-emerald-400'],
+            'rejected'  => ['bg' => 'bg-rose-50 dark:bg-rose-500/10', 'text' => 'text-rose-700 dark:text-rose-400'],
+            'changed'   => ['bg' => 'bg-sky-50 dark:bg-sky-500/10', 'text' => 'text-sky-700 dark:text-sky-400'],
+        ];
+        $vc = $vColors[$vStatus] ?? ['bg' => 'bg-gray-50 dark:bg-gray-800', 'text' => 'text-gray-500 dark:text-gray-400'];
     @endphp
+
+    {{-- Visa target card --}}
+    <div class="fi-section rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10 p-6">
+        <div class="flex items-start gap-4 flex-wrap">
+            <div class="shrink-0 inline-flex h-12 w-12 items-center justify-center rounded-xl {{ $vc['bg'] }} {{ $vc['text'] }}">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"/></svg>
+            </div>
+            <div class="flex-1 min-w-0">
+                <p class="text-xs uppercase tracking-wider font-semibold text-gray-500 dark:text-gray-400">{{ __('Visa target') }}</p>
+                @if($vp?->primaryVisa)
+                    <h3 class="mt-1 text-xl font-bold text-gray-950 dark:text-white">{{ $vp->primaryVisa->t('name') }}</h3>
+                    <div class="mt-2 inline-flex items-center gap-2 px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wider {{ $vc['bg'] }} {{ $vc['text'] }}">
+                        @if($vStatus === 'confirmed')
+                            <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                        @elseif($vStatus === 'pending' || $vStatus === 'changed')
+                            <svg class="h-3 w-3 animate-pulse" fill="currentColor" viewBox="0 0 20 20"><circle cx="10" cy="10" r="6"/></svg>
+                        @endif
+                        {{ __('visa.target.status.'.$vStatus) }}
+                    </div>
+                    @if($vp->visa_target_requested_at)
+                        <p class="mt-3 text-xs text-gray-500 dark:text-gray-400">
+                            {{ __('Requested') }} {{ $vp->visa_target_requested_at->diffForHumans() }}
+                            @if($vp->visa_target_reviewed_at)
+                                · {{ __('Reviewed') }} {{ $vp->visa_target_reviewed_at->diffForHumans() }}
+                                @if($vp->visaTargetReviewer)
+                                    {{ __('by') }} {{ $vp->visaTargetReviewer->name }}
+                                @endif
+                            @endif
+                        </p>
+                    @endif
+                    @if($vp->visa_target_notes)
+                        <div class="mt-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 p-3 max-w-2xl">
+                            <p class="text-xs uppercase tracking-wider font-semibold text-gray-500 dark:text-gray-400 mb-1">
+                                {{ $vStatus === 'rejected' ? __('Admin reason') : __('Student notes') }}
+                            </p>
+                            <p class="text-sm text-gray-700 dark:text-gray-200 whitespace-pre-line">{{ $vp->visa_target_notes }}</p>
+                        </div>
+                    @endif
+                @else
+                    <h3 class="mt-1 text-xl font-bold text-gray-400 dark:text-gray-500">{{ __('Not selected yet') }}</h3>
+                    <p class="mt-1 text-sm text-gray-500">{{ __('Student has not chosen a visa target. Until they do, document requirements use the default set.') }}</p>
+                @endif
+            </div>
+        </div>
+
+        @if(in_array($vStatus, ['pending', 'changed'], true))
+            <div class="mt-4 pt-4 border-t border-gray-100 dark:border-white/5 rounded-lg bg-amber-50/50 dark:bg-amber-500/5 -mx-6 -mb-6 px-6 pb-4 pt-3 rounded-b-xl">
+                <p class="text-xs text-amber-800 dark:text-amber-300 font-medium">
+                    👋 {{ __('This request is awaiting your review. Use the buttons in the page header to confirm or reject.') }}
+                </p>
+            </div>
+        @endif
+    </div>
 
     {{-- Top: stats --}}
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

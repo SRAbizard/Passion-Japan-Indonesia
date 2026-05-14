@@ -10,15 +10,26 @@ class StudentProfile extends Model
 {
     use HasFactory;
 
+    public const VISA_TARGET_STATUSES = ['pending', 'confirmed', 'rejected', 'changed'];
+
+    public const VISA_TARGET_STATUS_COLORS = [
+        'pending'   => 'warning',
+        'confirmed' => 'success',
+        'rejected'  => 'danger',
+        'changed'   => 'info',
+    ];
+
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
     protected function casts(): array
     {
         return [
-            'birthdate'           => 'date',
-            'passport_expires_at' => 'date',
-            'smoker'              => 'boolean',
-            'drinker'             => 'boolean',
+            'birthdate'                => 'date',
+            'passport_expires_at'      => 'date',
+            'smoker'                   => 'boolean',
+            'drinker'                  => 'boolean',
+            'visa_target_requested_at' => 'datetime',
+            'visa_target_reviewed_at'  => 'datetime',
         ];
     }
 
@@ -27,9 +38,27 @@ class StudentProfile extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function primaryVisa(): BelongsTo
+    {
+        return $this->belongsTo(VisaCategory::class, 'primary_visa_category_id');
+    }
+
+    public function visaTargetReviewer(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'visa_target_reviewed_by');
+    }
+
     public function getPhotoUrlAttribute(): ?string
     {
         return $this->photo_path ? asset('storage/'.$this->photo_path) : null;
+    }
+
+    /**
+     * Has the student's chosen visa been confirmed by an admin?
+     */
+    public function hasConfirmedVisa(): bool
+    {
+        return $this->visa_target_status === 'confirmed' && $this->primary_visa_category_id !== null;
     }
 
     /**
