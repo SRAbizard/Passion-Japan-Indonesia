@@ -25,9 +25,9 @@ class DocumentVerified extends Notification
         return FilamentNotification::make()
             ->title($verified ? __('Document verified') : __('Document needs attention'))
             ->body($verified
-                ? __('Your :type document has been verified.', ['type' => __('document.type.'.$this->document->type)])
+                ? __('Your :type document has been verified.', ['type' => \App\Models\DocumentType::labelFor($this->document->type)])
                 : __('Your :type document was rejected. :notes', [
-                    'type'  => __('document.type.'.$this->document->type),
+                    'type'  => \App\Models\DocumentType::labelFor($this->document->type),
                     'notes' => $this->document->notes ?: '',
                 ]))
             ->icon($verified ? 'heroicon-o-check-badge' : 'heroicon-o-exclamation-triangle')

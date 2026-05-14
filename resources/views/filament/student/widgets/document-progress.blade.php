@@ -33,7 +33,7 @@
                         <span class="text-xs text-gray-500 dark:text-gray-400 mr-1 self-center">{{ __('Still missing:') }}</span>
                         @foreach($progress['missing_types'] as $type)
                             <span class="text-xs px-2 py-1 rounded-md bg-rose-50 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400 font-medium">
-                                {{ __('document.type.'.$type) }}
+                                {{ \App\Models\DocumentType::labelFor($type) }}
                             </span>
                         @endforeach
                     </div>

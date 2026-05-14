@@ -6,7 +6,7 @@ use App\Filament\Resources\VisaCategories\Pages;
 use App\Filament\Support\TranslatableTabs;
 use App\Models\VisaCategory;
 use BackedEnum;
-use App\Models\StudentDocument;
+use App\Models\DocumentType;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -50,8 +50,7 @@ class VisaCategoryResource extends Resource
                         ->label(__('Required documents'))
                         ->multiple()
                         ->searchable()
-                        ->options(collect(StudentDocument::TYPES)
-                            ->mapWithKeys(fn ($t) => [$t => __('document.type.'.$t)]))
+                        ->options(fn () => DocumentType::options())
                         ->columnSpanFull(),
                 ]),
         ]);

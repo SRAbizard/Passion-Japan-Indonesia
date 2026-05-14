@@ -597,6 +597,27 @@
     "Apply to a job first to see the exact required documents for your visa.": "Lamar pekerjaan dulu untuk melihat dokumen wajib yang tepat sesuai visa Anda.",
     "Still missing:": "Masih kurang:",
     "All required documents are verified!": "Semua dokumen wajib telah diverifikasi!",
-    "uploaded": "diunggah"
+    "uploaded": "diunggah",
+
+    "Document Types": "Jenis Dokumen",
+    "Document Type": "Jenis Dokumen",
+    "Key": "Kunci",
+    "Label": "Label",
+    "Description (optional)": "Deskripsi (opsional)",
+    "Active": "Aktif",
+    "Lowercase identifier used in code (e.g. ktp, paspor). Cannot be changed once students have uploaded documents of this type.": "Pengenal huruf kecil yang dipakai di kode (mis. ktp, paspor). Jangan diubah jika sudah ada siswa yang upload dokumen tipe ini.",
+    "Inactive types are hidden from upload dropdowns but kept for historical records.": "Tipe non-aktif disembunyikan dari dropdown upload, tapi catatan lama tetap tersimpan.",
+
+    "Document Requirements Matrix": "Matrix Dokumen per Visa",
+    "Tick a checkbox to mark a document as required for that visa. Use the Select all / Clear shortcuts at the top of each column. Click Save when done.": "Centang kotak untuk menandai dokumen wajib untuk visa tersebut. Gunakan tombol All / Clear di atas setiap kolom. Klik Save jika selesai.",
+    "Manage the document types themselves under Students → Document Types.": "Kelola jenis dokumen di Students → Jenis Dokumen.",
+    "All": "Semua",
+    "Clear": "Hapus",
+    "selected": "dipilih",
+    "Reset changes": "Reset Perubahan",
+    "Requirements updated": "Persyaratan diperbarui",
+    "Required documents per visa have been saved.": "Dokumen wajib per visa telah disimpan.",
+    "No document types yet. Add some under Students → Document Types.": "Belum ada jenis dokumen. Tambah di Students → Jenis Dokumen.",
+    "Icon": "Ikon"
 }
 

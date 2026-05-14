@@ -67,15 +67,15 @@
                     <li class="flex items-center gap-2 text-sm">
                         @if($verified)
                             <svg class="h-4 w-4 text-emerald-500 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-                            <span class="text-gray-900 dark:text-gray-100">{{ __('document.type.'.$type) }}</span>
+                            <span class="text-gray-900 dark:text-gray-100">{{ \App\Models\DocumentType::labelFor($type) }}</span>
                             <span class="text-xs text-emerald-600 dark:text-emerald-400">— {{ __('verified') }}</span>
                         @elseif($uploaded)
                             <svg class="h-4 w-4 text-amber-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            <span class="text-gray-900 dark:text-gray-100">{{ __('document.type.'.$type) }}</span>
+                            <span class="text-gray-900 dark:text-gray-100">{{ \App\Models\DocumentType::labelFor($type) }}</span>
                             <span class="text-xs text-amber-600 dark:text-amber-400">— {{ __('pending review') }}</span>
                         @else
                             <svg class="h-4 w-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                            <span class="text-gray-500 dark:text-gray-400">{{ __('document.type.'.$type) }}</span>
+                            <span class="text-gray-500 dark:text-gray-400">{{ \App\Models\DocumentType::labelFor($type) }}</span>
                             <span class="text-xs text-gray-400">— {{ __('missing') }}</span>
                         @endif
                     </li>
@@ -102,7 +102,7 @@
                     <tbody>
                         @foreach($student->studentDocuments as $doc)
                             <tr class="border-b border-gray-100 dark:border-white/5 last:border-0">
-                                <td class="py-2 pr-4 text-gray-900 dark:text-gray-100">{{ __('document.type.'.$doc->type) }}</td>
+                                <td class="py-2 pr-4 text-gray-900 dark:text-gray-100">{{ \App\Models\DocumentType::labelFor($doc->type) }}</td>
                                 <td class="py-2 pr-4">
                                     @php $colors = ['pending'=>'amber','verified'=>'emerald','rejected'=>'rose']; $c = $colors[$doc->status] ?? 'gray'; @endphp
                                     <span class="text-xs uppercase tracking-wider font-bold px-2 py-1 rounded-md bg-{{ $c }}-50 text-{{ $c }}-700 dark:bg-{{ $c }}-500/10 dark:text-{{ $c }}-400">

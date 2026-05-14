@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\StudentDocuments;
 
 use App\Filament\Resources\StudentDocuments\Pages;
+use App\Models\DocumentType;
 use App\Models\StudentDocument;
 use BackedEnum;
 use Filament\Forms\Components\FileUpload;
@@ -47,7 +48,7 @@ class StudentDocumentResource extends Resource
                 TextInput::make('user.name')->label(__('Student'))->disabled(),
                 TextInput::make('type')
                     ->label(__('Type'))
-                    ->formatStateUsing(fn ($state) => __('document.type.'.$state))
+                    ->formatStateUsing(fn ($state) => DocumentType::labelFor($state))
                     ->disabled(),
                 TextInput::make('label')->label(__('Label'))->disabled(),
                 FileUpload::make('file_path')->label(__('File'))->disk('public')->disabled()->columnSpanFull(),
@@ -69,7 +70,7 @@ class StudentDocumentResource extends Resource
         return $table->columns([
             TextColumn::make('user.name')->label(__('Student'))->searchable()->weight('bold'),
             TextColumn::make('type')->label(__('Type'))->badge()
-                ->formatStateUsing(fn ($state) => __('document.type.'.$state)),
+                ->formatStateUsing(fn ($state) => DocumentType::labelFor($state)),
             TextColumn::make('label')->label(__('Label'))->limit(40)->placeholder('—')->toggleable(),
             TextColumn::make('status')->label(__('Status'))->badge()
                 ->formatStateUsing(fn ($state) => __('document.status.'.$state))
@@ -85,8 +86,7 @@ class StudentDocumentResource extends Resource
                     ->mapWithKeys(fn ($s) => [$s => __('document.status.'.$s)]))
                 ->default('pending'),
             SelectFilter::make('type')
-                ->options(collect(StudentDocument::TYPES)
-                    ->mapWithKeys(fn ($t) => [$t => __('document.type.'.$t)])),
+                ->options(fn () => DocumentType::options(activeOnly: false)),
         ])
         ->recordActions([
             Action::make('view')

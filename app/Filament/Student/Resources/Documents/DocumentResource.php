@@ -3,6 +3,7 @@
 namespace App\Filament\Student\Resources\Documents;
 
 use App\Filament\Student\Resources\Documents\Pages;
+use App\Models\DocumentType;
 use App\Models\StudentDocument;
 use BackedEnum;
 use Filament\Forms\Components\FileUpload;
@@ -32,8 +33,8 @@ class DocumentResource extends Resource
         return $schema->components([
             Section::make()->columns(2)->components([
                 Select::make('type')->label(__('Document type'))
-                    ->options(collect(StudentDocument::TYPES)->mapWithKeys(fn ($t) => [$t => __('document.type.'.$t)]))
-                    ->required()->native(false),
+                    ->options(fn () => DocumentType::options())
+                    ->required()->native(false)->searchable(),
                 TextInput::make('label')->label(__('Custom label'))->maxLength(160)
                     ->placeholder(__('Optional label or note')),
                 FileUpload::make('file_path')->label(__('File'))
@@ -50,7 +51,7 @@ class DocumentResource extends Resource
     {
         return $table->columns([
             TextColumn::make('type')->label(__('Type'))->badge()
-                ->formatStateUsing(fn ($state) => __('document.type.'.$state)),
+                ->formatStateUsing(fn ($state) => DocumentType::labelFor($state)),
             TextColumn::make('label')->label(__('Label'))->limit(40),
             TextColumn::make('status')->label(__('Status'))->badge()
                 ->formatStateUsing(fn ($state) => __('document.status.'.$state))
@@ -62,7 +63,7 @@ class DocumentResource extends Resource
         ->defaultSort('created_at', 'desc')
         ->filters([
             SelectFilter::make('type')
-                ->options(collect(StudentDocument::TYPES)->mapWithKeys(fn ($t) => [$t => __('document.type.'.$t)])),
+                ->options(fn () => DocumentType::options(activeOnly: false)),
             SelectFilter::make('status')
                 ->options(collect(StudentDocument::STATUSES)->mapWithKeys(fn ($s) => [$s => __('document.status.'.$s)])),
         ])
