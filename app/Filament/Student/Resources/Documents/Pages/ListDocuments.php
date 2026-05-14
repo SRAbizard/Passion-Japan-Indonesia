@@ -14,4 +14,11 @@ class ListDocuments extends ListRecords
     {
         return [CreateAction::make()->label(__('Upload document'))->icon('heroicon-o-arrow-up-tray')];
     }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            \App\Filament\Student\Widgets\DocumentProgressWidget::class,
+        ];
+    }
 }

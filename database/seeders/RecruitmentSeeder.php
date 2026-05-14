@@ -41,14 +41,25 @@ class RecruitmentSeeder extends Seeder
     {
         $visas = [
             ['tokutei-ginou', ['id'=>'Tokutei Ginou', 'en'=>'Specified Skilled Worker', 'ja'=>'特定技能'],
-                ['id'=>'Visa kerja khusus untuk 14 sektor industri Jepang.', 'en'=>'Work visa for 14 specified industry sectors.', 'ja'=>'14産業分野の特定技能ビザ。']],
+                ['id'=>'Visa kerja khusus untuk 14 sektor industri Jepang.', 'en'=>'Work visa for 14 specified industry sectors.', 'ja'=>'14産業分野の特定技能ビザ。'],
+                // Required documents for SSW visa
+                ['ktp','kk','passport','ijazah','transcript','photo','medical_check','sktm_polri','jlpt_certificate','skill_certificate']],
             ['engineering',   ['id'=>'Engineering / Gijinkoku', 'en'=>'Engineer / Specialist in Humanities', 'ja'=>'技術・人文知識・国際業務'],
-                ['id'=>'Visa untuk profesional teknik, IT, dan posisi spesialis.', 'en'=>'Visa for engineering, IT, and specialist professionals.', 'ja'=>'エンジニア、IT、専門職向けビザ。']],
+                ['id'=>'Visa untuk profesional teknik, IT, dan posisi spesialis.', 'en'=>'Visa for engineering, IT, and specialist professionals.', 'ja'=>'エンジニア、IT、専門職向けビザ。'],
+                // Engineering/Gijinkoku usually skips KK + medical, requires CV/diploma + JLPT
+                ['ktp','passport','ijazah','transcript','cv','photo','jlpt_certificate']],
             ['internship',    ['id'=>'Internship', 'en'=>'Technical Intern Training', 'ja'=>'技能実習'],
-                ['id'=>'Program magang teknis 1–3 tahun di Jepang.', 'en'=>'1–3 year technical internship program in Japan.', 'ja'=>'日本での1〜3年の技能実習プログラム。']],
+                ['id'=>'Program magang teknis 1–3 tahun di Jepang.', 'en'=>'1–3 year technical internship program in Japan.', 'ja'=>'日本での1〜3年の技能実習プログラム。'],
+                // Internship requires the most paperwork (medical, SKCK, family card, etc.)
+                ['ktp','kk','passport','ijazah','transcript','photo','medical_check','sktm','sktm_polri']],
         ];
-        foreach ($visas as $i => [$slug, $name, $desc]) {
-            VisaCategory::firstOrCreate(['slug' => $slug], ['name' => $name, 'description' => $desc, 'sort_order' => $i + 1]);
+        foreach ($visas as $i => [$slug, $name, $desc, $reqDocs]) {
+            VisaCategory::updateOrCreate(['slug' => $slug], [
+                'name'               => $name,
+                'description'        => $desc,
+                'sort_order'         => $i + 1,
+                'required_documents' => $reqDocs,
+            ]);
         }
     }
 

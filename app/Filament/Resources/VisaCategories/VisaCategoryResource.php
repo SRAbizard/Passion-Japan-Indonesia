@@ -6,7 +6,9 @@ use App\Filament\Resources\VisaCategories\Pages;
 use App\Filament\Support\TranslatableTabs;
 use App\Models\VisaCategory;
 use BackedEnum;
+use App\Models\StudentDocument;
 use Filament\Forms\Components\ColorPicker;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Resources\Resource;
@@ -40,6 +42,18 @@ class VisaCategoryResource extends Resource
             TranslatableTabs::for('name', TextInput::class, label: __('Name'), required: true),
             TranslatableTabs::for('description', Textarea::class, label: __('Description'),
                 componentMods: ['rows' => [3]]),
+
+            Section::make(__('Required documents'))
+                ->description(__('Documents students must upload when targeting this visa.'))
+                ->components([
+                    Select::make('required_documents')
+                        ->label(__('Required documents'))
+                        ->multiple()
+                        ->searchable()
+                        ->options(collect(StudentDocument::TYPES)
+                            ->mapWithKeys(fn ($t) => [$t => __('document.type.'.$t)]))
+                        ->columnSpanFull(),
+                ]),
         ]);
     }
 
@@ -51,6 +65,10 @@ class VisaCategoryResource extends Resource
             TextColumn::make('slug')->copyable(),
             ColorColumn::make('color'),
             TextColumn::make('vacancies_count')->counts('vacancies')->label(__('Jobs')),
+            TextColumn::make('required_documents')
+                ->label(__('Required docs'))
+                ->formatStateUsing(fn ($state) => is_array($state) ? count($state).' '.__('types') : '0')
+                ->badge()->color('info')->alignCenter(),
         ])->defaultSort('sort_order');
     }
 
