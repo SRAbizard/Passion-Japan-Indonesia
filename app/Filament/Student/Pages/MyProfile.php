@@ -23,13 +23,13 @@ use Filament\Schemas\Schema;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 
-class Profile extends Page implements HasForms
+class MyProfile extends Page implements HasForms
 {
     use InteractsWithForms;
 
     protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-identification';
     protected static ?int $navigationSort = 10;
-    protected string $view = 'filament.student.pages.profile';
+    protected string $view = 'filament.student.pages.my-profile';
 
     public ?array $data = [];
 

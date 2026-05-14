@@ -26,7 +26,7 @@ class WelcomeWidget extends Widget
             'user'        => $user,
             'percent'     => $percent,
             'verified'    => $user?->hasVerifiedEmail() ?? false,
-            'profileUrl'  => \App\Filament\Student\Pages\Profile::getUrl(),
+            'profileUrl'  => \App\Filament\Student\Pages\MyProfile::getUrl(),
         ];
     }
 }
