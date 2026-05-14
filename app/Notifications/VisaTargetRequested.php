@@ -32,9 +32,9 @@ class VisaTargetRequested extends Notification
             ->icon($isChange ? 'heroicon-o-arrow-path' : 'heroicon-o-flag')
             ->iconColor('warning')
             ->actions([
-                \Filament\Notifications\Actions\Action::make('review')
+                \Filament\Actions\Action::make('review')
                     ->label(__('Review'))
-                    ->url(\App\Filament\Resources\Students\StudentResource::getUrl('view', ['record' => $this->profile->user_id])),
+                    ->url(\App\Filament\Resources\Students\StudentResource::getUrl('view', ['record' => $this->profile->user_id], panel: 'admin')),
             ])
             ->getDatabaseMessage();
     }

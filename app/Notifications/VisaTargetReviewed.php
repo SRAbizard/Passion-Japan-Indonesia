@@ -34,9 +34,9 @@ class VisaTargetReviewed extends Notification
             ->icon($confirmed ? 'heroicon-o-check-badge' : 'heroicon-o-exclamation-triangle')
             ->iconColor($confirmed ? 'success' : 'danger')
             ->actions([
-                \Filament\Notifications\Actions\Action::make('view')
+                \Filament\Actions\Action::make('view')
                     ->label(__('View details'))
-                    ->url(\App\Filament\Student\Pages\MyVisaTarget::getUrl()),
+                    ->url(\App\Filament\Student\Pages\MyVisaTarget::getUrl(panel: 'student')),
             ])
             ->getDatabaseMessage();
     }

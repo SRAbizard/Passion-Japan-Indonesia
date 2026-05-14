@@ -39,7 +39,7 @@ class ApplicationStatusChanged extends Notification
                 default                 => 'info',
             })
             ->actions([
-                \Filament\Notifications\Actions\Action::make('view')
+                \Filament\Actions\Action::make('view')
                     ->label(__('View'))
                     ->url(fn () => $this->application->jobVacancy
                         ? route('job.show', $this->application->jobVacancy->slug)

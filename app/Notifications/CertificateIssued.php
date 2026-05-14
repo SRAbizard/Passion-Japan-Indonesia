@@ -29,7 +29,7 @@ class CertificateIssued extends Notification
             ->icon('heroicon-o-trophy')
             ->iconColor('success')
             ->actions([
-                \Filament\Notifications\Actions\Action::make('view')
+                \Filament\Actions\Action::make('view')
                     ->label(__('View certificate'))
                     ->url(fn () => route('certificate.show', $this->certificate->certificate_number)),
             ])

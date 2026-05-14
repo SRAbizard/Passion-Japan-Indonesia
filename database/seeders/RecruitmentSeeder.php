@@ -48,8 +48,12 @@ class RecruitmentSeeder extends Seeder
                 ['id'=>'Visa untuk profesional teknik, IT, dan posisi spesialis.', 'en'=>'Visa for engineering, IT, and specialist professionals.', 'ja'=>'エンジニア、IT、専門職向けビザ。'],
                 // Engineering/Gijinkoku usually skips KK + medical, requires CV/diploma + JLPT
                 ['ktp','passport','ijazah','transcript','cv','photo','jlpt_certificate']],
-            ['internship',    ['id'=>'Internship', 'en'=>'Technical Intern Training', 'ja'=>'技能実習'],
-                ['id'=>'Program magang teknis 1–3 tahun di Jepang.', 'en'=>'1–3 year technical internship program in Japan.', 'ja'=>'日本での1〜3年の技能実習プログラム。'],
+            ['internship',    ['id'=>'Internship', 'en'=>'Internship', 'ja'=>'インターンシップ'],
+                [
+                    'id' => 'Visa untuk mahasiswa aktif semester 3 ke atas, dengan maksimal kerja di Jepang 1 tahun.',
+                    'en' => 'Visa for active university students from semester 3 onward, with up to 1 year of work in Japan.',
+                    'ja' => '大学3年以上の現役学生向けビザ。日本での就労は最大1年。',
+                ],
                 // Internship requires the most paperwork (medical, SKCK, family card, etc.)
                 ['ktp','kk','passport','ijazah','transcript','photo','medical_check','sktm','sktm_polri']],
         ];
