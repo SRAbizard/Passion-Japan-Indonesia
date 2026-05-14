@@ -1,0 +1,151 @@
+@import '../../../vendor/filament/filament/resources/css/theme.css';
+
+@source '../../../app/Filament/**/*.php';
+@source '../../views/filament/**/*.blade.php';
+@source '../../views/filament-panels/**/*.blade.php';
+@source '../../../vendor/filament/**/*.blade.php';
+
+/* ─────────────────────────────────────────────────────────────────────
+   Passion Japan Indonesia — Filament panel theme (admin + student)
+   Subtle Jejepangan touches:
+     • Washi paper texture background
+     • Sakura pink accent (used for focus, hover sparkle)
+     • Brand red as primary
+     • Plus Jakarta Sans + Noto Sans JP font stack
+     • More breathing room on widgets and buttons
+   ─────────────────────────────────────────────────────────────────── */
+
+@theme {
+    --font-sans: 'Plus Jakarta Sans', 'Noto Sans JP', ui-sans-serif, system-ui,
+                 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+                 'Helvetica Neue', Arial, 'Apple Color Emoji', 'Segoe UI Emoji';
+
+    /* Sakura pink — used as soft accent (highlight, focus halo) */
+    --color-sakura-50:  #fff5f8;
+    --color-sakura-100: #fce4ec;
+    --color-sakura-200: #f8bbd0;
+    --color-sakura-300: #f48fb1;
+    --color-sakura-400: #f06292;
+    --color-sakura-500: #ec407a;
+
+    /* Indigo (ai-iro) — traditional Japanese deep-blue accent */
+    --color-aiiro-500: #1e3a5f;
+    --color-aiiro-700: #0f2540;
+}
+
+/* ─── Page-wide washi paper texture background ─── */
+@layer base {
+    .fi-body {
+        background-image:
+            radial-gradient(circle at 1px 1px, rgba(179, 37, 16, 0.04) 1px, transparent 0),
+            radial-gradient(circle at 13px 13px, rgba(179, 37, 16, 0.025) 1px, transparent 0);
+        background-size: 24px 24px, 24px 24px;
+        background-position: 0 0, 12px 12px;
+    }
+
+    .dark .fi-body {
+        background-image:
+            radial-gradient(circle at 1px 1px, rgba(255, 200, 195, 0.03) 1px, transparent 0),
+            radial-gradient(circle at 13px 13px, rgba(255, 200, 195, 0.02) 1px, transparent 0);
+        background-size: 24px 24px, 24px 24px;
+        background-position: 0 0, 12px 12px;
+    }
+}
+
+/* ─── Components ─── */
+@layer components {
+
+    /* Decorative red+sakura hairline beneath every page heading */
+    .fi-page > header h1::after,
+    .fi-resource-page > header h1::after,
+    .fi-page-header h1::after {
+        content: '';
+        display: block;
+        height: 3px;
+        width: 56px;
+        margin-top: 0.5rem;
+        background: linear-gradient(90deg, #b32510 0%, #f48fb1 60%, transparent 100%);
+        border-radius: 999px;
+    }
+
+    /* Subtle hover lift for all glass cards / sections */
+    .fi-section,
+    .fi-wi-stats-overview-stat,
+    .fi-wi {
+        transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+    .fi-wi-stats-overview-stat:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px -8px rgba(179, 37, 16, 0.18);
+    }
+
+    /* Stat-widget polish: more padding, bigger numbers */
+    .fi-wi-stats-overview-stat {
+        padding: 1.25rem 1.5rem !important;
+    }
+    .fi-wi-stats-overview-stat-value {
+        font-size: 1.875rem !important;
+        line-height: 2.25rem !important;
+        font-weight: 700;
+        letter-spacing: -0.025em;
+    }
+
+    /* Tighter widget grid gaps so cards don't feel cramped */
+    .fi-wi-stats-overview .grid {
+        gap: 1.25rem !important;
+    }
+
+    /* Buttons: extra breathing room left/right + better focus ring (sakura) */
+    .fi-btn {
+        padding-left: 1.1rem;
+        padding-right: 1.1rem;
+    }
+    .fi-btn-size-sm {
+        padding-left: 0.85rem;
+        padding-right: 0.85rem;
+    }
+    .fi-btn:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(248, 187, 208, 0.55) !important;
+    }
+
+    /* Inputs focus halo with sakura tint */
+    .fi-input:focus,
+    .fi-select-input:focus,
+    .fi-textarea:focus {
+        box-shadow: 0 0 0 3px rgba(248, 187, 208, 0.45) !important;
+        border-color: #b32510 !important;
+    }
+
+    /* Sidebar items — slight gap so labels don't kiss the icon */
+    .fi-sidebar-item-button {
+        gap: 0.875rem;
+    }
+
+    /* Section header — accent dot in brand red (like a hinomaru on a card) */
+    .fi-section-header-heading::before {
+        content: '';
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        margin-right: 0.625rem;
+        border-radius: 999px;
+        background: #b32510;
+        vertical-align: middle;
+        transform: translateY(-2px);
+    }
+
+    /* Topbar brand area: a quiet sakura gradient under the logo (light mode only) */
+    .fi-topbar {
+        background-image: linear-gradient(180deg, rgba(252, 228, 236, 0.35) 0%, transparent 70%);
+    }
+    .dark .fi-topbar {
+        background-image: linear-gradient(180deg, rgba(179, 37, 16, 0.06) 0%, transparent 70%);
+    }
+
+    /* Notification bell badge (sakura) */
+    .fi-topbar-database-notifications-trigger .fi-badge {
+        background: #ec407a !important;
+        color: white !important;
+    }
+}

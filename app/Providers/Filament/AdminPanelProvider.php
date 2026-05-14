@@ -45,6 +45,7 @@ class AdminPanelProvider extends PanelProvider
             ->userMenuItems(self::buildLocaleMenuItems())
             ->databaseNotifications()
             ->databaseNotificationsPolling('60s')
+            ->viteTheme('resources/css/filament/passion-theme.css')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
@@ -52,6 +53,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
+                \App\Filament\Widgets\AdminWelcomeWidget::class,
                 AccountWidget::class,
             ])
             ->middleware([
