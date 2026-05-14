@@ -45,7 +45,7 @@
         <div class="hidden lg:flex items-center gap-7 text-sm text-surface-200">
             <a href="{{ url('/') }}" class="hover:text-white transition">{{ __('Home') }}</a>
             <a href="{{ route('job.index') }}" class="hover:text-white transition">{{ __('Job Vacancies') }}</a>
-            <a href="{{ url('/#learning') }}" class="hover:text-white transition">{{ __('E-Learning') }}</a>
+            <a href="{{ route('elearning.index') }}" class="hover:text-white transition">{{ __('E-Learning') }}</a>
             <a href="{{ route('event.index') }}" class="hover:text-white transition">{{ __('Event') }}</a>
             <a href="{{ route('blog.index') }}" class="hover:text-white transition">{{ __('Blog') }}</a>
             <a href="{{ route('about') }}" class="hover:text-white transition">{{ __('About Us') }}</a>
@@ -95,7 +95,7 @@
                 <div class="absolute right-0 mt-2 min-w-[220px] glass-card p-2 flex flex-col text-sm">
                     <a href="{{ url('/') }}" class="px-3 py-2 rounded-lg hover:bg-surface-700/60">{{ __('Home') }}</a>
                     <a href="{{ route('job.index') }}" class="px-3 py-2 rounded-lg hover:bg-surface-700/60">{{ __('Job Vacancies') }}</a>
-                    <a href="{{ url('/#learning') }}" class="px-3 py-2 rounded-lg hover:bg-surface-700/60">{{ __('E-Learning') }}</a>
+                    <a href="{{ route('elearning.index') }}" class="px-3 py-2 rounded-lg hover:bg-surface-700/60">{{ __('E-Learning') }}</a>
                     <a href="{{ route('event.index') }}" class="px-3 py-2 rounded-lg hover:bg-surface-700/60">{{ __('Event') }}</a>
                     <a href="{{ route('blog.index') }}" class="px-3 py-2 rounded-lg hover:bg-surface-700/60">{{ __('Blog') }}</a>
                     <a href="{{ route('about') }}" class="px-3 py-2 rounded-lg hover:bg-surface-700/60">{{ __('About Us') }}</a>
@@ -136,7 +136,7 @@
             <ul class="space-y-2 text-sm text-surface-400">
                 <li><a href="{{ url('/') }}" class="hover:text-brand-400">{{ __('Home') }}</a></li>
                 <li><a href="{{ route('job.index') }}" class="hover:text-brand-400">{{ __('Job Vacancies') }}</a></li>
-                <li><a href="{{ url('/#learning') }}" class="hover:text-brand-400">{{ __('E-Learning') }}</a></li>
+                <li><a href="{{ route('elearning.index') }}" class="hover:text-brand-400">{{ __('E-Learning') }}</a></li>
                 <li><a href="{{ route('event.index') }}" class="hover:text-brand-400">{{ __('Event') }}</a></li>
                 <li><a href="{{ route('blog.index') }}" class="hover:text-brand-400">{{ __('Blog') }}</a></li>
                 <li><a href="{{ route('about') }}" class="hover:text-brand-400">{{ __('About Us') }}</a></li>

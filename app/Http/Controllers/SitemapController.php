@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Course;
 use App\Models\Event;
 use App\Models\JobVacancy;
 use App\Models\Post;
@@ -20,7 +21,8 @@ class SitemapController extends Controller
             ['loc' => url('/contact'), 'priority' => '0.6', 'changefreq' => 'monthly', 'lastmod' => $now],
             ['loc' => url('/blog'),    'priority' => '0.7', 'changefreq' => 'daily',   'lastmod' => $now],
             ['loc' => url('/event'),   'priority' => '0.7', 'changefreq' => 'daily',   'lastmod' => $now],
-            ['loc' => url('/jobs'),    'priority' => '0.8', 'changefreq' => 'daily',   'lastmod' => $now],
+            ['loc' => url('/jobs'),      'priority' => '0.8', 'changefreq' => 'daily',   'lastmod' => $now],
+            ['loc' => url('/elearning'), 'priority' => '0.8', 'changefreq' => 'weekly',  'lastmod' => $now],
         ];
 
         foreach (Post::published()->latest('published_at')->get() as $p) {
@@ -45,6 +47,14 @@ class SitemapController extends Controller
                 'priority'   => '0.7',
                 'changefreq' => 'weekly',
                 'lastmod'    => optional($v->updated_at)->toAtomString() ?? $now,
+            ];
+        }
+        foreach (Course::published()->orderByDesc('published_at')->get() as $c) {
+            $urls[] = [
+                'loc'        => url('/elearning/'.$c->slug),
+                'priority'   => '0.7',
+                'changefreq' => 'weekly',
+                'lastmod'    => optional($c->updated_at)->toAtomString() ?? $now,
             ];
         }
 

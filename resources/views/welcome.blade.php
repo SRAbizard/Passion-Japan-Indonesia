@@ -3,18 +3,21 @@
 @section('title', __('Passion Japan Indonesia') . ' — ' . __('Step Toward a Successful Career in Japan'))
 
 @php
+    use App\Models\Course;
     use App\Models\Faq;
     use App\Models\JobVacancy;
     use App\Models\Testimonial;
     use App\Models\VisaCategory;
     use App\Support\HomepageDemoData as Demo;
 
-    // Phase 3+4: FAQ, Testimonial, Jobs come from DB; fall back to Demo helper when empty.
-    // Benefits/Programs/Courses/Workflow still come from Demo until later phases.
+    // Phase 3+4+5: FAQ, Testimonial, Jobs, Courses come from DB; fall back to Demo helper when empty.
+    // Benefits/Programs/Workflow still come from Demo until later phases.
     $benefits = Demo::benefits();
     $programs = Demo::programs();
-    $courses  = Demo::courses();
     $workflow = Demo::workflow();
+
+    $dbCourses = Course::published()->withCount('chapters')->orderByDesc('is_featured')->orderByDesc('published_at')->limit(4)->get();
+    $courses   = $dbCourses->isNotEmpty() ? $dbCourses : Demo::courses();
 
     $dbFaqs = Faq::published()->get();
     $faqs   = $dbFaqs->isNotEmpty()
@@ -231,23 +234,55 @@
             <p class="mt-3 text-surface-400">{{ __('Master Japanese language and work culture on your own schedule.') }}</p>
         </div>
 
-        <div class="mt-12 grid gap-6 md:grid-cols-2 max-w-4xl mx-auto">
-            @foreach($courses as $course)
-                <div class="relative overflow-hidden glass-card p-8 hover:border-brand-500/40 transition">
-                    <div class="absolute -top-12 -right-12 h-40 w-40 rounded-full bg-gradient-to-br {{ $course['color'] }} opacity-30 blur-3xl"></div>
-                    <div class="relative">
-                        <span class="inline-block text-[10px] uppercase tracking-wider font-semibold px-2 py-1 rounded-md bg-brand-600/15 text-brand-300">JLPT</span>
-                        <h3 class="mt-3 font-display text-2xl font-bold text-white">{{ $course['name'] }}</h3>
-                        <p class="mt-1 text-xs text-surface-400">{{ Demo::pick($course['duration']) }} · {{ Demo::pick($course['chapters']) }}</p>
-                        <p class="mt-4 text-sm text-surface-300 leading-relaxed">{{ Demo::pick($course['desc']) }}</p>
-                        <a href="#" class="mt-6 btn-brand text-sm">
-                            {{ __('Join Now') }}
-                            <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
-                        </a>
+        @if($dbCourses->isNotEmpty())
+            <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                @foreach($dbCourses as $course)
+                    <a href="{{ route('elearning.show', $course->slug) }}" class="glass-card overflow-hidden block hover:border-brand-500/50 transition group flex flex-col">
+                        <div class="aspect-video w-full bg-gradient-to-br from-brand-700 to-brand-900 relative">
+                            @if($course->thumbnail_url)
+                                <img src="{{ $course->thumbnail_url }}" alt="" class="absolute inset-0 h-full w-full object-cover">
+                            @else
+                                <div class="absolute inset-0 flex items-center justify-center text-white/30">
+                                    <svg class="h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 14l9-5-9-5-9 5 9 5z"/></svg>
+                                </div>
+                            @endif
+                        </div>
+                        <div class="p-5 flex-1 flex flex-col">
+                            <span class="inline-block self-start text-[10px] uppercase tracking-wider font-semibold px-2 py-1 rounded-md bg-brand-600/15 text-brand-300 mb-2">{{ __('level.'.$course->level) }}</span>
+                            <h3 class="font-display font-bold text-white leading-tight group-hover:text-brand-400">{{ $course->t('title') }}</h3>
+                            @if($course->t('subtitle'))
+                                <p class="mt-2 text-xs text-surface-400 line-clamp-2">{{ $course->t('subtitle') }}</p>
+                            @endif
+                            <div class="mt-auto pt-3 flex items-center justify-between text-xs text-surface-400">
+                                <span>{{ trans_choice('{1} :count chapter|[2,*] :count chapters', $course->chapters_count, ['count' => $course->chapters_count]) }}</span>
+                                <span class="text-brand-400 font-semibold">{{ $course->price_display }}</span>
+                            </div>
+                        </div>
+                    </a>
+                @endforeach
+            </div>
+            <div class="mt-8 text-center">
+                <a href="{{ route('elearning.index') }}" class="btn-ghost text-sm">{{ __('See all') }} →</a>
+            </div>
+        @else
+            <div class="mt-12 grid gap-6 md:grid-cols-2 max-w-4xl mx-auto">
+                @foreach($courses as $course)
+                    <div class="relative overflow-hidden glass-card p-8 hover:border-brand-500/40 transition">
+                        <div class="absolute -top-12 -right-12 h-40 w-40 rounded-full bg-gradient-to-br {{ $course['color'] }} opacity-30 blur-3xl"></div>
+                        <div class="relative">
+                            <span class="inline-block text-[10px] uppercase tracking-wider font-semibold px-2 py-1 rounded-md bg-brand-600/15 text-brand-300">JLPT</span>
+                            <h3 class="mt-3 font-display text-2xl font-bold text-white">{{ $course['name'] }}</h3>
+                            <p class="mt-1 text-xs text-surface-400">{{ Demo::pick($course['duration']) }} · {{ Demo::pick($course['chapters']) }}</p>
+                            <p class="mt-4 text-sm text-surface-300 leading-relaxed">{{ Demo::pick($course['desc']) }}</p>
+                            <a href="{{ route('elearning.index') }}" class="mt-6 btn-brand text-sm">
+                                {{ __('Join Now') }}
+                                <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
+                            </a>
+                        </div>
                     </div>
-                </div>
-            @endforeach
-        </div>
+                @endforeach
+            </div>
+        @endif
     </div>
 </section>
 

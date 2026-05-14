@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\ElearningController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\SitemapController;
@@ -25,6 +26,20 @@ Route::get('jobs/{slug}',         [\App\Http\Controllers\JobController::class, '
 Route::post('jobs/{slug}/apply',  [\App\Http\Controllers\JobController::class, 'apply'])
     ->middleware('throttle:10,1')
     ->name('job.apply');
+
+Route::get('elearning',                          [ElearningController::class, 'index'])->name('elearning.index');
+Route::get('elearning/{slug}',                   [ElearningController::class, 'show'])->name('elearning.show');
+Route::post('elearning/{slug}/enroll',           [ElearningController::class, 'enroll'])
+    ->middleware('throttle:10,1')->name('elearning.enroll');
+Route::get('elearning/{slug}/learn/{material}',  [ElearningController::class, 'material'])
+    ->whereNumber('material')->name('elearning.material');
+Route::post('elearning/{slug}/learn/{material}/complete', [ElearningController::class, 'complete'])
+    ->whereNumber('material')->middleware('throttle:30,1')->name('elearning.complete');
+Route::get('elearning/{slug}/quiz',              [ElearningController::class, 'quiz'])->name('elearning.quiz');
+Route::post('elearning/{slug}/quiz',             [ElearningController::class, 'quizSubmit'])
+    ->middleware('throttle:10,1')->name('elearning.quiz.submit');
+Route::get('certificate/{number}',               [ElearningController::class, 'certificate'])->name('certificate.show');
+Route::get('certificate/{number}/download',      [ElearningController::class, 'certificateDownload'])->name('certificate.download');
 
 Route::get('locale/{locale}', [LocaleController::class, 'switch'])
     ->name('locale.switch')

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 #[Fillable([
     'slug', 'course_category_id', 'instructor_id',
@@ -51,6 +52,21 @@ class Course extends Model
     public function materials(): HasManyThrough
     {
         return $this->hasManyThrough(Material::class, Chapter::class);
+    }
+
+    public function quiz(): HasOne
+    {
+        return $this->hasOne(Quiz::class)->where('is_published', true);
+    }
+
+    public function certificates(): HasMany
+    {
+        return $this->hasMany(Certificate::class);
+    }
+
+    public function hasQuiz(): bool
+    {
+        return $this->quiz()->exists();
     }
 
     public function getThumbnailUrlAttribute(): ?string
