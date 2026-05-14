@@ -120,6 +120,7 @@
         @if($progress['required_count'] === 0)
             <p class="text-sm text-gray-500">{{ __('No required documents configured for this student\'s visa target.') }}</p>
         @else
+            <p class="text-xs uppercase tracking-wider font-semibold text-emerald-700 dark:text-emerald-400 mb-2">{{ __('Required') }} ({{ $progress['required_count'] }})</p>
             <ul class="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                 @foreach($progress['required'] as $type)
                     @php
@@ -143,6 +144,27 @@
                     </li>
                 @endforeach
             </ul>
+
+            @if (! empty($progress['optional']))
+                <div class="mt-6 pt-4 border-t border-gray-100 dark:border-white/5">
+                    <p class="text-xs uppercase tracking-wider font-semibold text-sky-700 dark:text-sky-400 mb-2">{{ __('Optional') }} ({{ $progress['optional_count'] }})</p>
+                    <ul class="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                        @foreach($progress['optional'] as $type)
+                            @php $uploaded = in_array($type, $progress['optional_uploaded_types']); @endphp
+                            <li class="flex items-center gap-2 text-sm">
+                                @if ($uploaded)
+                                    <svg class="h-4 w-4 text-sky-500 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                                    <span class="text-gray-900 dark:text-gray-100">{{ \App\Models\DocumentType::labelFor($type) }}</span>
+                                    <span class="text-xs text-sky-600 dark:text-sky-400">— {{ __('uploaded') }}</span>
+                                @else
+                                    <svg class="h-4 w-4 text-gray-300 dark:text-gray-600 shrink-0" fill="currentColor" viewBox="0 0 20 20"><circle cx="10" cy="10" r="6"/></svg>
+                                    <span class="text-gray-400 dark:text-gray-500">{{ \App\Models\DocumentType::labelFor($type) }}</span>
+                                @endif
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
         @endif
     </div>
 

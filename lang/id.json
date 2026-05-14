@@ -676,6 +676,28 @@
     "Your visa target \":visa\" was not approved.": "Target visa \":visa\" Anda tidak disetujui.",
     "Admin notes: :notes": "Catatan admin: :notes",
     "Choose a different visa": "Pilih visa lain",
-    "This request is awaiting your review. Use the buttons in the page header to confirm or reject.": "Permintaan ini menunggu review Anda. Gunakan tombol di header halaman untuk konfirmasi atau tolak."
+    "This request is awaiting your review. Use the buttons in the page header to confirm or reject.": "Permintaan ini menunggu review Anda. Gunakan tombol di header halaman untuk konfirmasi atau tolak.",
+
+    "Document requirements": "Persyaratan Dokumen",
+    "Required = must upload (counts toward progress). Optional = accepted but not blocking.": "Wajib = harus upload (masuk hitungan progres). Opsional = diterima tapi tidak menghalangi.",
+    "Required documents": "Dokumen Wajib",
+    "Optional documents": "Dokumen Opsional",
+    "These count toward the student's completion percentage.": "Ini masuk ke persentase kelengkapan siswa.",
+    "Accepted if uploaded, but not required to complete the checklist.": "Diterima jika diunggah, tapi tidak wajib untuk melengkapi checklist.",
+
+    "Click a cell to cycle its state.": "Klik kotak untuk mengubah statusnya.",
+    "Required": "Wajib",
+    "Optional": "Opsional",
+    "Not needed": "Tidak perlu",
+    "cycle on click": "klik untuk mengubah",
+    "All required": "Semua Wajib",
+    "required": "wajib",
+    "optional": "opsional",
+    "Required documents count toward student progress %. Optional documents are accepted but do not block.": "Dokumen wajib masuk ke persentase progres siswa. Dokumen opsional diterima tapi tidak menghalangi.",
+    "Required — click for Optional": "Wajib — klik untuk Opsional",
+    "Optional — click to remove": "Opsional — klik untuk hapus",
+    "Not needed — click for Required": "Tidak perlu — klik untuk Wajib",
+    "—": "—",
+    "strengthen your application but not required": "memperkuat aplikasi tapi tidak wajib"
 }
 

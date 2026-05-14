@@ -18,7 +18,8 @@ class DocumentRequirementsMatrix extends Page
     protected string $view = 'filament.pages.document-requirements-matrix';
 
     /**
-     * Matrix state: ['<visa_slug>' => ['ktp', 'paspor', ...], ...]
+     * Tri-state matrix:
+     *   $matrix[<visa_slug>][<doc_type_key>] = 'required' | 'optional' | null/missing
      */
     public array $matrix = [];
 
@@ -34,8 +35,19 @@ class DocumentRequirementsMatrix extends Page
     public function loadMatrix(): void
     {
         $this->matrix = VisaCategory::orderBy('sort_order')->get()
-            ->mapWithKeys(fn ($v) => [$v->slug => $v->requiredDocumentTypes()])
-            ->all();
+            ->mapWithKeys(function ($v) {
+                $cell = [];
+                foreach ($v->requiredDocumentTypes() as $key) {
+                    $cell[$key] = 'required';
+                }
+                foreach ($v->optionalDocumentTypes() as $key) {
+                    // Required wins if (somehow) the same key appears in both
+                    if (! isset($cell[$key])) {
+                        $cell[$key] = 'optional';
+                    }
+                }
+                return [$v->slug => $cell];
+            })->all();
     }
 
     public function getVisas()
@@ -48,19 +60,50 @@ class DocumentRequirementsMatrix extends Page
         return DocumentType::active()->ordered()->get();
     }
 
-    public function toggle(string $visaSlug, string $typeKey): void
+    /**
+     * Cycle a cell: none → required → optional → none.
+     */
+    public function cycle(string $visaSlug, string $typeKey): void
     {
-        $current = $this->matrix[$visaSlug] ?? [];
-        $this->matrix[$visaSlug] = in_array($typeKey, $current, true)
-            ? array_values(array_diff($current, [$typeKey]))
-            : array_merge($current, [$typeKey]);
+        $current = $this->matrix[$visaSlug][$typeKey] ?? null;
+        $next = match ($current) {
+            null       => 'required',
+            'required' => 'optional',
+            'optional' => null,
+            default    => 'required',
+        };
+
+        if ($next === null) {
+            unset($this->matrix[$visaSlug][$typeKey]);
+        } else {
+            $this->matrix[$visaSlug][$typeKey] = $next;
+        }
+    }
+
+    public function setRequiredAllForVisa(string $visaSlug): void
+    {
+        $this->matrix[$visaSlug] = $this->getDocumentTypes()
+            ->mapWithKeys(fn ($t) => [$t->key => 'required'])
+            ->all();
+    }
+
+    public function clearVisa(string $visaSlug): void
+    {
+        $this->matrix[$visaSlug] = [];
     }
 
     public function save(): void
     {
-        foreach ($this->matrix as $visaSlug => $typeKeys) {
+        foreach ($this->matrix as $visaSlug => $cells) {
+            $required = [];
+            $optional = [];
+            foreach ($cells as $key => $state) {
+                if ($state === 'required') $required[] = $key;
+                if ($state === 'optional') $optional[] = $key;
+            }
             VisaCategory::where('slug', $visaSlug)->update([
-                'required_documents' => array_values(array_unique($typeKeys)),
+                'required_documents' => array_values(array_unique($required)),
+                'optional_documents' => array_values(array_unique($optional)),
             ]);
         }
 
@@ -73,13 +116,17 @@ class DocumentRequirementsMatrix extends Page
         $this->loadMatrix();
     }
 
-    public function selectAllForVisa(string $visaSlug): void
+    /**
+     * Helpers for the view to count states per visa.
+     *
+     * @return array{required: int, optional: int}
+     */
+    public function countsFor(string $visaSlug): array
     {
-        $this->matrix[$visaSlug] = $this->getDocumentTypes()->pluck('key')->all();
-    }
-
-    public function clearVisa(string $visaSlug): void
-    {
-        $this->matrix[$visaSlug] = [];
+        $cells = $this->matrix[$visaSlug] ?? [];
+        return [
+            'required' => count(array_filter($cells, fn ($s) => $s === 'required')),
+            'optional' => count(array_filter($cells, fn ($s) => $s === 'optional')),
+        ];
     }
 }

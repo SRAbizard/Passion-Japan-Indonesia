@@ -43,11 +43,19 @@ class VisaCategoryResource extends Resource
             TranslatableTabs::for('description', Textarea::class, label: __('Description'),
                 componentMods: ['rows' => [3]]),
 
-            Section::make(__('Required documents'))
-                ->description(__('Documents students must upload when targeting this visa.'))
+            Section::make(__('Document requirements'))
+                ->description(__('Required = must upload (counts toward progress). Optional = accepted but not blocking.'))
                 ->components([
                     Select::make('required_documents')
                         ->label(__('Required documents'))
+                        ->helperText(__('These count toward the student\'s completion percentage.'))
+                        ->multiple()
+                        ->searchable()
+                        ->options(fn () => DocumentType::options())
+                        ->columnSpanFull(),
+                    Select::make('optional_documents')
+                        ->label(__('Optional documents'))
+                        ->helperText(__('Accepted if uploaded, but not required to complete the checklist.'))
                         ->multiple()
                         ->searchable()
                         ->options(fn () => DocumentType::options())

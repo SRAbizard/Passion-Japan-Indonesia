@@ -42,27 +42,30 @@ class RecruitmentSeeder extends Seeder
         $visas = [
             ['tokutei-ginou', ['id'=>'Tokutei Ginou', 'en'=>'Specified Skilled Worker', 'ja'=>'特定技能'],
                 ['id'=>'Visa kerja khusus untuk 14 sektor industri Jepang.', 'en'=>'Work visa for 14 specified industry sectors.', 'ja'=>'14産業分野の特定技能ビザ。'],
-                // Required documents for SSW visa
-                ['ktp','kk','passport','ijazah','transcript','photo','medical_check','sktm_polri','jlpt_certificate','skill_certificate']],
+                // required: counts toward progress %
+                ['ktp','kk','passport','ijazah','transcript','photo','medical_check','sktm_polri','jlpt_certificate','skill_certificate'],
+                // optional: accepted but not blocking
+                ['cv']],
             ['engineering',   ['id'=>'Engineering / Gijinkoku', 'en'=>'Engineer / Specialist in Humanities', 'ja'=>'技術・人文知識・国際業務'],
                 ['id'=>'Visa untuk profesional teknik, IT, dan posisi spesialis.', 'en'=>'Visa for engineering, IT, and specialist professionals.', 'ja'=>'エンジニア、IT、専門職向けビザ。'],
-                // Engineering/Gijinkoku usually skips KK + medical, requires CV/diploma + JLPT
-                ['ktp','passport','ijazah','transcript','cv','photo','jlpt_certificate']],
+                ['ktp','passport','ijazah','transcript','cv','photo','jlpt_certificate'],
+                ['kk','skill_certificate']],
             ['internship',    ['id'=>'Internship', 'en'=>'Internship', 'ja'=>'インターンシップ'],
                 [
                     'id' => 'Visa untuk mahasiswa aktif semester 3 ke atas, dengan maksimal kerja di Jepang 1 tahun.',
                     'en' => 'Visa for active university students from semester 3 onward, with up to 1 year of work in Japan.',
                     'ja' => '大学3年以上の現役学生向けビザ。日本での就労は最大1年。',
                 ],
-                // Internship requires the most paperwork (medical, SKCK, family card, etc.)
-                ['ktp','kk','passport','ijazah','transcript','photo','medical_check','sktm','sktm_polri']],
+                ['ktp','kk','passport','ijazah','transcript','photo','medical_check','sktm','sktm_polri'],
+                ['cv','jlpt_certificate']],
         ];
-        foreach ($visas as $i => [$slug, $name, $desc, $reqDocs]) {
+        foreach ($visas as $i => [$slug, $name, $desc, $reqDocs, $optDocs]) {
             VisaCategory::updateOrCreate(['slug' => $slug], [
                 'name'               => $name,
                 'description'        => $desc,
                 'sort_order'         => $i + 1,
                 'required_documents' => $reqDocs,
+                'optional_documents' => $optDocs,
             ]);
         }
     }

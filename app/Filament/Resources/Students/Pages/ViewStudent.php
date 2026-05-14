@@ -18,8 +18,15 @@ class ViewStudent extends Page
 
     public User $record;
 
-    public function mount(int $record): void
+    /**
+     * Filament v5 may inject either the resolved User model (route model
+     * binding) OR the raw integer key, depending on resource config.
+     * Normalise to an ID and reload with all the relations the view needs.
+     */
+    public function mount(User|int|string $record): void
     {
+        $id = $record instanceof User ? $record->getKey() : (int) $record;
+
         $this->record = User::with([
             'studentProfile.primaryVisa',
             'studentProfile.visaTargetReviewer',
@@ -32,7 +39,7 @@ class ViewStudent extends Page
             'applications.vacancy.company',
             'enrollments.course',
             'certificates.course',
-        ])->findOrFail($record);
+        ])->findOrFail($id);
     }
 
     protected function getHeaderActions(): array
@@ -59,7 +66,7 @@ class ViewStudent extends Page
                     ]);
                     $this->record->notify(new VisaTargetReviewed($profile->fresh()));
                     Notification::make()->title(__('Visa target confirmed'))->success()->send();
-                    $this->mount($this->record->id);
+                    $this->mount($this->record);
                 }),
 
             Action::make('reject_visa')
@@ -83,7 +90,7 @@ class ViewStudent extends Page
                     ]);
                     $this->record->notify(new VisaTargetReviewed($profile->fresh()));
                     Notification::make()->title(__('Visa target rejected'))->warning()->send();
-                    $this->mount($this->record->id);
+                    $this->mount($this->record);
                 }),
         ];
     }

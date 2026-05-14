@@ -73,6 +73,27 @@ class StudentDocumentProgress
     }
 
     /**
+     * Optional document type keys (encouraged but not blocking).
+     * Excludes any key already present in the required set.
+     *
+     * @return array<int, string>
+     */
+    public static function optionalTypes(User $user): array
+    {
+        $slugs = static::targetVisaSlugs($user);
+        if (empty($slugs)) return [];
+
+        $required = static::requiredTypes($user);
+
+        return VisaCategory::whereIn('slug', $slugs)->get()
+            ->flatMap(fn ($visa) => $visa->optionalDocumentTypes())
+            ->unique()
+            ->reject(fn ($k) => in_array($k, $required, true))
+            ->values()
+            ->all();
+    }
+
+    /**
      * How was the target determined? Useful for UI labelling.
      * Returns one of: 'confirmed', 'applications', 'default'.
      */
@@ -103,11 +124,16 @@ class StudentDocumentProgress
      *     pct: int,
      *     using_default: bool,
      *     source: string,
+     *     optional: array<int, string>,
+     *     optional_count: int,
+     *     optional_uploaded_types: array<int, string>,
+     *     optional_uploaded_count: int,
      * }
      */
     public static function for(User $user): array
     {
         $required = static::requiredTypes($user);
+        $optional = static::optionalTypes($user);
         $usingDefault = empty(static::targetVisaSlugs($user));
 
         $docs = $user->studentDocuments()->get();
@@ -121,22 +147,29 @@ class StudentDocumentProgress
 
         $missingTypes = array_values(array_diff($required, $uploadedTypes));
 
+        $optionalUploaded = $docs->whereIn('type', $optional)
+            ->pluck('type')->unique()->values()->all();
+
         $pct = count($required) > 0
             ? (int) round((count($verifiedTypes) / count($required)) * 100)
             : 0;
 
         return [
-            'required'        => $required,
-            'required_count'  => count($required),
-            'uploaded_types'  => $uploadedTypes,
-            'uploaded_count'  => count($uploadedTypes),
-            'verified_types'  => $verifiedTypes,
-            'verified_count'  => count($verifiedTypes),
-            'missing_types'   => $missingTypes,
-            'missing_count'   => count($missingTypes),
-            'pct'             => $pct,
-            'using_default'   => $usingDefault,
-            'source'          => static::targetSource($user),
+            'required'                => $required,
+            'required_count'          => count($required),
+            'uploaded_types'          => $uploadedTypes,
+            'uploaded_count'          => count($uploadedTypes),
+            'verified_types'          => $verifiedTypes,
+            'verified_count'          => count($verifiedTypes),
+            'missing_types'           => $missingTypes,
+            'missing_count'           => count($missingTypes),
+            'pct'                     => $pct,
+            'using_default'           => $usingDefault,
+            'source'                  => static::targetSource($user),
+            'optional'                => $optional,
+            'optional_count'          => count($optional),
+            'optional_uploaded_types' => $optionalUploaded,
+            'optional_uploaded_count' => count($optionalUploaded),
         ];
     }
 }

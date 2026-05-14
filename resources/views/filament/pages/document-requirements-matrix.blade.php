@@ -12,11 +12,27 @@
             </div>
             <div>
                 <p class="text-sm text-gray-900 dark:text-gray-100 font-medium">
-                    {{ __('Tick a checkbox to mark a document as required for that visa.') }}
+                    {{ __('Click a cell to cycle its state.') }}
                 </p>
                 <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                    {{ __('Use the Select all / Clear shortcuts at the top of each column. Manage the document types themselves under Students → Document Types.') }}
+                    {{ __('Manage the document types themselves under Students → Document Types.') }}
                 </p>
+                {{-- Legend --}}
+                <div class="mt-3 flex flex-wrap items-center gap-3 text-xs">
+                    <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-semibold">
+                        <svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                        {{ __('Required') }}
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-sky-50 dark:bg-sky-500/10 text-sky-700 dark:text-sky-400 font-semibold">
+                        <svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20"><circle cx="10" cy="10" r="6"/></svg>
+                        {{ __('Optional') }}
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 font-semibold">
+                        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 20 20"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 14L14 6M6 6l8 8"/></svg>
+                        {{ __('Not needed') }}
+                    </span>
+                    <span class="text-gray-400 dark:text-gray-500">→ {{ __('cycle on click') }}</span>
+                </div>
             </div>
         </div>
     </div>
@@ -25,9 +41,6 @@
     <div class="rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10 overflow-hidden">
         @if ($types->isEmpty())
             <div class="p-12 text-center">
-                <div class="mx-auto h-12 w-12 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center mb-3">
-                    <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                </div>
                 <p class="text-sm text-gray-500">{{ __('No document types yet. Add some under Students → Document Types.') }}</p>
             </div>
         @else
@@ -40,13 +53,13 @@
                                 <p class="text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400">{{ __('Document type') }}</p>
                             </th>
                             @foreach ($visas as $visa)
-                                @php $count = count($matrix[$visa->slug] ?? []); @endphp
+                                @php $counts = $this->countsFor($visa->slug); @endphp
                                 <th style="padding: 16px 20px; min-width: 200px;" class="text-center border-l border-gray-200 dark:border-white/10">
                                     <p class="font-bold text-gray-950 dark:text-white text-base">{{ $visa->t('name') }}</p>
                                     <div class="mt-2 inline-flex items-center gap-1 text-[10px] uppercase tracking-wider rounded-md bg-gray-100 dark:bg-gray-800 px-2 py-1">
-                                        <button type="button" wire:click="selectAllForVisa('{{ $visa->slug }}')"
-                                                class="font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-700">
-                                            {{ __('All') }}
+                                        <button type="button" wire:click="setRequiredAllForVisa('{{ $visa->slug }}')"
+                                                class="font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700">
+                                            {{ __('All required') }}
                                         </button>
                                         <span class="text-gray-300 dark:text-gray-600 mx-0.5">·</span>
                                         <button type="button" wire:click="clearVisa('{{ $visa->slug }}')"
@@ -55,8 +68,10 @@
                                         </button>
                                     </div>
                                     <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
-                                        <span class="font-bold text-gray-950 dark:text-white">{{ $count }}</span>
-                                        / {{ $types->count() }} {{ __('selected') }}
+                                        <span class="font-bold text-emerald-600 dark:text-emerald-400">{{ $counts['required'] }}</span>
+                                        {{ __('required') }} ·
+                                        <span class="font-bold text-sky-600 dark:text-sky-400">{{ $counts['optional'] }}</span>
+                                        {{ __('optional') }}
                                     </p>
                                 </th>
                             @endforeach
@@ -77,15 +92,30 @@
                                     </div>
                                 </td>
                                 @foreach ($visas as $visa)
-                                    @php $checked = in_array($type->key, $matrix[$visa->slug] ?? [], true); @endphp
+                                    @php $state = $matrix[$visa->slug][$type->key] ?? null; @endphp
                                     <td style="padding: 14px 20px;" class="text-center border-l border-gray-200/60 dark:border-white/5">
-                                        <label class="inline-flex items-center justify-center cursor-pointer p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition">
-                                            <input type="checkbox"
-                                                   wire:click="toggle('{{ $visa->slug }}', '{{ $type->key }}')"
-                                                   {{ $checked ? 'checked' : '' }}
-                                                   style="height: 20px; width: 20px; cursor: pointer; accent-color: #b32510;"
-                                                   class="rounded border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-primary-500 focus:ring-offset-0">
-                                        </label>
+                                        <button type="button"
+                                                wire:click="cycle('{{ $visa->slug }}', '{{ $type->key }}')"
+                                                title="{{ $state === 'required' ? __('Required — click for Optional') : ($state === 'optional' ? __('Optional — click to remove') : __('Not needed — click for Required')) }}"
+                                                @class([
+                                                    'inline-flex items-center justify-center transition cursor-pointer',
+                                                    'rounded-lg font-semibold text-xs uppercase tracking-wider',
+                                                    'h-9 min-w-[88px] px-3 gap-1.5',
+                                                    'bg-emerald-100 text-emerald-800 hover:bg-emerald-200 ring-1 ring-emerald-200 dark:bg-emerald-500/20 dark:text-emerald-300 dark:ring-emerald-500/30 dark:hover:bg-emerald-500/30' => $state === 'required',
+                                                    'bg-sky-100 text-sky-800 hover:bg-sky-200 ring-1 ring-sky-200 dark:bg-sky-500/20 dark:text-sky-300 dark:ring-sky-500/30 dark:hover:bg-sky-500/30' => $state === 'optional',
+                                                    'bg-gray-50 text-gray-400 hover:bg-gray-100 ring-1 ring-gray-200 dark:bg-gray-800/40 dark:text-gray-600 dark:ring-white/5 dark:hover:bg-gray-700/40' => $state === null,
+                                                ])>
+                                            @if ($state === 'required')
+                                                <svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                                                {{ __('Required') }}
+                                            @elseif ($state === 'optional')
+                                                <svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20"><circle cx="10" cy="10" r="6"/></svg>
+                                                {{ __('Optional') }}
+                                            @else
+                                                <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 20 20"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 14L14 6M6 6l8 8"/></svg>
+                                                {{ __('—') }}
+                                            @endif
+                                        </button>
                                     </td>
                                 @endforeach
                             </tr>
@@ -96,10 +126,10 @@
         @endif
     </div>
 
-    {{-- Action buttons (with proper spacing) --}}
+    {{-- Action buttons --}}
     <div class="mt-6 flex items-center justify-between gap-3 flex-wrap">
         <p class="text-xs text-gray-500 dark:text-gray-400">
-            {{ __('Changes affect new uploads and the student progress widget.') }}
+            {{ __('Required documents count toward student progress %. Optional documents are accepted but do not block.') }}
         </p>
         <div class="flex items-center gap-3">
             <x-filament::button color="gray" wire:click="loadMatrix" type="button" icon="heroicon-o-arrow-path">

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['slug', 'name', 'description', 'color', 'sort_order', 'required_documents'])]
+#[Fillable(['slug', 'name', 'description', 'color', 'sort_order', 'required_documents', 'optional_documents'])]
 class VisaCategory extends Model
 {
     use HasJsonTranslations;
@@ -20,6 +20,7 @@ class VisaCategory extends Model
             'name'               => 'array',
             'description'        => 'array',
             'required_documents' => 'array',
+            'optional_documents' => 'array',
         ];
     }
 
@@ -29,10 +30,20 @@ class VisaCategory extends Model
     }
 
     /**
-     * Required document type keys (subset of StudentDocument::TYPES).
+     * Required document type keys (subset of DocumentType keys).
+     * Required = student MUST upload, counts in progress %.
      */
     public function requiredDocumentTypes(): array
     {
         return array_values(array_filter((array) ($this->required_documents ?? [])));
+    }
+
+    /**
+     * Optional document type keys.
+     * Optional = student MAY upload, accepted but does not affect progress %.
+     */
+    public function optionalDocumentTypes(): array
+    {
+        return array_values(array_filter((array) ($this->optional_documents ?? [])));
     }
 }

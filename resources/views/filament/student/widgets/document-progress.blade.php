@@ -30,7 +30,7 @@
 
                 @if ($progress['missing_count'] > 0)
                     <div class="mt-4 flex flex-wrap gap-1.5">
-                        <span class="text-xs text-gray-500 dark:text-gray-400 mr-1 self-center">{{ __('Still missing:') }}</span>
+                        <span class="text-xs text-gray-500 dark:text-gray-400 mr-1 self-center font-semibold uppercase tracking-wider">{{ __('Still missing:') }}</span>
                         @foreach($progress['missing_types'] as $type)
                             <span class="text-xs px-2 py-1 rounded-md bg-rose-50 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400 font-medium">
                                 {{ \App\Models\DocumentType::labelFor($type) }}
@@ -41,6 +41,33 @@
                     <div class="mt-4 inline-flex items-center gap-2 rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-3 py-1.5 text-xs font-medium text-emerald-700 dark:text-emerald-400">
                         <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
                         {{ __('All required documents are verified!') }}
+                    </div>
+                @endif
+
+                {{-- Optional documents (not blocking, but encouraged) --}}
+                @if (! empty($progress['optional']))
+                    <div class="mt-5 pt-4 border-t border-gray-200 dark:border-white/5">
+                        <p class="text-xs uppercase tracking-wider font-semibold text-sky-700 dark:text-sky-400 mb-2">
+                            {{ __('Optional documents') }}
+                            <span class="text-gray-500 dark:text-gray-400 font-normal normal-case">
+                                — {{ __('strengthen your application but not required') }}
+                            </span>
+                        </p>
+                        <div class="flex flex-wrap gap-1.5">
+                            @foreach ($progress['optional'] as $type)
+                                @php $uploaded = in_array($type, $progress['optional_uploaded_types']); @endphp
+                                <span @class([
+                                    'text-xs px-2 py-1 rounded-md font-medium inline-flex items-center gap-1',
+                                    'bg-sky-50 text-sky-700 dark:bg-sky-500/10 dark:text-sky-400' => $uploaded,
+                                    'bg-gray-50 text-gray-500 dark:bg-gray-800 dark:text-gray-400' => ! $uploaded,
+                                ])>
+                                    @if ($uploaded)
+                                        <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                                    @endif
+                                    {{ \App\Models\DocumentType::labelFor($type) }}
+                                </span>
+                            @endforeach
+                        </div>
                     </div>
                 @endif
             </div>
