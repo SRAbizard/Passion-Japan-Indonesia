@@ -518,10 +518,10 @@ document.addEventListener('DOMContentLoaded', function () {
 @endpush
 
 {{-- ========== CTA ========== --}}
-{{-- Last section: opt out of scroll-snap so the footer is reachable when
-     user scrolls past it. Also drop min-h-screen so it sits with the
-     footer in one final view instead of forcing another snap stop. --}}
-<section class="reveal py-20 snap-skip">
+{{-- Last section stays a snap target so `mandatory` snap can find it,
+     but it's deliberately short (no min-h-screen) so when the user
+     snaps to it they see the CTA card AND the footer in one view. --}}
+<section class="reveal py-20">
     <div class="mx-auto max-w-5xl px-6">
         <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-700 via-brand-800 to-surface-900 p-10 lg:p-14">
             <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.08),transparent_40%)]"></div>

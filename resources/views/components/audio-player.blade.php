@@ -61,12 +61,43 @@
             var saved = null;
             try { saved = localStorage.getItem('pj-audio-muted'); } catch (e) {}
 
+            // Resume position across navigation (sessionStorage, expires after 60s)
+            var resumeAt = 0;
+            try {
+                var rawTime  = sessionStorage.getItem('pj-audio-time');
+                var rawSaved = sessionStorage.getItem('pj-audio-time-at');
+                if (rawTime && rawSaved) {
+                    var age = (Date.now() - parseInt(rawSaved, 10)) / 1000;
+                    if (age < 60) resumeAt = parseFloat(rawTime) || 0;
+                }
+            } catch (e) {}
+            var seekToResume = function () {
+                if (resumeAt > 0 && resumeAt < (audio.duration || Infinity)) {
+                    try { audio.currentTime = resumeAt; } catch (e) {}
+                }
+            };
+            if (audio.readyState >= 1) seekToResume();
+            else audio.addEventListener('loadedmetadata', seekToResume, { once: true });
+
             audio.muted = saved === '1';
             audio.play().catch(function () {
                 audio.muted = true;
                 audio.play().catch(function () {});
                 if (saved !== '1') showHint();
             }).finally(updateUI);
+
+            // Save current position so the next page picks up where this left off
+            var savePos = function () {
+                if (audio.currentTime > 0 && ! audio.paused) {
+                    try {
+                        sessionStorage.setItem('pj-audio-time',    String(audio.currentTime));
+                        sessionStorage.setItem('pj-audio-time-at', String(Date.now()));
+                    } catch (e) {}
+                }
+            };
+            setInterval(savePos, 2000);
+            window.addEventListener('pagehide',     savePos);
+            window.addEventListener('beforeunload', savePos);
 
             var unmuteOnce = function () {
                 if (saved !== '1' && audio.muted) {
