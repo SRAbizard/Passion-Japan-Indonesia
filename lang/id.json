@@ -719,6 +719,17 @@
     "Used for Google Maps search if Maps URL is empty.": "Dipakai untuk pencarian Google Maps jika URL Maps kosong.",
     "Google Maps URL (optional)": "URL Google Maps (opsional)",
     "Leave blank to auto-generate from address.": "Kosongkan untuk auto-generate dari alamat.",
-    "Add office": "Tambah Kantor"
+    "Add office": "Tambah Kantor",
+
+    "Job detail document": "Dokumen Detail Pekerjaan",
+    "Upload the full job-spec PDF (or DOC/image). Candidates can download it from the public job-detail page.": "Unggah PDF spesifikasi lengkap pekerjaan (atau DOC/gambar). Kandidat bisa mengunduhnya dari halaman detail pekerjaan publik.",
+    "Job detail file": "File Detail Pekerjaan",
+    "Job Detail (Full Version)": "Detail Pekerjaan (Versi Lengkap)",
+    "Complete spec — PDF / DOC / image": "Spesifikasi lengkap — PDF / DOC / gambar",
+
+    "Company": "Perusahaan",
+    "Company Profile": "Profil Perusahaan",
+    "Upload the company profile document. Visitors can download it from the About page.": "Unggah dokumen profil perusahaan. Pengunjung dapat mengunduhnya dari halaman Tentang Kami.",
+    "Company Profile file (PDF / DOC / image)": "File Profil Perusahaan (PDF / DOC / gambar)"
 }
 

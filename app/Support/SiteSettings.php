@@ -69,4 +69,14 @@ class SiteSettings
     {
         return 'https://www.google.com/maps/search/?api=1&query='.urlencode($address);
     }
+
+    /**
+     * Public URL for the uploaded Company Profile document, or null if
+     * none has been uploaded yet.
+     */
+    public static function companyProfileUrl(): ?string
+    {
+        $path = Setting::get('company.profile_pdf_path');
+        return $path ? asset('storage/'.$path) : null;
+    }
 }

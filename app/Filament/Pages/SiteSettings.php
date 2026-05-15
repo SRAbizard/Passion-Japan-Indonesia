@@ -5,6 +5,7 @@ namespace App\Filament\Pages;
 use App\Models\Setting;
 use BackedEnum;
 use Filament\Actions\Action;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
@@ -48,6 +49,9 @@ class SiteSettings extends Page
         $offices = Setting::get('contact.offices', config('passion.contact.offices', []));
         $data['contact__offices'] = is_array($offices) ? $offices : [];
 
+        // Company profile PDF path
+        $data['company__profile_pdf_path'] = Setting::get('company.profile_pdf_path');
+
         $this->form->fill($data);
     }
 
@@ -85,6 +89,19 @@ class SiteSettings extends Page
                         TextInput::make('stats__workers')->label(__('Workers')),
                         TextInput::make('stats__companies')->label(__('Partner Companies')),
                     ]),
+                ]),
+                Tab::make(__('Company'))->icon('heroicon-o-building-office-2')->schema([
+                    Section::make(__('Company Profile'))
+                        ->description(__('Upload the company profile document. Visitors can download it from the About page.'))
+                        ->components([
+                            FileUpload::make('company__profile_pdf_path')
+                                ->label(__('Company Profile file (PDF / DOC / image)'))
+                                ->disk('public')
+                                ->directory('company')
+                                ->acceptedFileTypes(['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/png'])
+                                ->maxSize(10240)
+                                ->columnSpanFull(),
+                        ]),
                 ]),
                 Tab::make(__('Offices'))->icon('heroicon-o-map-pin')->schema([
                     Section::make()
@@ -148,6 +165,9 @@ class SiteSettings extends Page
             ->values()
             ->all();
         Setting::set('contact.offices', $offices, 'contact');
+
+        // Company profile single-file upload
+        Setting::set('company.profile_pdf_path', $state['company__profile_pdf_path'] ?? null, 'company');
 
         Notification::make()
             ->title(__('Settings saved'))

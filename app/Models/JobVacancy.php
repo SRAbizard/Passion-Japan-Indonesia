@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Fillable([
     'slug', 'company_id', 'job_category_id', 'visa_category_id',
-    'title', 'description', 'requirements', 'benefits',
+    'title', 'description', 'requirements', 'benefits', 'detail_pdf_path',
     'location_city', 'location_prefecture',
     'salary_min', 'salary_max', 'salary_currency', 'salary_period',
     'employment_type', 'positions',
@@ -67,5 +67,10 @@ class JobVacancy extends Model
     public function getLocationDisplayAttribute(): string
     {
         return collect([$this->location_city, $this->location_prefecture])->filter()->join(', ') ?: '—';
+    }
+
+    public function getDetailPdfUrlAttribute(): ?string
+    {
+        return $this->detail_pdf_path ? asset('storage/'.$this->detail_pdf_path) : null;
     }
 }

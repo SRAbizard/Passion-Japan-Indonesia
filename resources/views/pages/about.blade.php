@@ -33,6 +33,20 @@
         <p class="mt-6 max-w-2xl text-lg text-surface-300 leading-relaxed">
             {{ __('Passion Japan Indonesia is a career-and-education platform that prepares Indonesian workers and students for life and work in Japan — from language and culture training, to job placement and post-arrival support.') }}
         </p>
+
+        @php $companyProfileUrl = \App\Support\SiteSettings::companyProfileUrl(); @endphp
+        @if($companyProfileUrl)
+            <a href="{{ $companyProfileUrl }}" target="_blank" rel="noopener noreferrer" download
+               class="mt-8 inline-flex items-center gap-3 px-5 py-3 rounded-xl bg-brand-600 text-white font-semibold hover:bg-brand-700 hover:shadow-lg hover:shadow-brand-500/40 transition group">
+                <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-white/15 group-hover:scale-110 transition">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                </span>
+                <span>
+                    <span class="block text-[10px] uppercase tracking-wider opacity-80">{{ __('Download') }}</span>
+                    <span class="block">{{ __('Company Profile') }}</span>
+                </span>
+            </a>
+        @endif
     </div>
 </section>
 

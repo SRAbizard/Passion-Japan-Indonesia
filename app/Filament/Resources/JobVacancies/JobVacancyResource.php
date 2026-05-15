@@ -11,6 +11,7 @@ use App\Models\VisaCategory;
 use BackedEnum;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -79,6 +80,17 @@ class JobVacancyResource extends Resource
             TranslatableTabs::for('description', RichEditor::class, label: __('Description'), required: true),
             TranslatableTabs::for('requirements', RichEditor::class, label: __('Requirements')),
             TranslatableTabs::for('benefits', RichEditor::class, label: __('Benefits')),
+            Section::make(__('Job detail document'))
+                ->description(__('Upload the full job-spec PDF (or DOC/image). Candidates can download it from the public job-detail page.'))
+                ->components([
+                    FileUpload::make('detail_pdf_path')
+                        ->label(__('Job detail file'))
+                        ->disk('public')
+                        ->directory('jobs/details')
+                        ->acceptedFileTypes(['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/png'])
+                        ->maxSize(10240) // 10MB
+                        ->columnSpanFull(),
+                ]),
             Section::make(__('Location'))->columns(2)->components([
                 TextInput::make('location_city')->label(__('City'))->maxLength(80),
                 TextInput::make('location_prefecture')->label(__('Prefecture'))->maxLength(80),
