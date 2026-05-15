@@ -37,6 +37,24 @@ class CourseResource extends Resource
     public static function getNavigationGroup(): ?string { return __('Learning'); }
     public static function getModelLabel(): string { return __('Course'); }
 
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['slug', 'title->id', 'title->en', 'title->ja'];
+    }
+
+    public static function getGlobalSearchResultTitle($record): string
+    {
+        return $record->t('title');
+    }
+
+    public static function getGlobalSearchResultDetails($record): array
+    {
+        return [
+            __('Level')    => __('level.'.$record->level),
+            __('Category') => $record->category?->t('name') ?? '—',
+        ];
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema->components([

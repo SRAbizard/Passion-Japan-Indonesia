@@ -35,6 +35,24 @@ class ApplicationResource extends Resource
 
     public static function canCreate(): bool { return false; }
 
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['user.name', 'user.email', 'vacancy.title->id', 'vacancy.title->en'];
+    }
+
+    public static function getGlobalSearchResultTitle($record): string
+    {
+        return ($record->user?->name ?? '—').' → '.($record->vacancy?->t('title') ?? '—');
+    }
+
+    public static function getGlobalSearchResultDetails($record): array
+    {
+        return [
+            __('Status')  => __('application.status.'.$record->status),
+            __('Company') => $record->vacancy?->company?->name ?? '—',
+        ];
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema->components([

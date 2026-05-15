@@ -30,6 +30,16 @@ class VisaCategoryResource extends Resource
     public static function getNavigationLabel(): string { return __('Visa Categories'); }
     public static function getNavigationGroup(): ?string { return __('Recruitment'); }
 
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['slug', 'name->id', 'name->en', 'name->ja'];
+    }
+
+    public static function getGlobalSearchResultTitle($record): string
+    {
+        return $record->t('name');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema->components([

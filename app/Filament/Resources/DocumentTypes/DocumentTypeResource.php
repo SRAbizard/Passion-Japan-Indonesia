@@ -31,6 +31,24 @@ class DocumentTypeResource extends Resource
     public static function getModelLabel(): string      { return __('Document Type'); }
     public static function getPluralModelLabel(): string { return __('Document Types'); }
 
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['key', 'label->id', 'label->en', 'label->ja'];
+    }
+
+    public static function getGlobalSearchResultTitle($record): string
+    {
+        return $record->t('label');
+    }
+
+    public static function getGlobalSearchResultDetails($record): array
+    {
+        return [
+            __('Key')    => $record->key,
+            __('Active') => $record->is_active ? __('Yes') : __('No'),
+        ];
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema->components([

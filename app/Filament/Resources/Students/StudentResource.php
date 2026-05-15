@@ -29,6 +29,26 @@ class StudentResource extends Resource
 
     public static function canCreate(): bool { return false; }
 
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name', 'email', 'phone'];
+    }
+
+    public static function getGlobalSearchResultDetails($record): array
+    {
+        return [
+            __('Email')  => $record->email,
+            __('Status') => $record->studentProfile?->visa_target_status
+                ? __('visa.target.status.'.$record->studentProfile->visa_target_status)
+                : __('Not selected'),
+        ];
+    }
+
+    public static function getGlobalSearchResultUrl($record): string
+    {
+        return Pages\ViewStudent::getUrl(['record' => $record->getKey()]);
+    }
+
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()

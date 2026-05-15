@@ -31,6 +31,19 @@ class CompanyResource extends Resource
     public static function getNavigationGroup(): ?string { return __('Recruitment'); }
     public static function getModelLabel(): string { return __('Company'); }
 
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name', 'slug', 'industry', 'city', 'country'];
+    }
+
+    public static function getGlobalSearchResultDetails($record): array
+    {
+        return [
+            __('Industry') => $record->industry ?? '—',
+            __('Location') => trim(($record->city ?? '').', '.($record->country ?? ''), ', '),
+        ];
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema->components([

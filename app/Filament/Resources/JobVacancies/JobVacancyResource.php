@@ -36,6 +36,24 @@ class JobVacancyResource extends Resource
     public static function getNavigationGroup(): ?string { return __('Recruitment'); }
     public static function getModelLabel(): string { return __('Job Vacancy'); }
 
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['slug', 'title->id', 'title->en', 'title->ja', 'location_city', 'location_prefecture'];
+    }
+
+    public static function getGlobalSearchResultTitle($record): string
+    {
+        return $record->t('title');
+    }
+
+    public static function getGlobalSearchResultDetails($record): array
+    {
+        return [
+            __('Company') => $record->company?->name ?? '—',
+            __('Visa')    => $record->visaCategory?->t('name') ?? '—',
+        ];
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
