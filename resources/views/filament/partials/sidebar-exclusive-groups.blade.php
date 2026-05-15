@@ -1,30 +1,40 @@
 <script data-navigate-once>
 /**
  * Exclusive sidebar navigation groups — only one expanded at a time.
- * When the user opens a group, any other open group is collapsed.
- * Implemented as an event delegate so it survives Livewire/Alpine re-renders.
+ *
+ * Filament v5 stores expand/collapse state in the Alpine store
+ * `$store.sidebar` (collapsedGroups + groupIsCollapsed/toggleCollapsedGroup).
+ * Each <li class="fi-sidebar-group"> carries its label in
+ * `data-group-label`. When the user opens a group, we walk every other
+ * group and toggle it closed via the same store API Filament uses, so
+ * the persisted state stays consistent.
  */
 (function () {
     if (window.__passionExclusiveNav) return;
     window.__passionExclusiveNav = true;
 
-    const SELECTORS = [
-        '.fi-sidebar-group-button',
-        '[data-fi-sidebar-group-button]',
-        '.fi-sidebar-group-collapse-button',
-    ].join(', ');
+    const TRIGGER_SELECTOR = '.fi-sidebar-group-btn, .fi-sidebar-group-collapse-btn';
 
     document.addEventListener('click', function (e) {
-        const btn = e.target.closest(SELECTORS);
-        if (!btn) return;
+        const trigger = e.target.closest(TRIGGER_SELECTOR);
+        if (!trigger) return;
 
-        // Defer until after Filament/Alpine has finished toggling this group.
+        const clickedGroup = trigger.closest('.fi-sidebar-group[data-group-label]');
+        if (!clickedGroup) return;
+        const clickedLabel = clickedGroup.dataset.groupLabel;
+
+        // Defer one frame so Filament's own toggle runs first.
         requestAnimationFrame(() => {
-            const allBtns = document.querySelectorAll(SELECTORS);
-            allBtns.forEach(other => {
-                if (other === btn) return;
-                if (other.getAttribute('aria-expanded') === 'true') {
-                    other.click();
+            const store = window.Alpine?.store?.('sidebar');
+            if (!store || typeof store.groupIsCollapsed !== 'function') return;
+
+            document.querySelectorAll('.fi-sidebar-group[data-group-label]').forEach(group => {
+                const label = group.dataset.groupLabel;
+                if (! label || label === clickedLabel) return;
+
+                // If this other group is currently expanded, collapse it.
+                if (! store.groupIsCollapsed(label)) {
+                    store.toggleCollapsedGroup(label);
                 }
             });
         });
