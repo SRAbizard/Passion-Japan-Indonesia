@@ -11,7 +11,12 @@ class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        //
+        // Route post-login redirects by role so /admin/login and
+        // /dashboard/login behave identically for both admins and students.
+        $this->app->bind(
+            \Filament\Auth\Http\Responses\Contracts\LoginResponse::class,
+            \App\Filament\Auth\RoleAwareLoginResponse::class,
+        );
     }
 
     public function boot(): void
