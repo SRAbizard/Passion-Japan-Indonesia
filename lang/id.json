@@ -698,6 +698,10 @@
     "Optional — click to remove": "Opsional — klik untuk hapus",
     "Not needed — click for Required": "Tidak perlu — klik untuk Wajib",
     "—": "—",
-    "strengthen your application but not required": "memperkuat aplikasi tapi tidak wajib"
+    "strengthen your application but not required": "memperkuat aplikasi tapi tidak wajib",
+
+    "Showing only documents required or optional for your confirmed visa target.": "Hanya menampilkan dokumen yang wajib atau opsional untuk target visa Anda yang sudah dikonfirmasi.",
+    "Showing documents inferred from your job applications.": "Menampilkan dokumen berdasarkan lamaran kerja Anda.",
+    "Showing the default document set. Confirm a visa target for a tailored list.": "Menampilkan set dokumen default. Konfirmasi target visa untuk daftar yang sesuai."
 }
 

@@ -40,7 +40,15 @@ class StudentPanelProvider extends PanelProvider
             ])
             ->defaultThemeMode(ThemeMode::Dark)
             ->sidebarCollapsibleOnDesktop()
-            ->userMenuItems(AdminPanelProvider::buildLocaleMenuItems())
+            ->userMenuItems(array_merge(
+                [
+                    \Filament\Navigation\MenuItem::make()
+                        ->label(__('Back to website'))
+                        ->url(fn () => url('/'))
+                        ->icon('heroicon-o-globe-alt'),
+                ],
+                AdminPanelProvider::buildLocaleMenuItems()
+            ))
             ->login()
             ->registration()
             ->passwordReset()

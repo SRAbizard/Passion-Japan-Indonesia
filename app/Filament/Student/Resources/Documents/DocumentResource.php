@@ -5,6 +5,7 @@ namespace App\Filament\Student\Resources\Documents;
 use App\Filament\Student\Resources\Documents\Pages;
 use App\Models\DocumentType;
 use App\Models\StudentDocument;
+use App\Support\StudentDocumentProgress;
 use BackedEnum;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
@@ -33,7 +34,30 @@ class DocumentResource extends Resource
         return $schema->components([
             Section::make()->columns(2)->components([
                 Select::make('type')->label(__('Document type'))
-                    ->options(fn () => DocumentType::options())
+                    ->options(function () {
+                        // Only show document types that are required or optional
+                        // for THIS student's visa target — anything else is noise.
+                        $progress = StudentDocumentProgress::for(auth()->user());
+                        $allowed  = array_unique(array_merge($progress['required'], $progress['optional']));
+
+                        if (empty($allowed)) return [];
+
+                        return DocumentType::query()
+                            ->whereIn('key', $allowed)
+                            ->active()
+                            ->ordered()
+                            ->get()
+                            ->mapWithKeys(fn ($t) => [$t->key => $t->t('label')])
+                            ->all();
+                    })
+                    ->helperText(function () {
+                        $source = StudentDocumentProgress::targetSource(auth()->user());
+                        return match ($source) {
+                            'confirmed'    => __('Showing only documents required or optional for your confirmed visa target.'),
+                            'applications' => __('Showing documents inferred from your job applications.'),
+                            default        => __('Showing the default document set. Confirm a visa target for a tailored list.'),
+                        };
+                    })
                     ->required()->native(false)->searchable(),
                 TextInput::make('label')->label(__('Custom label'))->maxLength(160)
                     ->placeholder(__('Optional label or note')),

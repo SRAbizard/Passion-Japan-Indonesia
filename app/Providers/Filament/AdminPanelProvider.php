@@ -43,7 +43,16 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->defaultThemeMode(ThemeMode::Dark)
             ->sidebarCollapsibleOnDesktop()
-            ->userMenuItems(self::buildLocaleMenuItems())
+            ->userMenuItems(array_merge(
+                [
+                    MenuItem::make()
+                        ->label(__('Back to website'))
+                        ->url(fn () => url('/'))
+                        ->icon('heroicon-o-globe-alt')
+                        ->openUrlInNewTab(false),
+                ],
+                self::buildLocaleMenuItems()
+            ))
             ->databaseNotifications()
             ->databaseNotificationsPolling('60s')
             ->viteTheme('resources/css/filament/passion-theme.css')
