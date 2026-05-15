@@ -16,7 +16,6 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 use UnitEnum;
 
@@ -122,23 +121,9 @@ class WorkflowStepResource extends Resource
                     ->formatStateUsing(fn ($state, $record) => $record->visa?->t('name') ?? '—')
                     ->badge()
                     ->color('info')
-                    ->toggleable(),
+                    ->sortable(),
             ])
-            ->defaultGroup('visa')
-            ->groups([
-                Group::make('visa')
-                    ->label(__('Visa'))
-                    // Group by visa slug (a plain string column) — visa.name is JSON
-                    // so letting Filament auto-stringify it would crash with
-                    // "Array to string conversion".
-                    ->getKeyFromRecordUsing(fn ($record) => $record->visa?->slug ?? 'unknown')
-                    ->getTitleFromRecordUsing(fn ($record) => $record->visa?->t('name') ?? '—')
-                    ->orderQueryUsing(fn ($q, $direction) => $q->join('visa_categories', 'visa_categories.id', '=', 'visa_workflow_steps.visa_category_id')
-                        ->orderBy('visa_categories.sort_order', $direction)
-                        ->select('visa_workflow_steps.*'))
-                    ->collapsible(),
-            ])
-            ->defaultSort('sort_order')
+            ->defaultSort('visa_category_id')
             ->reorderable('sort_order')
             ->filters([
                 SelectFilter::make('visa_category_id')
