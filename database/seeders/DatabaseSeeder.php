@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
             CmsSeeder::class,
             DocumentTypeSeeder::class,
             RecruitmentSeeder::class,
+            VisaWorkflowSeeder::class,
             LmsSeeder::class,
         ]);
     }

@@ -308,10 +308,56 @@ final class HomepageDemoData
 
     /**
      * Per-visa workflow slides for the homepage Process section.
-     * Each step: { n, title (id/en/ja), badge?: { label (id/en/ja), color } }
-     * Each visa: { slug, name (id/en/ja), tagline (id/en/ja), steps[], notes[] }
+     *
+     * Reads from the visa_workflow_steps table (admin-editable). Falls
+     * back to the hardcoded defaults when the DB is empty or the table
+     * doesn't exist yet (e.g. during initial install).
      */
     public static function visaWorkflows(): array
+    {
+        try {
+            $visas = \App\Models\VisaCategory::query()
+                ->orderBy('sort_order')
+                ->with(['workflowSteps' => fn ($q) => $q->orderBy('sort_order')])
+                ->whereHas('workflowSteps')
+                ->get();
+
+            if ($visas->isNotEmpty()) {
+                return $visas->map(function ($v) {
+                    return [
+                        'slug'    => $v->slug,
+                        'name'    => $v->getTranslations('name'),
+                        'tagline' => $v->getTranslations('description') ?: ['id' => '', 'en' => '', 'ja' => ''],
+                        'steps'   => $v->workflowSteps->map(function ($s, $i) {
+                            $step = [
+                                'n'        => $i + 1,
+                                'title'    => $s->getTranslations('title'),
+                                'icon'     => $s->icon ?: null,
+                                'icon_url' => $s->icon_url,
+                            ];
+                            if ($s->badge_color && $s->badge_label) {
+                                $step['badge'] = [
+                                    'color' => $s->badge_color,
+                                    'label' => $s->getTranslations('badge_label'),
+                                ];
+                            }
+                            return $step;
+                        })->all(),
+                        'notes'   => [],
+                    ];
+                })->all();
+            }
+        } catch (\Throwable) {
+            // Table missing during fresh install — fall through to defaults
+        }
+
+        return static::visaWorkflowsDefaults();
+    }
+
+    /**
+     * Hardcoded fallback used when the DB is empty.
+     */
+    private static function visaWorkflowsDefaults(): array
     {
         // Common building blocks reused across visas
         $preScreen = ['Pre-Screening Document', 'Pre-Screening Document', '事前書類審査'];

@@ -402,13 +402,27 @@
 
                     <p class="text-center text-surface-400 text-sm max-w-xl mx-auto mb-8">{{ Demo::pick($vw['tagline']) }}</p>
 
-                    <div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                    <div class="grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                         @foreach($vw['steps'] as $step)
-                            <div class="relative glass-card p-5 hover:border-brand-500/40 transition group">
+                            <div class="relative glass-card p-5 pt-8 hover:border-brand-500/40 transition group flex flex-col items-center text-center">
+                                {{-- Step number badge top-left --}}
                                 <div class="absolute -top-3 -left-3 h-9 w-9 rounded-xl bg-brand-600 flex items-center justify-center font-display font-bold text-white text-sm shadow-lg shadow-brand-600/40 group-hover:scale-110 transition">
                                     {{ $step['n'] }}
                                 </div>
-                                <h3 class="mt-2 font-semibold text-white text-sm leading-snug">{{ Demo::pick($step['title']) }}</h3>
+
+                                {{-- Illustration: uploaded image > heroicon > generic placeholder --}}
+                                <div class="h-20 w-20 rounded-full overflow-hidden bg-gradient-to-br from-brand-600/20 to-surface-700/40 ring-2 ring-brand-500/20 flex items-center justify-center mb-4 group-hover:ring-brand-500/50 transition">
+                                    @if(! empty($step['icon_url']))
+                                        <img src="{{ $step['icon_url'] }}" alt="" class="h-full w-full object-cover">
+                                    @elseif(! empty($step['icon']))
+                                        @svg($step['icon'], 'h-10 w-10 text-brand-400')
+                                    @else
+                                        <svg class="h-10 w-10 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke-width="2"/></svg>
+                                    @endif
+                                </div>
+
+                                <h3 class="font-semibold text-white text-sm leading-snug min-h-[2.5rem]">{{ Demo::pick($step['title']) }}</h3>
+
                                 @if(! empty($step['badge']))
                                     @php $c = $badgeColors[$step['badge']['color']] ?? $badgeColors['brand']; @endphp
                                     <span class="mt-3 inline-block text-[10px] uppercase tracking-wider font-bold px-2 py-1 rounded-md border {{ $c['bg'] }} {{ $c['text'] }} {{ $c['border'] }}">

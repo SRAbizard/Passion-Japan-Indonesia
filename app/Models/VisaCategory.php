@@ -29,6 +29,11 @@ class VisaCategory extends Model
         return $this->hasMany(JobVacancy::class);
     }
 
+    public function workflowSteps(): HasMany
+    {
+        return $this->hasMany(VisaWorkflowStep::class)->orderBy('sort_order');
+    }
+
     /**
      * Required document type keys (subset of DocumentType keys).
      * Required = student MUST upload, counts in progress %.
