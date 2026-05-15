@@ -14,7 +14,7 @@
     // Benefits/Programs/Workflow still come from Demo until later phases.
     $benefits = Demo::benefits();
     $programs = Demo::programs();
-    $workflow = Demo::workflow();
+    $visaWorkflows = Demo::visaWorkflows();
 
     $dbCourses = Course::published()->withCount('chapters')->orderByDesc('is_featured')->orderByDesc('published_at')->limit(4)->get();
     $courses   = $dbCourses->isNotEmpty() ? $dbCourses : Demo::courses();
@@ -358,30 +358,121 @@
     </div>
 </section>
 
-{{-- ========== ALUR KERJA ========== --}}
-<section class="py-20 bg-surface-900/40">
+{{-- ========== ALUR KERJA — per-visa slides ========== --}}
+@php
+    $badgeColors = [
+        'brand'   => ['bg' => 'bg-brand-600/15', 'text' => 'text-brand-300', 'border' => 'border-brand-500/30'],
+        'warning' => ['bg' => 'bg-amber-500/15', 'text' => 'text-amber-300', 'border' => 'border-amber-500/30'],
+        'info'    => ['bg' => 'bg-sky-500/15',   'text' => 'text-sky-300',   'border' => 'border-sky-500/30'],
+        'success' => ['bg' => 'bg-emerald-500/15','text'=> 'text-emerald-300','border'=> 'border-emerald-500/30'],
+    ];
+@endphp
+<section id="workflow" class="py-20 bg-surface-900/40">
     <div class="mx-auto max-w-7xl px-6">
         <div class="text-center max-w-2xl mx-auto">
             <p class="text-xs uppercase tracking-wider text-brand-400 font-semibold">{{ __('Process') }}</p>
             <h2 class="mt-2 font-display text-3xl sm:text-4xl font-bold text-white">
-                <span class="text-brand-500">{{ __('Workflow') }}</span>
+                {{ __('Alur Bekerja') }} <span class="text-brand-500">{{ __('Ke Jepang') }}</span>
             </h2>
-            <p class="mt-3 text-surface-400">{{ __('Ten clear steps from consultation to arrival in Japan.') }}</p>
+            <p class="mt-3 text-surface-400">{{ __('Pilih jalur visa untuk melihat alur lengkapnya.') }}</p>
         </div>
 
-        <div class="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-            @foreach($workflow as $step)
-                <div class="relative glass-card p-5 hover:border-brand-500/40 transition">
-                    <div class="absolute -top-3 -left-3 h-9 w-9 rounded-xl bg-brand-600 flex items-center justify-center font-display font-bold text-white text-sm shadow-lg shadow-brand-600/40">
-                        {{ $step['step'] }}
+        {{-- Tab nav --}}
+        <div class="mt-10 flex flex-wrap items-center justify-center gap-2" role="tablist" aria-label="{{ __('Visa workflow tabs') }}">
+            @foreach($visaWorkflows as $i => $vw)
+                <button type="button"
+                        data-workflow-tab="{{ $vw['slug'] }}"
+                        class="workflow-tab-btn px-5 py-2.5 rounded-xl border text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-brand-500/40
+                            {{ $i === 0
+                                ? 'bg-brand-600 border-brand-600 text-white shadow-lg shadow-brand-600/30'
+                                : 'border-surface-700 text-surface-300 hover:border-brand-500/50 hover:text-white' }}"
+                        role="tab"
+                        aria-selected="{{ $i === 0 ? 'true' : 'false' }}">
+                    {{ Demo::pick($vw['name']) }}
+                </button>
+            @endforeach
+        </div>
+
+        {{-- Slides --}}
+        <div class="mt-10">
+            @foreach($visaWorkflows as $i => $vw)
+                <div data-workflow-panel="{{ $vw['slug'] }}"
+                     role="tabpanel"
+                     class="workflow-panel {{ $i === 0 ? '' : 'hidden' }}">
+
+                    <p class="text-center text-surface-400 text-sm max-w-xl mx-auto mb-8">{{ Demo::pick($vw['tagline']) }}</p>
+
+                    <div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                        @foreach($vw['steps'] as $step)
+                            <div class="relative glass-card p-5 hover:border-brand-500/40 transition group">
+                                <div class="absolute -top-3 -left-3 h-9 w-9 rounded-xl bg-brand-600 flex items-center justify-center font-display font-bold text-white text-sm shadow-lg shadow-brand-600/40 group-hover:scale-110 transition">
+                                    {{ $step['n'] }}
+                                </div>
+                                <h3 class="mt-2 font-semibold text-white text-sm leading-snug">{{ Demo::pick($step['title']) }}</h3>
+                                @if(! empty($step['badge']))
+                                    @php $c = $badgeColors[$step['badge']['color']] ?? $badgeColors['brand']; @endphp
+                                    <span class="mt-3 inline-block text-[10px] uppercase tracking-wider font-bold px-2 py-1 rounded-md border {{ $c['bg'] }} {{ $c['text'] }} {{ $c['border'] }}">
+                                        {{ Demo::pick($step['badge']['label']) }}
+                                    </span>
+                                @endif
+                            </div>
+                        @endforeach
                     </div>
-                    <h3 class="mt-2 font-semibold text-white text-sm leading-snug">{{ Demo::pick($step['title']) }}</h3>
-                    <p class="mt-2 text-xs text-surface-400 leading-relaxed">{{ Demo::pick($step['desc']) }}</p>
+
+                    @if(! empty($vw['notes']))
+                        <div class="mt-8 max-w-3xl mx-auto glass-card p-5 border-amber-500/30 bg-amber-500/[0.04]">
+                            <p class="text-xs uppercase tracking-wider text-amber-300 font-bold mb-3 flex items-center gap-2">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                {{ __('Catatan Penting') }}
+                            </p>
+                            <ul class="space-y-2">
+                                @foreach($vw['notes'] as $note)
+                                    <li class="flex items-start gap-2 text-sm text-surface-200">
+                                        <span class="text-amber-400 mt-1">•</span>
+                                        <span>{{ Demo::pick($note) }}</span>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                 </div>
             @endforeach
         </div>
     </div>
 </section>
+
+@push('head')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const tabs   = document.querySelectorAll('.workflow-tab-btn');
+    const panels = document.querySelectorAll('.workflow-panel');
+    const ACTIVE_CLASSES   = ['bg-brand-600','border-brand-600','text-white','shadow-lg','shadow-brand-600/30'];
+    const INACTIVE_CLASSES = ['border-surface-700','text-surface-300','hover:border-brand-500/50','hover:text-white'];
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const slug = tab.dataset.workflowTab;
+
+            tabs.forEach(t => {
+                const isActive = t === tab;
+                t.setAttribute('aria-selected', isActive ? 'true' : 'false');
+                ACTIVE_CLASSES.forEach(c => t.classList.toggle(c, isActive));
+                INACTIVE_CLASSES.forEach(c => t.classList.toggle(c, ! isActive));
+            });
+
+            panels.forEach(p => {
+                p.classList.toggle('hidden', p.dataset.workflowPanel !== slug);
+            });
+
+            // Smooth-scroll the section into view on small screens after switching
+            if (window.innerWidth < 768) {
+                document.getElementById('workflow')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    });
+});
+</script>
+@endpush
 
 {{-- ========== CTA ========== --}}
 <section class="py-20">

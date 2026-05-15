@@ -305,4 +305,127 @@ final class HomepageDemoData
             'desc'  => ['id' => $s[4], 'en' => $s[5], 'ja' => $s[6]],
         ], $steps);
     }
+
+    /**
+     * Per-visa workflow slides for the homepage Process section.
+     * Each step: { n, title (id/en/ja), badge?: { label (id/en/ja), color } }
+     * Each visa: { slug, name (id/en/ja), tagline (id/en/ja), steps[], notes[] }
+     */
+    public static function visaWorkflows(): array
+    {
+        // Common building blocks reused across visas
+        $preScreen = ['Pre-Screening Document', 'Pre-Screening Document', '事前書類審査'];
+        $explainJob = ['Penjelasan Job dan Biaya', 'Job & Cost Briefing', '仕事と費用の説明'];
+        $interviewTSK = ['Interview dengan TSK', 'Interview with TSK', 'TSK面接'];
+        $training = ['Pelatihan Pra Interview dan Bahasa', 'Pre-Interview & Language Training', '面接前トレーニング'];
+        $interviewCo = ['Interview dengan Perusahaan', 'Interview with Company', '企業面接'];
+        $contract = ['Kontrak Kerja', 'Work Contract', '雇用契約'];
+        $medical = ['Medical Check Up', 'Medical Check-up', '健康診断'];
+        $sending = ['Sending Document', 'Document Sending', '書類送付'];
+        $passport = ['Pembuatan Passport', 'Passport Application', 'パスポート申請'];
+        $coe = ['CoE Terbit', 'CoE Issued', '在留資格認定証明書発行'];
+        $visa = ['Visa Terbit', 'Visa Issued', 'ビザ発行'];
+        $departPrep = ['Persiapan Berangkat ke Jepang', 'Pre-Departure Preparation', '出発準備'];
+        $pickup = ['Penjemputan di Jepang', 'Pickup in Japan', '日本到着・送迎'];
+        $work = ['Kerja di Jepang', 'Working in Japan', '日本で就労'];
+
+        $title = fn (array $t) => ['id' => $t[0], 'en' => $t[1], 'ja' => $t[2]];
+
+        return [
+            // ─── SSW / Tokutei Ginou ───────────────────────────────
+            [
+                'slug'    => 'tokutei-ginou',
+                'name'    => ['id' => 'SSW · Tokutei Ginou', 'en' => 'SSW · Tokutei Ginou', 'ja' => 'SSW・特定技能'],
+                'tagline' => [
+                    'id' => 'Alur lengkap untuk visa pekerja terampil khusus.',
+                    'en' => 'Complete pipeline for the Specified Skilled Worker visa.',
+                    'ja' => '特定技能ビザの完全なフロー。',
+                ],
+                'steps' => [
+                    ['n' => 1,  'title' => $title($preScreen)],
+                    ['n' => 2,  'title' => $title($explainJob)],
+                    ['n' => 3,  'title' => $title($interviewTSK), 'badge' => ['label' => ['id' => 'Deposit Rp 2 Juta', 'en' => 'IDR 2M Deposit', 'ja' => '保証金200万Rp'], 'color' => 'warning']],
+                    ['n' => 4,  'title' => $title($training)],
+                    ['n' => 5,  'title' => $title($interviewCo)],
+                    ['n' => 6,  'title' => $title($medical)],
+                    ['n' => 7,  'title' => $title($sending)],
+                    ['n' => 8,  'title' => $title($contract), 'badge' => ['label' => ['id' => 'Pembiayaan Tahap 1 (50%)', 'en' => 'Stage 1 Payment (50%)', 'ja' => '第1期支払い (50%)'], 'color' => 'brand']],
+                    ['n' => 9,  'title' => $title($passport)],
+                    ['n' => 10, 'title' => $title($coe), 'badge' => ['label' => ['id' => 'Pembiayaan Tahap 2 (50%)', 'en' => 'Stage 2 Payment (50%)', 'ja' => '第2期支払い (50%)'], 'color' => 'brand']],
+                    ['n' => 11, 'title' => $title($visa)],
+                    ['n' => 12, 'title' => $title($departPrep)],
+                    ['n' => 13, 'title' => $title($pickup)],
+                ],
+                'notes' => [
+                    [
+                        'id' => 'Passport dan Medical Check Up ditanggung masing-masing kandidat.',
+                        'en' => 'Passport and Medical Check-up are paid by each candidate.',
+                        'ja' => 'パスポートと健康診断は各候補者の自己負担です。',
+                    ],
+                    [
+                        'id' => 'Biaya tiket pesawat bisa dipinjamkan oleh perusahaan penerima.',
+                        'en' => 'Flight ticket costs may be advanced by the receiving company.',
+                        'ja' => '航空券費用は受入企業から立替可能です。',
+                    ],
+                ],
+            ],
+
+            // ─── Engineer / Gijinkoku ──────────────────────────────
+            [
+                'slug'    => 'engineering',
+                'name'    => ['id' => 'Engineer · Gijinkoku', 'en' => 'Engineer · Gijinkoku', 'ja' => 'エンジニア・技人国'],
+                'tagline' => [
+                    'id' => 'Untuk lulusan D3/S1 yang menargetkan posisi profesional di Jepang.',
+                    'en' => 'For diploma/bachelor graduates targeting professional roles in Japan.',
+                    'ja' => '日本での専門職を目指すD3/S1卒業者向け。',
+                ],
+                'steps' => [
+                    ['n' => 1,  'title' => $title($preScreen), 'badge' => ['label' => ['id' => 'D3/S1 · JLPT N3+', 'en' => 'D3/S1 · JLPT N3+', 'ja' => 'D3/S1・JLPT N3以上'], 'color' => 'info']],
+                    ['n' => 2,  'title' => $title($explainJob)],
+                    ['n' => 3,  'title' => $title($interviewTSK)],
+                    ['n' => 4,  'title' => $title($training)],
+                    ['n' => 5,  'title' => $title($interviewCo)],
+                    ['n' => 6,  'title' => $title($contract)],
+                    ['n' => 7,  'title' => $title($medical)],
+                    ['n' => 8,  'title' => $title($sending)],
+                    ['n' => 9,  'title' => $title($passport)],
+                    ['n' => 10, 'title' => $title($coe)],
+                    ['n' => 11, 'title' => $title($visa)],
+                    ['n' => 12, 'title' => $title($departPrep)],
+                    ['n' => 13, 'title' => $title($pickup)],
+                    ['n' => 14, 'title' => $title($work)],
+                ],
+                'notes' => [],
+            ],
+
+            // ─── Internship ────────────────────────────────────────
+            [
+                'slug'    => 'internship',
+                'name'    => ['id' => 'Internship', 'en' => 'Internship', 'ja' => 'インターンシップ'],
+                'tagline' => [
+                    'id' => 'Visa magang untuk mahasiswa aktif semester 3 ke atas.',
+                    'en' => 'Internship visa for active university students from semester 3 onward.',
+                    'ja' => '大学3年以上の現役学生向けインターンシップビザ。',
+                ],
+                'steps' => [
+                    ['n' => 1,  'title' => ['id' => 'MOU dengan Universitas', 'en' => 'University MOU', 'ja' => '大学とのMOU']],
+                    ['n' => 2,  'title' => $title($explainJob)],
+                    ['n' => 3,  'title' => $title($preScreen), 'badge' => ['label' => ['id' => 'Mahasiswa Aktif Sem. 3+', 'en' => 'Active Students Sem 3+', 'ja' => '3年以上の現役学生'], 'color' => 'info']],
+                    ['n' => 4,  'title' => $title($interviewTSK)],
+                    ['n' => 5,  'title' => $title($training)],
+                    ['n' => 6,  'title' => $title($interviewCo)],
+                    ['n' => 7,  'title' => $title($contract)],
+                    ['n' => 8,  'title' => $title($medical)],
+                    ['n' => 9,  'title' => $title($sending)],
+                    ['n' => 10, 'title' => $title($passport)],
+                    ['n' => 11, 'title' => $title($coe)],
+                    ['n' => 12, 'title' => $title($visa)],
+                    ['n' => 13, 'title' => $title($departPrep)],
+                    ['n' => 14, 'title' => $title($pickup)],
+                    ['n' => 15, 'title' => $title($work), 'badge' => ['label' => ['id' => 'Gaji Bersih Rp 8-10 Juta', 'en' => 'Net IDR 8-10M Salary', 'ja' => '手取り月8-10百万Rp'], 'color' => 'success']],
+                ],
+                'notes' => [],
+            ],
+        ];
+    }
 }
