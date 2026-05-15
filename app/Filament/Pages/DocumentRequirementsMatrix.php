@@ -34,15 +34,22 @@ class DocumentRequirementsMatrix extends Page
 
     public function loadMatrix(): void
     {
+        // Only load keys that map to a *currently active* document type.
+        // Anything else is an orphan (admin deleted / deactivated the type)
+        // and would otherwise inflate the per-visa counters.
+        $activeKeys = DocumentType::active()->pluck('key')->all();
+        $activeSet  = array_flip($activeKeys); // O(1) lookup
+
         $this->matrix = VisaCategory::orderBy('sort_order')->get()
-            ->mapWithKeys(function ($v) {
+            ->mapWithKeys(function ($v) use ($activeSet) {
                 $cell = [];
                 foreach ($v->requiredDocumentTypes() as $key) {
-                    $cell[$key] = 'required';
+                    if (isset($activeSet[$key])) {
+                        $cell[$key] = 'required';
+                    }
                 }
                 foreach ($v->optionalDocumentTypes() as $key) {
-                    // Required wins if (somehow) the same key appears in both
-                    if (! isset($cell[$key])) {
+                    if (isset($activeSet[$key]) && ! isset($cell[$key])) {
                         $cell[$key] = 'optional';
                     }
                 }
@@ -94,10 +101,16 @@ class DocumentRequirementsMatrix extends Page
 
     public function save(): void
     {
+        // Defensive: only persist keys that still map to an active document
+        // type. Anything else gets pruned from the JSON columns.
+        $activeKeys = DocumentType::active()->pluck('key')->all();
+        $activeSet  = array_flip($activeKeys);
+
         foreach ($this->matrix as $visaSlug => $cells) {
             $required = [];
             $optional = [];
             foreach ($cells as $key => $state) {
+                if (! isset($activeSet[$key])) continue;
                 if ($state === 'required') $required[] = $key;
                 if ($state === 'optional') $optional[] = $key;
             }
