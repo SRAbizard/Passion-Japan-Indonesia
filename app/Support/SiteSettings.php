@@ -79,4 +79,51 @@ class SiteSettings
         $path = Setting::get('company.profile_pdf_path');
         return $path ? asset('storage/'.$path) : null;
     }
+
+    /**
+     * Public URL for the uploaded background theme song, or null if
+     * none uploaded. Plays as muted-autoplay on the homepage.
+     */
+    public static function themeAudioUrl(): ?string
+    {
+        $path = Setting::get('audio.theme_path');
+        return $path ? asset('storage/'.$path) : null;
+    }
+
+    /**
+     * Hero slideshow slides — admin can upload up to 4 images. Each
+     * entry merges admin-uploaded image (if any) with a sensible
+     * fallback Unsplash photo + brand-tinted background colour so
+     * there's never an empty frame.
+     *
+     * @return array<int, array{image: string, color: string}>
+     */
+    public static function heroSlides(): array
+    {
+        $defaults = [
+            ['image' => 'https://images.unsplash.com/photo-1480796927426-f609979314bd?auto=format&fit=crop&w=1920&q=70', 'color' => '#4a0f07'],
+            ['image' => 'https://images.unsplash.com/photo-1522383225653-ed111181a951?auto=format&fit=crop&w=1920&q=70', 'color' => '#6d160a'],
+            ['image' => 'https://images.unsplash.com/photo-1528360983277-13d401cdc186?auto=format&fit=crop&w=1920&q=70', 'color' => '#2a0805'],
+            ['image' => 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=1920&q=70', 'color' => '#0e1124'],
+        ];
+
+        $stored = Setting::get('hero.slides', null);
+        if (! is_array($stored) || empty($stored)) {
+            return $defaults;
+        }
+
+        // Fill up to 4 slots, falling back to defaults for empty slots.
+        $out = [];
+        for ($i = 0; $i < 4; $i++) {
+            $slide     = $stored[$i] ?? null;
+            $imagePath = $slide['image_path'] ?? null;
+            $out[] = [
+                'image' => $imagePath
+                    ? asset('storage/'.$imagePath)
+                    : $defaults[$i]['image'],
+                'color' => $defaults[$i]['color'],
+            ];
+        }
+        return $out;
+    }
 }

@@ -65,16 +65,25 @@
     }
 @endphp
 
+@push('head')
+<script>
+    // Enable section-by-section snap scrolling on the homepage only.
+    document.documentElement.classList.add('snap-sections');
+    document.addEventListener('DOMContentLoaded', function () {
+        document.body.classList.add('snap-sections');
+    });
+</script>
+@endpush
+
 @section('content')
 
 {{-- ========== HERO ========== --}}
 <section class="relative overflow-hidden min-h-[calc(100vh-4rem)] lg:min-h-[calc(100vh-5rem)] flex items-center">
-    {{-- Slideshow background — 4 Japan-themed photos cross-fading --}}
+    {{-- Slideshow background — admin-uploaded images, fall back to Japan defaults --}}
     <div class="hero-slideshow" aria-hidden="true">
-        <div class="slide" style="background-color: #4a0f07; background-image: url('https://images.unsplash.com/photo-1480796927426-f609979314bd?auto=format&fit=crop&w=1920&q=70');"></div>
-        <div class="slide" style="background-color: #6d160a; background-image: url('https://images.unsplash.com/photo-1522383225653-ed111181a951?auto=format&fit=crop&w=1920&q=70');"></div>
-        <div class="slide" style="background-color: #2a0805; background-image: url('https://images.unsplash.com/photo-1528360983277-13d401cdc186?auto=format&fit=crop&w=1920&q=70');"></div>
-        <div class="slide" style="background-color: #0e1124; background-image: url('https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=1920&q=70');"></div>
+        @foreach(\App\Support\SiteSettings::heroSlides() as $slide)
+            <div class="slide" style="background-color: {{ $slide['color'] }}; background-image: url('{{ $slide['image'] }}');"></div>
+        @endforeach
     </div>
 
     <div class="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[40rem] w-[40rem] rounded-full bg-brand-700/25 blur-3xl z-[1]"></div>
@@ -526,5 +535,68 @@ document.addEventListener('DOMContentLoaded', function () {
         </div>
     </div>
 </section>
+
+{{-- ========== THEME AUDIO + MUTE TOGGLE ========== --}}
+@php $themeAudioUrl = \App\Support\SiteSettings::themeAudioUrl(); @endphp
+@if($themeAudioUrl)
+    {{-- Audio element (muted-autoplay so browsers allow it; user unmutes via button) --}}
+    <audio id="pj-theme-audio" src="{{ $themeAudioUrl }}" loop muted autoplay preload="auto" aria-hidden="true"></audio>
+
+    {{-- Floating mute/unmute button — bottom-left to balance with WhatsApp on right --}}
+    <button id="pj-audio-toggle"
+            type="button"
+            title="{{ __('Toggle background music') }}"
+            aria-label="{{ __('Toggle background music') }}"
+            class="fixed bottom-6 left-6 z-50 group inline-flex h-12 w-12 items-center justify-center rounded-full bg-surface-900/85 backdrop-blur border border-surface-700/60 shadow-lg shadow-brand-600/20 hover:bg-brand-600 hover:border-brand-500 hover:shadow-brand-500/40 transition">
+        {{-- Speaker-on (shown when un-muted) --}}
+        <svg class="audio-icon-on h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
+        {{-- Speaker-muted (shown when muted) --}}
+        <svg class="audio-icon-off h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15zM17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"/></svg>
+        {{-- Pulse ring when playing audibly --}}
+        <span class="audio-pulse absolute inset-0 rounded-full ring-2 ring-brand-500 opacity-0"></span>
+    </button>
+
+    <style>
+        #pj-audio-toggle .audio-icon-on, #pj-audio-toggle .audio-icon-off { display: none; }
+        #pj-audio-toggle.is-playing .audio-icon-on  { display: block; }
+        #pj-audio-toggle:not(.is-playing) .audio-icon-off { display: block; }
+        #pj-audio-toggle.is-playing .audio-pulse {
+            opacity: 1;
+            animation: pj-audio-pulse 1.8s ease-out infinite;
+        }
+        @keyframes pj-audio-pulse {
+            0%   { transform: scale(1);    opacity: 0.6; }
+            100% { transform: scale(1.6);  opacity: 0; }
+        }
+    </style>
+
+    <script>
+        (function () {
+            var audio  = document.getElementById('pj-theme-audio');
+            var toggle = document.getElementById('pj-audio-toggle');
+            if (! audio || ! toggle) return;
+
+            // Restore preference (default: muted)
+            var saved = null;
+            try { saved = localStorage.getItem('pj-audio-muted'); } catch (e) {}
+            audio.muted = saved !== '0'; // '0' = unmuted, anything else = muted
+            updateUI();
+
+            // Try autoplay (will work when muted)
+            audio.play().catch(function () { /* user gesture required */ });
+
+            toggle.addEventListener('click', function () {
+                audio.muted = ! audio.muted;
+                if (! audio.muted) audio.play().catch(function () {});
+                try { localStorage.setItem('pj-audio-muted', audio.muted ? '1' : '0'); } catch (e) {}
+                updateUI();
+            });
+
+            function updateUI () {
+                toggle.classList.toggle('is-playing', ! audio.muted);
+            }
+        })();
+    </script>
+@endif
 
 @endsection

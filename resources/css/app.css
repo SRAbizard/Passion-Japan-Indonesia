@@ -363,3 +363,24 @@ html.light .bg-surface-900     { background-color: #f6f7fa !important; }
     .hero-slideshow .slide { animation: none; opacity: 1; transform: none; }
     .hero-slideshow .slide:not(:first-child) { display: none; }
 }
+
+/* ────────────────────────────────────────────────────────────────────
+   SECTION SNAP SCROLLING — opt-in via `.snap-sections` on body, used
+   on the homepage. Inspired by the Wuthering Waves landing page.
+   `proximity` is gentler than `mandatory` (won't fight short scrolls).
+   Header is ~64px / 80px tall — set scroll-padding-top so a snapped
+   section starts below the sticky header instead of being clipped.
+   ──────────────────────────────────────────────────────────────────── */
+html.snap-sections, body.snap-sections {
+    scroll-snap-type: y proximity;
+    scroll-padding-top: 4rem;
+}
+@media (min-width: 1024px) {
+    html.snap-sections, body.snap-sections { scroll-padding-top: 5rem; }
+}
+.snap-sections section { scroll-snap-align: start; }
+@media (max-width: 768px) {
+    /* Disable snap on phones — sections are taller than viewport so
+       snapping is annoying; let users free-scroll. */
+    html.snap-sections, body.snap-sections { scroll-snap-type: none; }
+}

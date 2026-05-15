@@ -733,6 +733,19 @@
     "Company Profile file (PDF / DOC / image)": "File Profil Perusahaan (PDF / DOC / gambar)",
 
     "Scroll down": "Gulir ke bawah",
-    "Scroll": "Gulir"
+    "Scroll": "Gulir",
+
+    "Hero slideshow": "Slideshow Hero",
+    "Hero background slides": "Slide Latar Belakang Hero",
+    "Upload up to 4 background images for the homepage hero. Empty slots fall back to default Japan photos.": "Unggah hingga 4 gambar latar untuk hero beranda. Slot kosong otomatis pakai foto Jepang default.",
+    "Background image": "Gambar Latar",
+    "New slide": "Slide baru",
+    "Add slide": "Tambah Slide",
+
+    "Theme audio": "Lagu Tema",
+    "Background music": "Musik Latar",
+    "Upload an MP3/OGG file. Plays muted on the homepage; visitors can unmute via the floating speaker button.": "Unggah file MP3/OGG. Diputar tanpa suara di beranda; pengunjung bisa nyalakan suara via tombol speaker mengambang.",
+    "Theme song": "Lagu Tema",
+    "Toggle background music": "Hidup/matikan musik latar"
 }
 

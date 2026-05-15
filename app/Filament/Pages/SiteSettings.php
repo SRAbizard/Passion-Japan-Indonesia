@@ -52,6 +52,13 @@ class SiteSettings extends Page
         // Company profile PDF path
         $data['company__profile_pdf_path'] = Setting::get('company.profile_pdf_path');
 
+        // Theme audio file path
+        $data['audio__theme_path'] = Setting::get('audio.theme_path');
+
+        // Hero slideshow images (4 slots)
+        $slides = Setting::get('hero.slides', []);
+        $data['hero__slides'] = is_array($slides) ? $slides : [];
+
         $this->form->fill($data);
     }
 
@@ -99,6 +106,44 @@ class SiteSettings extends Page
                                 ->disk('public')
                                 ->directory('company')
                                 ->acceptedFileTypes(['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/png'])
+                                ->maxSize(10240)
+                                ->columnSpanFull(),
+                        ]),
+                ]),
+                Tab::make(__('Hero slideshow'))->icon('heroicon-o-photo')->schema([
+                    Section::make(__('Hero background slides'))
+                        ->description(__('Upload up to 4 background images for the homepage hero. Empty slots fall back to default Japan photos.'))
+                        ->components([
+                            Repeater::make('hero__slides')
+                                ->label('')
+                                ->itemLabel(fn (array $state): ?string =>
+                                    filled($state['image_path'] ?? null) ? basename($state['image_path']) : __('New slide'))
+                                ->minItems(0)
+                                ->maxItems(4)
+                                ->collapsible()
+                                ->reorderable()
+                                ->components([
+                                    FileUpload::make('image_path')
+                                        ->label(__('Background image'))
+                                        ->image()
+                                        ->disk('public')
+                                        ->directory('hero')
+                                        ->imageEditor()
+                                        ->maxSize(5120),
+                                ])
+                                ->defaultItems(0)
+                                ->addActionLabel(__('Add slide')),
+                        ]),
+                ]),
+                Tab::make(__('Theme audio'))->icon('heroicon-o-musical-note')->schema([
+                    Section::make(__('Background music'))
+                        ->description(__('Upload an MP3/OGG file. Plays muted on the homepage; visitors can unmute via the floating speaker button.'))
+                        ->components([
+                            FileUpload::make('audio__theme_path')
+                                ->label(__('Theme song'))
+                                ->disk('public')
+                                ->directory('audio')
+                                ->acceptedFileTypes(['audio/mpeg', 'audio/mp3', 'audio/ogg', 'audio/wav'])
                                 ->maxSize(10240)
                                 ->columnSpanFull(),
                         ]),
@@ -168,6 +213,17 @@ class SiteSettings extends Page
 
         // Company profile single-file upload
         Setting::set('company.profile_pdf_path', $state['company__profile_pdf_path'] ?? null, 'company');
+
+        // Theme audio single-file upload
+        Setting::set('audio.theme_path', $state['audio__theme_path'] ?? null, 'audio');
+
+        // Hero slideshow images
+        $slides = collect($state['hero__slides'] ?? [])
+            ->map(fn ($s) => ['image_path' => $s['image_path'] ?? null])
+            ->filter(fn ($s) => filled($s['image_path']))
+            ->values()
+            ->all();
+        Setting::set('hero.slides', $slides, 'hero');
 
         Notification::make()
             ->title(__('Settings saved'))
