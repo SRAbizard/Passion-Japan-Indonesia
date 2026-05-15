@@ -257,7 +257,7 @@
                     try { sessionStorage.setItem('pj-splash-seen', '1'); } catch (e) {}
                     setTimeout(function () { splash.remove(); }, 700);
                 };
-                var minDisplay = 1100;
+                var minDisplay = 2100;
                 var startTime = performance.now();
                 var done = function () {
                     var elapsed = performance.now() - startTime;

@@ -68,14 +68,22 @@
 @section('content')
 
 {{-- ========== HERO ========== --}}
-<section class="relative overflow-hidden">
-    <div class="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[40rem] w-[40rem] rounded-full bg-brand-700/25 blur-3xl"></div>
-    <div class="pointer-events-none absolute -bottom-40 right-0 h-[28rem] w-[28rem] rounded-full bg-brand-900/40 blur-3xl"></div>
+<section class="relative overflow-hidden min-h-[calc(100vh-4rem)] lg:min-h-[calc(100vh-5rem)] flex items-center">
+    {{-- Slideshow background — 4 Japan-themed photos cross-fading --}}
+    <div class="hero-slideshow" aria-hidden="true">
+        <div class="slide" style="background-color: #4a0f07; background-image: url('https://images.unsplash.com/photo-1480796927426-f609979314bd?auto=format&fit=crop&w=1920&q=70');"></div>
+        <div class="slide" style="background-color: #6d160a; background-image: url('https://images.unsplash.com/photo-1522383225653-ed111181a951?auto=format&fit=crop&w=1920&q=70');"></div>
+        <div class="slide" style="background-color: #2a0805; background-image: url('https://images.unsplash.com/photo-1528360983277-13d401cdc186?auto=format&fit=crop&w=1920&q=70');"></div>
+        <div class="slide" style="background-color: #0e1124; background-image: url('https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=1920&q=70');"></div>
+    </div>
+
+    <div class="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[40rem] w-[40rem] rounded-full bg-brand-700/25 blur-3xl z-[1]"></div>
+    <div class="pointer-events-none absolute -bottom-40 right-0 h-[28rem] w-[28rem] rounded-full bg-brand-900/40 blur-3xl z-[1]"></div>
 
     {{-- Falling sakura petals across hero --}}
     <x-jp.sakura-petals :count="14" />
 
-    <div class="relative mx-auto max-w-7xl px-6 pt-14 pb-20 lg:pt-20 lg:pb-28">
+    <div class="relative z-10 w-full mx-auto max-w-7xl px-6 py-16 lg:py-24">
         <div class="grid gap-12 lg:grid-cols-2 lg:items-center">
             <div>
                 <div class="inline-flex items-center gap-2 rounded-full border border-brand-700/40 bg-brand-700/10 px-3 py-1 text-xs font-medium text-brand-300">
@@ -121,6 +129,15 @@
             </div>
         </div>
     </div>
+
+    {{-- Scroll-down cue at the bottom of the hero --}}
+    <a href="#about" aria-label="{{ __('Scroll down') }}"
+       class="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 group inline-flex flex-col items-center gap-1 text-white/70 hover:text-white transition">
+        <span class="text-[10px] uppercase tracking-[0.3em] font-semibold">{{ __('Scroll') }}</span>
+        <span class="inline-flex h-9 w-6 items-center justify-center rounded-full border-2 border-white/40 group-hover:border-white/70 transition">
+            <span class="w-1 h-2 rounded-full bg-white/70 animate-bounce"></span>
+        </span>
+    </a>
 </section>
 
 {{-- ========== BENEFITS — "Mengapa Passion Japan?" ========== --}}
