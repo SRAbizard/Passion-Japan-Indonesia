@@ -7,9 +7,10 @@
 @endphp
 
 @section('content')
-<section class="relative mx-auto max-w-7xl px-6 pt-14 pb-10">
+<section class="relative overflow-hidden">
     <div class="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 h-[28rem] w-[28rem] rounded-full bg-brand-700/20 blur-3xl"></div>
-    <div class="relative">
+    <x-jp.sakura-petals :count="10" />
+    <div class="relative mx-auto max-w-7xl px-6 pt-14 pb-10">
         <p class="text-xs uppercase tracking-wider text-brand-400 font-semibold">{{ __('Careers') }}</p>
         <h1 class="mt-3 font-display text-4xl sm:text-5xl font-extrabold text-white">{{ __('Find your job in Japan') }}</h1>
         <p class="mt-4 max-w-2xl text-surface-300">{{ __('Browse verified opportunities from our partner companies. Filter by visa, role, or city.') }}</p>
@@ -101,7 +102,7 @@
                 {{ trans_choice('{1} :count vacancy found|[2,*] :count vacancies found', $vacancies->total(), ['count' => $vacancies->total()]) }}
             </p>
         </div>
-        <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div class="reveal reveal-stagger grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             @foreach($vacancies as $v)
                 <a href="{{ route('job.show', $v->slug) }}" class="glass-card p-5 block hover:border-brand-500/50 transition group">
                     <div class="flex items-start gap-3">

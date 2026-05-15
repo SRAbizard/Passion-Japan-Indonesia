@@ -137,3 +137,174 @@ html.light footer {
    (clicking it switches to that theme). */
 html.dark  .theme-icon-moon { display: none; }
 html.light .theme-icon-sun  { display: none; }
+
+/* ────────────────────────────────────────────────────────────────────
+   LOADING SPLASH — branded fullscreen overlay shown once per session
+   ──────────────────────────────────────────────────────────────────── */
+.pj-splash {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at center,
+        var(--color-brand-700) 0%,
+        var(--color-brand-900) 50%,
+        var(--color-surface-950) 100%);
+    transition: opacity 0.6s ease, visibility 0.6s;
+    overflow: hidden;
+}
+.pj-splash.is-hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+.pj-splash-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+}
+.pj-splash-logo {
+    width: 88px; height: 88px;
+    margin: 0 auto 1.25rem;
+    border-radius: 50%;
+    background: white;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+    animation: pj-splash-pulse 1.6s ease-in-out infinite;
+}
+.pj-splash-logo img { width: 70%; height: auto; }
+.pj-splash-name {
+    color: rgba(255,255,255,0.92);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.125rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+}
+.pj-splash-subname {
+    margin-top: 0.4rem;
+    color: rgba(255,255,255,0.55);
+    font-size: 0.7rem;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+}
+.pj-splash-bar {
+    margin: 1.5rem auto 0;
+    width: 140px; height: 3px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.12);
+    overflow: hidden;
+}
+.pj-splash-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.85), transparent);
+    animation: pj-splash-bar 1.4s ease-in-out infinite;
+}
+@keyframes pj-splash-pulse {
+    0%, 100% { transform: scale(1);    box-shadow: 0 8px 32px rgba(0,0,0,0.35); }
+    50%      { transform: scale(1.06); box-shadow: 0 12px 48px rgba(252,228,236,0.4); }
+}
+@keyframes pj-splash-bar {
+    0%   { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* ────────────────────────────────────────────────────────────────────
+   FALLING SAKURA PETALS — drop into hero / splash via .sakura-layer
+   ──────────────────────────────────────────────────────────────────── */
+.sakura-layer {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1;
+}
+.sakura-petal {
+    position: absolute;
+    top: -32px;
+    width: 14px; height: 14px;
+    background: radial-gradient(circle at 35% 35%, #fce4ec 30%, #f48fb1 75%);
+    border-radius: 0 100% 0 100%;
+    opacity: 0.75;
+    animation: sakura-fall var(--fall-d, 12s) linear infinite;
+    animation-delay: var(--fall-delay, 0s);
+    filter: drop-shadow(0 1px 2px rgba(244, 143, 177, 0.3));
+}
+@keyframes sakura-fall {
+    0%   { transform: translate(0, 0)        rotate(0deg);   opacity: 0; }
+    8%   { opacity: 0.85; }
+    50%  { transform: translate(40px, 50vh)  rotate(180deg); }
+    92%  { opacity: 0.85; }
+    100% { transform: translate(80px, 110vh) rotate(360deg); opacity: 0; }
+}
+
+/* ────────────────────────────────────────────────────────────────────
+   REVEAL ON SCROLL — JS toggles .is-visible when element enters viewport
+   ──────────────────────────────────────────────────────────────────── */
+.reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+}
+.reveal.is-visible { opacity: 1; transform: none; }
+.reveal-stagger.is-visible > *:nth-child(1) { transition-delay: 0.05s; }
+.reveal-stagger.is-visible > *:nth-child(2) { transition-delay: 0.12s; }
+.reveal-stagger.is-visible > *:nth-child(3) { transition-delay: 0.19s; }
+.reveal-stagger.is-visible > *:nth-child(4) { transition-delay: 0.26s; }
+.reveal-stagger.is-visible > *:nth-child(5) { transition-delay: 0.33s; }
+.reveal-stagger.is-visible > *:nth-child(6) { transition-delay: 0.4s;  }
+@media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+    .sakura-petal, .pj-splash-logo, .pj-splash-bar-fill { animation: none !important; }
+}
+
+/* ────────────────────────────────────────────────────────────────────
+   CARD HOVER MICRO-INTERACTIONS
+   ──────────────────────────────────────────────────────────────────── */
+.glass-card {
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 0.25s ease,
+                box-shadow 0.25s ease;
+}
+a.glass-card:hover, button.glass-card:hover {
+    transform: translateY(-3px);
+    border-color: color-mix(in srgb, var(--color-brand-500) 40%, transparent);
+    box-shadow: 0 12px 32px -12px color-mix(in srgb, var(--color-brand-600) 40%, transparent);
+}
+
+/* Brand-red accent chip used as section tag */
+.jp-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.75rem 0.25rem 0.5rem;
+    background: color-mix(in srgb, var(--color-brand-500) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-brand-500) 30%, transparent);
+    border-radius: 999px;
+    color: var(--color-brand-300);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+}
+.jp-tag::before {
+    content: '';
+    display: inline-block;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--color-brand-500);
+}
+
+/* Light-mode polish — additional component overrides */
+html.light .text-surface-100 { color: #1a1e30 !important; }
+html.light a.glass-card:hover, html.light button.glass-card:hover {
+    border-color: color-mix(in srgb, var(--color-brand-500) 60%, transparent);
+    box-shadow: 0 8px 24px -8px rgba(179, 37, 16, 0.15);
+}
+html.light .jp-tag {
+    background: rgba(179, 37, 16, 0.06);
+    color: var(--color-brand-700);
+    border-color: rgba(179, 37, 16, 0.3);
+}
+html.light .bg-surface-900\/40 { background-color: rgba(252, 228, 236, 0.18) !important; }
+html.light .bg-surface-900     { background-color: #f6f7fa !important; }

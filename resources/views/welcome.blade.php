@@ -72,6 +72,9 @@
     <div class="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[40rem] w-[40rem] rounded-full bg-brand-700/25 blur-3xl"></div>
     <div class="pointer-events-none absolute -bottom-40 right-0 h-[28rem] w-[28rem] rounded-full bg-brand-900/40 blur-3xl"></div>
 
+    {{-- Falling sakura petals across hero --}}
+    <x-jp.sakura-petals :count="14" />
+
     <div class="relative mx-auto max-w-7xl px-6 pt-14 pb-20 lg:pt-20 lg:pb-28">
         <div class="grid gap-12 lg:grid-cols-2 lg:items-center">
             <div>
@@ -121,7 +124,7 @@
 </section>
 
 {{-- ========== BENEFITS — "Mengapa Passion Japan?" ========== --}}
-<section id="about" class="relative py-20 bg-surface-900/40">
+<section id="about" class="reveal relative py-20 bg-surface-900/40">
     <div class="mx-auto max-w-7xl px-6">
         <div class="text-center max-w-2xl mx-auto">
             <p class="text-xs uppercase tracking-wider text-brand-400 font-semibold">{{ __('Why Us') }}</p>
@@ -146,7 +149,7 @@
 </section>
 
 {{-- ========== POPULAR PROGRAMS ========== --}}
-<section class="py-20">
+<section class="reveal py-20">
     <div class="mx-auto max-w-7xl px-6">
         <div class="flex items-end justify-between flex-wrap gap-4">
             <div>
@@ -172,7 +175,7 @@
 </section>
 
 {{-- ========== JOB PORTAL ========== --}}
-<section id="jobs" class="py-20 bg-surface-900/40">
+<section id="jobs" class="reveal py-20 bg-surface-900/40">
     <div class="mx-auto max-w-7xl px-6">
         <div class="text-center max-w-2xl mx-auto">
             <p class="text-xs uppercase tracking-wider text-brand-400 font-semibold">{{ __('Careers') }}</p>
@@ -224,7 +227,7 @@
 </section>
 
 {{-- ========== E-LEARNING ========== --}}
-<section id="learning" class="py-20">
+<section id="learning" class="reveal py-20">
     <div class="mx-auto max-w-7xl px-6">
         <div class="text-center max-w-2xl mx-auto">
             <p class="text-xs uppercase tracking-wider text-brand-400 font-semibold">{{ __('Learn') }}</p>
@@ -287,7 +290,7 @@
 </section>
 
 {{-- ========== FAQ ========== --}}
-<section class="py-20 bg-surface-900/40">
+<section class="reveal py-20 bg-surface-900/40">
     <div class="mx-auto max-w-3xl px-6">
         <div class="text-center">
             <p class="text-xs uppercase tracking-wider text-brand-400 font-semibold">{{ __('FAQ') }}</p>
@@ -311,7 +314,7 @@
 </section>
 
 {{-- ========== TESTIMONIALS ========== --}}
-<section class="py-20">
+<section class="reveal py-20">
     <div class="mx-auto max-w-7xl px-6">
         <div class="text-center max-w-2xl mx-auto">
             <p class="text-xs uppercase tracking-wider text-brand-400 font-semibold">{{ __('Testimonials') }}</p>
@@ -367,7 +370,7 @@
         'success' => ['bg' => 'bg-emerald-500/15','text'=> 'text-emerald-300','border'=> 'border-emerald-500/30'],
     ];
 @endphp
-<section id="workflow" class="py-20 bg-surface-900/40">
+<section id="workflow" class="reveal py-20 bg-surface-900/40">
     <div class="mx-auto max-w-7xl px-6">
         <div class="text-center max-w-2xl mx-auto">
             <p class="text-xs uppercase tracking-wider text-brand-400 font-semibold">{{ __('Process') }}</p>
@@ -489,7 +492,7 @@ document.addEventListener('DOMContentLoaded', function () {
 @endpush
 
 {{-- ========== CTA ========== --}}
-<section class="py-20">
+<section class="reveal py-20">
     <div class="mx-auto max-w-5xl px-6">
         <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-700 via-brand-800 to-surface-900 p-10 lg:p-14">
             <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.08),transparent_40%)]"></div>

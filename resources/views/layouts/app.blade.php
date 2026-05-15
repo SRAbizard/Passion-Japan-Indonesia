@@ -45,6 +45,20 @@
 </head>
 <body class="min-h-screen bg-surface-950 text-surface-100 antialiased font-sans">
 
+{{-- Loading splash screen — shown once per browser session --}}
+<div id="pj-splash" class="pj-splash">
+    <x-jp.sakura-petals :count="22" />
+    <div class="pj-splash-content">
+        <div class="pj-splash-logo">
+            <img src="{{ asset('images/logo.png') }}" alt="Passion Japan Indonesia"
+                 onerror="this.outerHTML='<span style=&quot;color:#b32510;font-weight:bold;font-size:1.5rem&quot;>PJ</span>';">
+        </div>
+        <p class="pj-splash-name">Passion Japan</p>
+        <p class="pj-splash-subname">ようこそ · Welcome</p>
+        <div class="pj-splash-bar"><div class="pj-splash-bar-fill"></div></div>
+    </div>
+</div>
+
 <header class="sticky top-0 z-40 backdrop-blur-md bg-surface-950/80 border-b border-surface-800/70">
     <nav class="mx-auto max-w-7xl flex items-center justify-between gap-4 px-4 sm:px-6 py-3">
         <a href="{{ url('/') }}" class="flex items-center gap-2 shrink-0">
@@ -216,15 +230,58 @@
 
 <script>
     (function () {
+        // ─── Theme toggle ────────────────────────────────────────────
         var btn = document.getElementById('theme-toggle');
-        if (! btn) return;
-        btn.addEventListener('click', function () {
-            var html = document.documentElement;
-            var goingLight = html.classList.contains('dark');
-            html.classList.toggle('dark', ! goingLight);
-            html.classList.toggle('light', goingLight);
-            try { localStorage.setItem('pj-theme', goingLight ? 'light' : 'dark'); } catch (e) {}
-        });
+        if (btn) {
+            btn.addEventListener('click', function () {
+                var html = document.documentElement;
+                var goingLight = html.classList.contains('dark');
+                html.classList.toggle('dark', ! goingLight);
+                html.classList.toggle('light', goingLight);
+                try { localStorage.setItem('pj-theme', goingLight ? 'light' : 'dark'); } catch (e) {}
+            });
+        }
+
+        // ─── Loading splash (once per session) ───────────────────────
+        var splash = document.getElementById('pj-splash');
+        if (splash) {
+            var seen = false;
+            try { seen = sessionStorage.getItem('pj-splash-seen') === '1'; } catch (e) {}
+
+            if (seen) {
+                splash.classList.add('is-hidden');
+                setTimeout(function () { splash.remove(); }, 100);
+            } else {
+                var hide = function () {
+                    splash.classList.add('is-hidden');
+                    try { sessionStorage.setItem('pj-splash-seen', '1'); } catch (e) {}
+                    setTimeout(function () { splash.remove(); }, 700);
+                };
+                var minDisplay = 1100;
+                var startTime = performance.now();
+                var done = function () {
+                    var elapsed = performance.now() - startTime;
+                    setTimeout(hide, Math.max(0, minDisplay - elapsed));
+                };
+                if (document.readyState === 'complete') done();
+                else window.addEventListener('load', done);
+            }
+        }
+
+        // ─── Reveal-on-scroll (IntersectionObserver) ─────────────────
+        if ('IntersectionObserver' in window) {
+            var io = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        io.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+            document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+        } else {
+            document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('is-visible'); });
+        }
     })();
 </script>
 
