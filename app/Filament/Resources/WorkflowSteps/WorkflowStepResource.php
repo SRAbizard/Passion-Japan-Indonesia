@@ -124,11 +124,18 @@ class WorkflowStepResource extends Resource
                     ->color('info')
                     ->toggleable(),
             ])
-            ->defaultGroup('visa.name')
+            ->defaultGroup('visa')
             ->groups([
-                Group::make('visa.name')
+                Group::make('visa')
                     ->label(__('Visa'))
+                    // Group by visa slug (a plain string column) — visa.name is JSON
+                    // so letting Filament auto-stringify it would crash with
+                    // "Array to string conversion".
+                    ->getKeyFromRecordUsing(fn ($record) => $record->visa?->slug ?? 'unknown')
                     ->getTitleFromRecordUsing(fn ($record) => $record->visa?->t('name') ?? '—')
+                    ->orderQueryUsing(fn ($q, $direction) => $q->join('visa_categories', 'visa_categories.id', '=', 'visa_workflow_steps.visa_category_id')
+                        ->orderBy('visa_categories.sort_order', $direction)
+                        ->select('visa_workflow_steps.*'))
                     ->collapsible(),
             ])
             ->defaultSort('sort_order')
