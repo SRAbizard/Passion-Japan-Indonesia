@@ -70,18 +70,20 @@ class StudentPanelProvider extends PanelProvider
                 fn (): string => view('filament.partials.back-to-home-topbar')->render(),
             )
             ->renderHook(
-                PanelsRenderHook::BODY_END,
+                PanelsRenderHook::BODY_START,
                 function (): string {
-                    $html  = view('filament.partials.sidebar-exclusive-groups')->render();
-                    $html .= view('filament.partials.audio-player')->render();
-
                     $route = request()->route()?->getName() ?? '';
                     if (str_contains($route, '.auth.')) {
-                        $html .= view('filament.partials.login-background')->render();
-                        $html .= view('filament.partials.login-sakura')->render();
+                        return view('filament.partials.login-background')->render()
+                            . view('filament.partials.login-sakura')->render();
                     }
-                    return $html;
+                    return '';
                 },
+            )
+            ->renderHook(
+                PanelsRenderHook::BODY_END,
+                fn (): string => view('filament.partials.sidebar-exclusive-groups')->render()
+                    . view('filament.partials.audio-player')->render(),
             )
             ->discoverResources(in: app_path('Filament/Student/Resources'), for: 'App\\Filament\\Student\\Resources')
             ->discoverPages(in: app_path('Filament/Student/Pages'), for: 'App\\Filament\\Student\\Pages')

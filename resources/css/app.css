@@ -382,12 +382,12 @@ html.snap-sections, body.snap-sections {
     scroll-snap-align: start;
     scroll-snap-stop: always;   /* one section at a time, no skipping */
 }
-/* Last section (the CTA) snaps to the END of the viewport rather than
-   the start, so when the user reaches it the footer naturally sits in
-   view with it. Plus snap-stop: normal lets them scroll past freely. */
-.snap-sections section:last-of-type {
-    scroll-snap-align: end;
-    scroll-snap-stop: normal;
+/* Sections marked .snap-end snap to the BOTTOM of the viewport so the
+   footer sits in view with them. snap-stop: normal lets the user scroll
+   past freely. Used on the last (CTA) section. */
+.snap-sections section.snap-end {
+    scroll-snap-align: end !important;
+    scroll-snap-stop: normal !important;
 }
 .snap-sections footer { scroll-snap-align: none; }
 

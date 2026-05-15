@@ -46,6 +46,11 @@
         pointer-events: none;
         overflow: hidden;
     }
+    /* Push Filament's login card above the background */
+    .fi-simple-layout > main, .fi-simple-main, .fi-simple-page {
+        position: relative;
+        z-index: 10;
+    }
     .pj-login-bg-sky {
         position: absolute; inset: 0;
         background: linear-gradient(180deg,

@@ -42,6 +42,10 @@
 
     @fonts
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    {{-- Livewire scripts so wire:navigate can swap pages without a full
+         reload. Audio + splash use @persist below so they survive the swap. --}}
+    @livewireStyles
 </head>
 <body class="min-h-screen bg-surface-950 text-surface-100 antialiased font-sans">
 
@@ -69,13 +73,13 @@
         </a>
 
         <div class="hidden lg:flex items-center gap-7 text-sm text-surface-200">
-            <a href="{{ url('/') }}" class="hover:text-white transition">{{ __('Home') }}</a>
-            <a href="{{ route('job.index') }}" class="hover:text-white transition">{{ __('Job Vacancies') }}</a>
-            <a href="{{ route('elearning.index') }}" class="hover:text-white transition">{{ __('E-Learning') }}</a>
-            <a href="{{ route('event.index') }}" class="hover:text-white transition">{{ __('Event') }}</a>
-            <a href="{{ route('blog.index') }}" class="hover:text-white transition">{{ __('Blog') }}</a>
-            <a href="{{ route('about') }}" class="hover:text-white transition">{{ __('About Us') }}</a>
-            <a href="{{ route('contact') }}" class="hover:text-white transition">{{ __('Contact') }}</a>
+            <a href="{{ url('/') }}" wire:navigate class="hover:text-white transition">{{ __('Home') }}</a>
+            <a href="{{ route('job.index') }}" wire:navigate class="hover:text-white transition">{{ __('Job Vacancies') }}</a>
+            <a href="{{ route('elearning.index') }}" wire:navigate class="hover:text-white transition">{{ __('E-Learning') }}</a>
+            <a href="{{ route('event.index') }}" wire:navigate class="hover:text-white transition">{{ __('Event') }}</a>
+            <a href="{{ route('blog.index') }}" wire:navigate class="hover:text-white transition">{{ __('Blog') }}</a>
+            <a href="{{ route('about') }}" wire:navigate class="hover:text-white transition">{{ __('About Us') }}</a>
+            <a href="{{ route('contact') }}" wire:navigate class="hover:text-white transition">{{ __('Contact') }}</a>
         </div>
 
         <div class="flex items-center gap-2">
@@ -130,13 +134,13 @@
                     <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
                 </summary>
                 <div class="absolute right-0 mt-2 min-w-[220px] glass-card p-2 flex flex-col text-sm">
-                    <a href="{{ url('/') }}" class="px-3 py-2 rounded-lg hover:bg-surface-700/60">{{ __('Home') }}</a>
-                    <a href="{{ route('job.index') }}" class="px-3 py-2 rounded-lg hover:bg-surface-700/60">{{ __('Job Vacancies') }}</a>
-                    <a href="{{ route('elearning.index') }}" class="px-3 py-2 rounded-lg hover:bg-surface-700/60">{{ __('E-Learning') }}</a>
-                    <a href="{{ route('event.index') }}" class="px-3 py-2 rounded-lg hover:bg-surface-700/60">{{ __('Event') }}</a>
-                    <a href="{{ route('blog.index') }}" class="px-3 py-2 rounded-lg hover:bg-surface-700/60">{{ __('Blog') }}</a>
-                    <a href="{{ route('about') }}" class="px-3 py-2 rounded-lg hover:bg-surface-700/60">{{ __('About Us') }}</a>
-                    <a href="{{ route('contact') }}" class="px-3 py-2 rounded-lg hover:bg-surface-700/60">{{ __('Contact') }}</a>
+                    <a href="{{ url('/') }}" wire:navigate class="px-3 py-2 rounded-lg hover:bg-surface-700/60">{{ __('Home') }}</a>
+                    <a href="{{ route('job.index') }}" wire:navigate class="px-3 py-2 rounded-lg hover:bg-surface-700/60">{{ __('Job Vacancies') }}</a>
+                    <a href="{{ route('elearning.index') }}" wire:navigate class="px-3 py-2 rounded-lg hover:bg-surface-700/60">{{ __('E-Learning') }}</a>
+                    <a href="{{ route('event.index') }}" wire:navigate class="px-3 py-2 rounded-lg hover:bg-surface-700/60">{{ __('Event') }}</a>
+                    <a href="{{ route('blog.index') }}" wire:navigate class="px-3 py-2 rounded-lg hover:bg-surface-700/60">{{ __('Blog') }}</a>
+                    <a href="{{ route('about') }}" wire:navigate class="px-3 py-2 rounded-lg hover:bg-surface-700/60">{{ __('About Us') }}</a>
+                    <a href="{{ route('contact') }}" wire:navigate class="px-3 py-2 rounded-lg hover:bg-surface-700/60">{{ __('Contact') }}</a>
                 </div>
             </details>
         </div>
@@ -171,13 +175,13 @@
         <div>
             <h4 class="text-white font-semibold mb-4">{{ __('Quick Links') }}</h4>
             <ul class="space-y-2 text-sm text-surface-400">
-                <li><a href="{{ url('/') }}" class="hover:text-brand-400">{{ __('Home') }}</a></li>
-                <li><a href="{{ route('job.index') }}" class="hover:text-brand-400">{{ __('Job Vacancies') }}</a></li>
-                <li><a href="{{ route('elearning.index') }}" class="hover:text-brand-400">{{ __('E-Learning') }}</a></li>
-                <li><a href="{{ route('event.index') }}" class="hover:text-brand-400">{{ __('Event') }}</a></li>
-                <li><a href="{{ route('blog.index') }}" class="hover:text-brand-400">{{ __('Blog') }}</a></li>
-                <li><a href="{{ route('about') }}" class="hover:text-brand-400">{{ __('About Us') }}</a></li>
-                <li><a href="{{ route('contact') }}" class="hover:text-brand-400">{{ __('Contact') }}</a></li>
+                <li><a href="{{ url('/') }}" wire:navigate class="hover:text-brand-400">{{ __('Home') }}</a></li>
+                <li><a href="{{ route('job.index') }}" wire:navigate class="hover:text-brand-400">{{ __('Job Vacancies') }}</a></li>
+                <li><a href="{{ route('elearning.index') }}" wire:navigate class="hover:text-brand-400">{{ __('E-Learning') }}</a></li>
+                <li><a href="{{ route('event.index') }}" wire:navigate class="hover:text-brand-400">{{ __('Event') }}</a></li>
+                <li><a href="{{ route('blog.index') }}" wire:navigate class="hover:text-brand-400">{{ __('Blog') }}</a></li>
+                <li><a href="{{ route('about') }}" wire:navigate class="hover:text-brand-400">{{ __('About Us') }}</a></li>
+                <li><a href="{{ route('contact') }}" wire:navigate class="hover:text-brand-400">{{ __('Contact') }}</a></li>
             </ul>
         </div>
 
@@ -227,7 +231,12 @@
 </footer>
 
 <x-whatsapp-float />
-<x-audio-player />
+
+@persist('audio-player')
+    <x-audio-player />
+@endpersist
+
+@livewireScripts
 
 <script>
     (function () {
@@ -270,7 +279,12 @@
         }
 
         // ─── Reveal-on-scroll (IntersectionObserver) ─────────────────
-        if ('IntersectionObserver' in window) {
+        // Wrapped so it can be called again after wire:navigate page swaps
+        function pjBindReveal () {
+            if (! ('IntersectionObserver' in window)) {
+                document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('is-visible'); });
+                return;
+            }
             var io = new IntersectionObserver(function (entries) {
                 entries.forEach(function (entry) {
                     if (entry.isIntersecting) {
@@ -279,10 +293,24 @@
                     }
                 });
             }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-            document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
-        } else {
-            document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('is-visible'); });
+            document.querySelectorAll('.reveal:not(.is-visible)').forEach(function (el) { io.observe(el); });
         }
+        pjBindReveal();
+
+        // ─── Section snap scroll (homepage only) ─────────────────────
+        // Toggle .snap-sections on <html>+<body> based on path. Re-runs
+        // after every Livewire wire:navigate page swap so the snap mode
+        // doesn't leak across pages.
+        function pjApplySnap () {
+            var isHome = location.pathname === '/' || location.pathname === '';
+            document.documentElement.classList.toggle('snap-sections', isHome);
+            document.body.classList.toggle('snap-sections', isHome);
+        }
+        pjApplySnap();
+        document.addEventListener('livewire:navigated', function () {
+            pjApplySnap();
+            pjBindReveal();
+        });
     })();
 </script>
 

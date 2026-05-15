@@ -69,21 +69,23 @@ class AdminPanelProvider extends PanelProvider
                 fn (): string => view('filament.partials.back-to-home-topbar')->render(),
             )
             ->renderHook(
-                PanelsRenderHook::BODY_END,
+                PanelsRenderHook::BODY_START,
                 function (): string {
-                    $html  = view('filament.partials.sidebar-exclusive-groups')->render();
-                    $html .= view('filament.partials.audio-player')->render();
-
                     // Auth pages (login / register / password-reset / email-verification)
-                    // also get the Mt Fuji background + falling sakura at body level so
-                    // they escape the auth-card's stacking context.
+                    // get the Mt Fuji background + falling sakura BEFORE the main content
+                    // so they sit behind the form. BODY_END would render them on top.
                     $route = request()->route()?->getName() ?? '';
                     if (str_contains($route, '.auth.')) {
-                        $html .= view('filament.partials.login-background')->render();
-                        $html .= view('filament.partials.login-sakura')->render();
+                        return view('filament.partials.login-background')->render()
+                            . view('filament.partials.login-sakura')->render();
                     }
-                    return $html;
+                    return '';
                 },
+            )
+            ->renderHook(
+                PanelsRenderHook::BODY_END,
+                fn (): string => view('filament.partials.sidebar-exclusive-groups')->render()
+                    . view('filament.partials.audio-player')->render(),
             )
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
