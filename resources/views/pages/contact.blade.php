@@ -99,22 +99,22 @@
             <div class="glass-card p-6">
                 <p class="text-xs uppercase tracking-wider text-brand-400 font-semibold">{{ __('Reach us directly') }}</p>
                 <div class="mt-5 space-y-4 text-sm">
-                    <a href="https://wa.me/{{ config('passion.contact.whatsapp') }}" target="_blank" rel="noopener" class="flex items-start gap-3 text-surface-200 hover:text-brand-400 transition">
+                    <a href="https://wa.me/{{ \App\Support\SiteSettings::contact('whatsapp') }}" target="_blank" rel="noopener" class="flex items-start gap-3 text-surface-200 hover:text-brand-400 transition">
                         <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-500/15 text-emerald-400 shrink-0">
                             <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.5 14.4l-2.4-1.1c-.3-.1-.6-.1-.8.1l-1 1.1c-1.7-.9-3.1-2.2-4-3.9l1-1.1c.2-.2.2-.5.1-.7L9.4 6.4c-.1-.3-.4-.4-.7-.4H7.3c-.3 0-.6.2-.7.5-.2 3.2 1.1 6.3 3.4 8.6 2.3 2.3 5.3 3.6 8.6 3.4.3 0 .5-.4.5-.7v-1.5c0-.3-.2-.6-.4-.7l-1.2-.2zM12 2a10 10 0 100 20 10 10 0 000-20z"/></svg>
                         </span>
                         <span>
                             <span class="block text-xs text-surface-400">WhatsApp</span>
-                            <span class="block">{{ config('passion.contact.phone') }}</span>
+                            <span class="block">{{ \App\Support\SiteSettings::contact('phone') }}</span>
                         </span>
                     </a>
-                    <a href="mailto:{{ config('passion.contact.email') }}" class="flex items-start gap-3 text-surface-200 hover:text-brand-400 transition">
+                    <a href="mailto:{{ \App\Support\SiteSettings::contact('email') }}" class="flex items-start gap-3 text-surface-200 hover:text-brand-400 transition">
                         <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-brand-500/15 text-brand-400 shrink-0">
                             <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l9 6 9-6M3 8v10a2 2 0 002 2h14a2 2 0 002-2V8M3 8l2-2h14l2 2"/></svg>
                         </span>
                         <span>
                             <span class="block text-xs text-surface-400">Email</span>
-                            <span class="block">{{ config('passion.contact.email') }}</span>
+                            <span class="block">{{ \App\Support\SiteSettings::contact('email') }}</span>
                         </span>
                     </a>
                 </div>
@@ -122,11 +122,19 @@
 
             <div class="glass-card p-6">
                 <p class="text-xs uppercase tracking-wider text-brand-400 font-semibold">{{ __('Offices') }}</p>
-                <ul class="mt-4 space-y-4 text-sm">
-                    @foreach(config('passion.contact.offices') as $office)
+                <ul class="mt-4 space-y-3 text-sm">
+                    @foreach(\App\Support\SiteSettings::offices() as $office)
                         <li>
-                            <p class="font-semibold text-white">{{ $office['city'] }} <span class="text-surface-500 font-normal">· {{ $office['country'] }}</span></p>
-                            <p class="text-xs text-surface-400 mt-0.5">{{ $office['address'] }}</p>
+                            <a href="{{ $office['maps_url'] }}" target="_blank" rel="noopener noreferrer"
+                               title="{{ __('Open in Google Maps') }}"
+                               class="block -mx-2 px-2 py-1.5 rounded-lg hover:bg-surface-800/60 transition group">
+                                <p class="font-semibold text-white group-hover:text-brand-400 inline-flex items-center gap-1.5">
+                                    {{ $office['city'] }}
+                                    <span class="text-surface-500 font-normal">· {{ $office['country'] }}</span>
+                                    <svg class="h-3 w-3 opacity-0 group-hover:opacity-100 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                                </p>
+                                <p class="text-xs text-surface-400 mt-0.5">{{ $office['address'] }}</p>
+                            </a>
                         </li>
                     @endforeach
                 </ul>

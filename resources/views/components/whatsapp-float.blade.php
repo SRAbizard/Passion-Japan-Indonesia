@@ -1,4 +1,4 @@
-@props(['number' => config('passion.contact.whatsapp'), 'message' => 'Halo Passion Japan, saya ingin bertanya tentang program Anda.'])
+@props(['number' => \App\Support\SiteSettings::contact('whatsapp'), 'message' => 'Halo Passion Japan, saya ingin bertanya tentang program Anda.'])
 
 <a href="https://wa.me/{{ $number }}?text={{ urlencode($message) }}"
    target="_blank" rel="noopener"
@@ -11,6 +11,6 @@
         </svg>
     </span>
     <span class="hidden md:block absolute right-full mr-3 top-1/2 -translate-y-1/2 whitespace-nowrap rounded-lg bg-surface-800 px-3 py-1.5 text-xs text-white opacity-0 group-hover:opacity-100 transition shadow-lg">
-        WhatsApp · {{ config('passion.contact.phone') }}
+        WhatsApp · {{ \App\Support\SiteSettings::contact('phone') }}
     </span>
 </a>

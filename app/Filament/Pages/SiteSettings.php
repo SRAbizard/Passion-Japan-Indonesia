@@ -5,6 +5,7 @@ namespace App\Filament\Pages;
 use App\Models\Setting;
 use BackedEnum;
 use Filament\Actions\Action;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
@@ -43,6 +44,10 @@ class SiteSettings extends Page
                 $data[$this->keyToFormName($key)] = Setting::get($key, $this->defaultFor($key));
             }
         }
+        // Offices are stored as a JSON array under the key contact.offices
+        $offices = Setting::get('contact.offices', config('passion.contact.offices', []));
+        $data['contact__offices'] = is_array($offices) ? $offices : [];
+
         $this->form->fill($data);
     }
 
@@ -81,6 +86,32 @@ class SiteSettings extends Page
                         TextInput::make('stats__companies')->label(__('Partner Companies')),
                     ]),
                 ]),
+                Tab::make(__('Offices'))->icon('heroicon-o-map-pin')->schema([
+                    Section::make()
+                        ->description(__('Offices shown in the homepage footer, About, and Contact pages. Each address links to Google Maps when clicked. Leave Maps URL blank to auto-search by address.'))
+                        ->components([
+                            Repeater::make('contact__offices')
+                                ->label('')
+                                ->columns(2)
+                                ->itemLabel(fn (array $state): ?string =>
+                                    trim(($state['city'] ?? '').', '.($state['country'] ?? ''), ', ') ?: __('New office'))
+                                ->collapsible()
+                                ->reorderable()
+                                ->components([
+                                    TextInput::make('city')->label(__('City'))->required()->maxLength(120),
+                                    TextInput::make('country')->label(__('Country'))->maxLength(80),
+                                    TextInput::make('address')->label(__('Full address'))->columnSpanFull()
+                                        ->placeholder(__('Street, district, city, postal code'))
+                                        ->helperText(__('Used for Google Maps search if Maps URL is empty.')),
+                                    TextInput::make('maps_url')->label(__('Google Maps URL (optional)'))->columnSpanFull()
+                                        ->url()
+                                        ->placeholder('https://maps.google.com/?q=...')
+                                        ->helperText(__('Leave blank to auto-generate from address.')),
+                                ])
+                                ->defaultItems(0)
+                                ->addActionLabel(__('Add office')),
+                        ]),
+                ]),
             ])->columnSpanFull(),
         ])->statePath('data');
     }
@@ -104,6 +135,19 @@ class SiteSettings extends Page
                 Setting::set($key, $value, $group);
             }
         }
+
+        // Offices: array of {city, country, address, maps_url}
+        $offices = collect($state['contact__offices'] ?? [])
+            ->map(fn ($o) => [
+                'city'     => $o['city'] ?? null,
+                'country'  => $o['country'] ?? null,
+                'address'  => $o['address'] ?? null,
+                'maps_url' => $o['maps_url'] ?? null,
+            ])
+            ->filter(fn ($o) => filled($o['city']))
+            ->values()
+            ->all();
+        Setting::set('contact.offices', $offices, 'contact');
 
         Notification::make()
             ->title(__('Settings saved'))

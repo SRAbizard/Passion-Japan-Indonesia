@@ -13,7 +13,17 @@ class Setting extends Model
     {
         $cached = Cache::rememberForever("setting:{$key}", function () use ($key) {
             $row = static::query()->where('key', $key)->first();
-            return $row ? ['v' => $row->value] : null;
+            if (! $row) return null;
+
+            // If the stored value looks like JSON, decode it; otherwise return raw.
+            $raw = $row->value;
+            if (is_string($raw) && (str_starts_with($raw, '[') || str_starts_with($raw, '{'))) {
+                $decoded = json_decode($raw, true);
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    return ['v' => $decoded];
+                }
+            }
+            return ['v' => $raw];
         });
 
         return $cached ? $cached['v'] : $default;
@@ -21,9 +31,14 @@ class Setting extends Model
 
     public static function set(string $key, mixed $value, string $group = 'general'): void
     {
+        // Arrays are JSON-encoded so longText can hold them; get() decodes back.
+        $stored = is_array($value)
+            ? json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
+            : $value;
+
         static::query()->updateOrCreate(
             ['key' => $key],
-            ['value' => $value, 'group' => $group],
+            ['value' => $stored, 'group' => $group],
         );
         Cache::forget("setting:{$key}");
     }

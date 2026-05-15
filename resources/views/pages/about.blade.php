@@ -9,10 +9,10 @@
     ];
 
     $stats = [
-        ['value' => config('passion.stats.students'),  'label' => __('Trained Students')],
-        ['value' => config('passion.stats.workers'),   'label' => __('Workers placed in Japan')],
-        ['value' => config('passion.stats.companies'), 'label' => __('Partner Companies')],
-        ['value' => '8+',                              'label' => __('Years of Experience')],
+        ['value' => \App\Support\SiteSettings::stat('students'),  'label' => __('Trained Students')],
+        ['value' => \App\Support\SiteSettings::stat('workers'),   'label' => __('Workers placed in Japan')],
+        ['value' => \App\Support\SiteSettings::stat('companies'), 'label' => __('Partner Companies')],
+        ['value' => '8+',                                          'label' => __('Years of Experience')],
     ];
 @endphp
 
@@ -96,15 +96,21 @@
             <h2 class="mt-2 font-display text-3xl font-bold text-white">{{ __('Where to find us') }}</h2>
         </div>
         <div class="mt-10 grid gap-4 md:grid-cols-3">
-            @foreach(config('passion.contact.offices') as $office)
-                <div class="glass-card p-6">
-                    <div class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand-600/20 text-brand-400">
+            @foreach(\App\Support\SiteSettings::offices() as $office)
+                <a href="{{ $office['maps_url'] }}" target="_blank" rel="noopener noreferrer"
+                   title="{{ __('Open in Google Maps') }}"
+                   class="glass-card p-6 block hover:border-brand-500/50 hover:shadow-lg hover:shadow-brand-500/10 transition group">
+                    <div class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand-600/20 text-brand-400 group-hover:scale-110 transition">
                         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.828 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                     </div>
-                    <h3 class="mt-4 font-display text-lg font-semibold text-white">{{ $office['city'] }}</h3>
+                    <h3 class="mt-4 font-display text-lg font-semibold text-white group-hover:text-brand-400">{{ $office['city'] }}</h3>
                     <p class="text-xs text-surface-400">{{ $office['country'] }}</p>
                     <p class="mt-3 text-sm text-surface-300">{{ $office['address'] }}</p>
-                </div>
+                    <p class="mt-4 inline-flex items-center gap-1 text-xs text-brand-400 opacity-0 group-hover:opacity-100 transition">
+                        {{ __('Open in Google Maps') }}
+                        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                    </p>
+                </a>
             @endforeach
         </div>
     </div>

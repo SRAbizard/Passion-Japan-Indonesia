@@ -102,15 +102,15 @@
                     <p class="mt-2 font-display text-2xl text-white">{{ __('Thousands of Indonesian workers and dozens of partner companies in Japan.') }}</p>
                     <div class="mt-6 grid grid-cols-3 gap-4 text-center">
                         <div class="rounded-2xl border border-surface-700/60 bg-surface-900/40 p-4">
-                            <p class="font-display text-2xl font-bold text-white">{{ config('passion.stats.students') }}</p>
+                            <p class="font-display text-2xl font-bold text-white">{{ \App\Support\SiteSettings::stat('students') }}</p>
                             <p class="mt-1 text-xs text-surface-400 uppercase tracking-wider">{{ __('Trained Students') }}</p>
                         </div>
                         <div class="rounded-2xl border border-surface-700/60 bg-surface-900/40 p-4">
-                            <p class="font-display text-2xl font-bold text-white">{{ config('passion.stats.workers') }}</p>
+                            <p class="font-display text-2xl font-bold text-white">{{ \App\Support\SiteSettings::stat('workers') }}</p>
                             <p class="mt-1 text-xs text-surface-400 uppercase tracking-wider">{{ __('Workers') }}</p>
                         </div>
                         <div class="rounded-2xl border border-surface-700/60 bg-surface-900/40 p-4">
-                            <p class="font-display text-2xl font-bold text-white">{{ config('passion.stats.companies') }}</p>
+                            <p class="font-display text-2xl font-bold text-white">{{ \App\Support\SiteSettings::stat('companies') }}</p>
                             <p class="mt-1 text-xs text-surface-400 uppercase tracking-wider">{{ __('Partner Companies') }}</p>
                         </div>
                     </div>
@@ -498,7 +498,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     <h2 class="font-display text-3xl lg:text-4xl font-bold text-white max-w-xl">{{ __('Ready to start your career in Japan?') }}</h2>
                     <p class="mt-3 text-brand-100 max-w-xl">{{ __('Free consultation. Talk to our team and get a clear path within 24 hours.') }}</p>
                 </div>
-                <a href="https://wa.me/{{ config('passion.contact.whatsapp') }}" target="_blank" rel="noopener" class="inline-flex shrink-0 items-center gap-2 px-7 py-3.5 rounded-xl bg-white text-brand-700 font-semibold hover:bg-brand-50 transition shadow-xl">
+                <a href="https://wa.me/{{ \App\Support\SiteSettings::contact('whatsapp') }}" target="_blank" rel="noopener" class="inline-flex shrink-0 items-center gap-2 px-7 py-3.5 rounded-xl bg-white text-brand-700 font-semibold hover:bg-brand-50 transition shadow-xl">
                     {{ __('Talk to us on WhatsApp') }}
                     <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
                 </a>
