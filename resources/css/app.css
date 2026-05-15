@@ -372,13 +372,20 @@ html.light .bg-surface-900     { background-color: #f6f7fa !important; }
    section starts below the sticky header instead of being clipped.
    ──────────────────────────────────────────────────────────────────── */
 html.snap-sections, body.snap-sections {
-    scroll-snap-type: y proximity;
+    scroll-snap-type: y mandatory;
     scroll-padding-top: 4rem;
 }
 @media (min-width: 1024px) {
     html.snap-sections, body.snap-sections { scroll-padding-top: 5rem; }
 }
-.snap-sections section { scroll-snap-align: start; }
+.snap-sections section {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;   /* one section at a time, no skipping */
+}
+/* Footer should NOT be a snap target — let it scroll naturally past
+   the last section. */
+.snap-sections footer { scroll-snap-align: none; }
+
 @media (max-width: 768px) {
     /* Disable snap on phones — sections are taller than viewport so
        snapping is annoying; let users free-scroll. */

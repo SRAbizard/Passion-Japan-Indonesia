@@ -137,14 +137,16 @@ class SiteSettings extends Page
                 ]),
                 Tab::make(__('Theme audio'))->icon('heroicon-o-musical-note')->schema([
                     Section::make(__('Background music'))
-                        ->description(__('Upload an MP3/OGG file. Plays muted on the homepage; visitors can unmute via the floating speaker button.'))
+                        ->description(__('Upload an MP3 file (OGG / WAV also work). Plays on the homepage; visitors can mute via the floating speaker button.'))
                         ->components([
                             FileUpload::make('audio__theme_path')
                                 ->label(__('Theme song'))
                                 ->disk('public')
                                 ->directory('audio')
-                                ->acceptedFileTypes(['audio/mpeg', 'audio/mp3', 'audio/ogg', 'audio/wav'])
-                                ->maxSize(10240)
+                                ->maxSize(51200)             // 50 MB
+                                ->previewable(false)         // skip the audio-preview metadata read that was hanging
+                                ->openable()                 // give admin a way to open / play the saved file
+                                ->downloadable()
                                 ->columnSpanFull(),
                         ]),
                 ]),
