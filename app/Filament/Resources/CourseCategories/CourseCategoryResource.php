@@ -33,7 +33,7 @@ class CourseCategoryResource extends Resource
         return $schema->components([
             Section::make()->columns(2)->components([
                 TextInput::make('slug')->required()->unique(ignoreRecord: true)->maxLength(80)
-                    ->live(onBlur: true)->afterStateUpdated(fn ($s, $set) => $set('slug', Str::slug($s))),
+                    ->live(onBlur: true)->afterStateUpdated(fn ($state, $set) => $set('slug', Str::slug($state ?? ''))),
                 TextInput::make('icon')->default('heroicon-o-academic-cap'),
                 ColorPicker::make('color')->default('#b32510'),
                 TextInput::make('sort_order')->numeric()->default(0),

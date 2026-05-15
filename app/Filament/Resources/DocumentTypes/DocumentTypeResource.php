@@ -42,7 +42,7 @@ class DocumentTypeResource extends Resource
                     ->unique(ignoreRecord: true)
                     ->maxLength(64)
                     ->live(onBlur: true)
-                    ->afterStateUpdated(fn ($s, $set) => $set('key', Str::slug($s, '_'))),
+                    ->afterStateUpdated(fn ($state, $set) => $set('key', Str::slug($state ?? '', '_'))),
                 TextInput::make('icon')
                     ->label(__('Icon'))
                     ->default('heroicon-o-document')

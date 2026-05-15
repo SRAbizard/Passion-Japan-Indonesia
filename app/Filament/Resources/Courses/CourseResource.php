@@ -42,7 +42,7 @@ class CourseResource extends Resource
         return $schema->components([
             Section::make(__('Basics'))->columns(2)->components([
                 TextInput::make('slug')->required()->unique(ignoreRecord: true)->maxLength(120)
-                    ->live(onBlur: true)->afterStateUpdated(fn ($s, $set) => $set('slug', Str::slug($s))),
+                    ->live(onBlur: true)->afterStateUpdated(fn ($state, $set) => $set('slug', Str::slug($state ?? ''))),
                 Select::make('course_category_id')->label(__('Category'))
                     ->options(fn () => CourseCategory::orderBy('sort_order')->get()->mapWithKeys(fn ($c) => [$c->id => $c->t('name')]))
                     ->searchable(),

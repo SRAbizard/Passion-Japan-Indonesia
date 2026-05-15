@@ -25,8 +25,11 @@ class DocumentTypeSeeder extends Seeder
             ['other',              ['id'=>'Lainnya',             'en'=>'Other',                 'ja'=>'その他'],                'heroicon-o-document-duplicate'],
         ];
 
+        // firstOrCreate (NOT updateOrCreate) so any admin-edited types are
+        // left alone on subsequent runs. Re-running this seeder only adds
+        // missing canonical types, never overwrites a customised label.
         foreach ($types as $i => [$key, $label, $icon]) {
-            DocumentType::updateOrCreate(
+            DocumentType::firstOrCreate(
                 ['key' => $key],
                 [
                     'label'      => $label,

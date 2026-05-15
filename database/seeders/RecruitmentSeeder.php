@@ -59,8 +59,10 @@ class RecruitmentSeeder extends Seeder
                 ['ktp','kk','passport','ijazah','transcript','photo','medical_check','sktm','sktm_polri'],
                 ['cv','jlpt_certificate']],
         ];
+        // firstOrCreate so admin-edited names / descriptions / required docs
+        // are kept on re-seed. Only missing visa slugs get the defaults.
         foreach ($visas as $i => [$slug, $name, $desc, $reqDocs, $optDocs]) {
-            VisaCategory::updateOrCreate(['slug' => $slug], [
+            VisaCategory::firstOrCreate(['slug' => $slug], [
                 'name'               => $name,
                 'description'        => $desc,
                 'sort_order'         => $i + 1,

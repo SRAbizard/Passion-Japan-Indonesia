@@ -37,7 +37,7 @@ class CompanyResource extends Resource
             Section::make(__('Basics'))->columns(2)->components([
                 TextInput::make('name')->required()->maxLength(120),
                 TextInput::make('slug')->required()->unique(ignoreRecord: true)->maxLength(120)
-                    ->live(onBlur: true)->afterStateUpdated(fn ($s, $set) => $set('slug', Str::slug($s))),
+                    ->live(onBlur: true)->afterStateUpdated(fn ($state, $set) => $set('slug', Str::slug($state ?? ''))),
                 TextInput::make('industry')->maxLength(80),
                 TextInput::make('website')->url()->prefix('https://')->maxLength(191),
                 TextInput::make('country')->default('Japan')->maxLength(80),
