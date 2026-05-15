@@ -89,13 +89,6 @@ class VisaCategoryResource extends Resource
         ])->defaultSort('sort_order');
     }
 
-    public static function getRelations(): array
-    {
-        return [
-            RelationManagers\WorkflowStepsRelationManager::class,
-        ];
-    }
-
     public static function getPages(): array
     {
         return [
