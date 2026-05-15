@@ -83,8 +83,57 @@
     }
 }
 
-/* Body always dark in Phase 0 — light theme comes later */
+/* Body — uses surface palette via CSS variables so the .light theme
+   override below adapts everything in one place. */
 html, body {
     background-color: var(--color-surface-950);
     color: var(--color-surface-100);
 }
+
+/* ────────────────────────────────────────────────────────────────────
+   Light theme — flips the surface palette via CSS-variable swaps.
+   Tailwind v4 emits surface-* utilities as var(--color-surface-*),
+   so swapping the variables here flips bg/text/border colours sitewide
+   without rewriting any HTML class.
+   ──────────────────────────────────────────────────────────────────── */
+html.light {
+    --color-surface-50:  #1a1e30;  /* was lightest, becomes near-black */
+    --color-surface-100: #232842;  /* was very light text → dark text */
+    --color-surface-200: #343b54;
+    --color-surface-300: #4b536f;
+    --color-surface-400: #6f7896;
+    --color-surface-500: #a8afc1;
+    --color-surface-600: #d2d6e0;
+    --color-surface-700: #e2e5ec;
+    --color-surface-800: #eceef4;  /* card bg */
+    --color-surface-900: #f6f7fa;  /* section bg */
+    --color-surface-950: #ffffff;  /* page bg */
+}
+
+/* text-white in dark = high-contrast text. In light mode it must flip
+   to a near-black so it stays readable on the now-white surface. */
+html.light .text-white { color: #1a1e30 !important; }
+html.light .text-surface-200,
+html.light .text-surface-300 { color: #4b536f !important; }
+html.light .text-surface-400,
+html.light .text-surface-500 { color: #6f7896 !important; }
+
+/* Glass card looks too transparent on white; tighten its background
+   and tint the border so cards are still distinguishable. */
+html.light .glass-card {
+    background-color: rgba(255, 255, 255, 0.85);
+    border-color: rgba(0, 0, 0, 0.08);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+/* Header/footer get a clean white-with-faint-border in light mode. */
+html.light header,
+html.light footer {
+    background-color: rgba(255, 255, 255, 0.95);
+    border-color: rgba(0, 0, 0, 0.08);
+}
+
+/* Theme-toggle icon visibility — show only the icon for the OTHER theme
+   (clicking it switches to that theme). */
+html.dark  .theme-icon-moon { display: none; }
+html.light .theme-icon-sun  { display: none; }

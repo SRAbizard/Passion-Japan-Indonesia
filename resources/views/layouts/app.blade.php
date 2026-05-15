@@ -8,6 +8,18 @@
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     <link rel="canonical" href="{{ url()->current() }}">
 
+    {{-- Theme: apply saved choice BEFORE paint to avoid flash. --}}
+    <script>
+        (function () {
+            try {
+                var saved = localStorage.getItem('pj-theme');
+                var html  = document.documentElement;
+                if (saved === 'light') { html.classList.remove('dark'); html.classList.add('light'); }
+                else                    { html.classList.remove('light'); html.classList.add('dark'); }
+            } catch (e) {}
+        })();
+    </script>
+
     {{-- hreflang alternates for SEO multilingual --}}
     @foreach(config('passion.locales') as $code => $meta)
         <link rel="alternate" hreflang="{{ $code }}" href="{{ url()->current() }}?lang={{ $code }}">
@@ -53,6 +65,17 @@
         </div>
 
         <div class="flex items-center gap-2">
+            {{-- Theme toggle (sun/moon) --}}
+            <button type="button" id="theme-toggle"
+                    title="{{ __('Toggle dark / light mode') }}"
+                    aria-label="{{ __('Toggle dark / light mode') }}"
+                    class="btn-ghost text-xs px-2.5 py-2 inline-flex items-center justify-center">
+                {{-- Sun shown in dark mode (= click to switch to light) --}}
+                <svg class="theme-icon-sun h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                {{-- Moon shown in light mode (= click to switch to dark) --}}
+                <svg class="theme-icon-moon h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+            </button>
+
             {{-- Language switcher --}}
             <div class="relative group">
                 <button type="button" class="btn-ghost text-xs px-3 py-2 gap-2">
@@ -147,11 +170,11 @@
         <div>
             <h4 class="text-white font-semibold mb-4">{{ __('Popular Programs') }}</h4>
             <ul class="space-y-2 text-sm text-surface-400">
-                <li><a href="#" class="hover:text-brand-400">Tokutei Ginou</a></li>
-                <li><a href="#" class="hover:text-brand-400">Internship</a></li>
-                <li><a href="#" class="hover:text-brand-400">Driver Jepang</a></li>
-                <li><a href="#" class="hover:text-brand-400">Engineer Jepang</a></li>
-                <li><a href="#" class="hover:text-brand-400">JLPT Class</a></li>
+                <li><a href="{{ route('job.index', ['visa' => 'tokutei-ginou']) }}" class="hover:text-brand-400">Tokutei Ginou</a></li>
+                <li><a href="{{ route('job.index', ['visa' => 'internship']) }}" class="hover:text-brand-400">Internship</a></li>
+                <li><a href="{{ route('job.index', ['visa' => 'engineering']) }}" class="hover:text-brand-400">Gijinkoku / Engineer</a></li>
+                <li><a href="{{ route('job.index', ['category' => 'driver']) }}" class="hover:text-brand-400">Driver Jepang</a></li>
+                <li><a href="{{ route('elearning.index', ['category' => 'jlpt']) }}" class="hover:text-brand-400">JLPT Class</a></li>
             </ul>
         </div>
 
@@ -190,6 +213,20 @@
 </footer>
 
 <x-whatsapp-float />
+
+<script>
+    (function () {
+        var btn = document.getElementById('theme-toggle');
+        if (! btn) return;
+        btn.addEventListener('click', function () {
+            var html = document.documentElement;
+            var goingLight = html.classList.contains('dark');
+            html.classList.toggle('dark', ! goingLight);
+            html.classList.toggle('light', goingLight);
+            try { localStorage.setItem('pj-theme', goingLight ? 'light' : 'dark'); } catch (e) {}
+        });
+    })();
+</script>
 
 </body>
 </html>

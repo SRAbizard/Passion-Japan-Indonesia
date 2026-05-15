@@ -708,6 +708,17 @@
     "Ke Jepang": "Ke Jepang",
     "Pilih jalur visa untuk melihat alur lengkapnya.": "Pilih jalur visa untuk melihat alur lengkapnya.",
     "Visa workflow tabs": "Tab alur visa",
-    "Catatan Penting": "Catatan Penting"
+    "Catatan Penting": "Catatan Penting",
+
+    "Toggle dark / light mode": "Beralih mode terang / gelap",
+    "Open in Google Maps": "Buka di Google Maps",
+    "New office": "Kantor baru",
+    "Offices shown in the homepage footer, About, and Contact pages. Each address links to Google Maps when clicked. Leave Maps URL blank to auto-search by address.": "Kantor yang tampil di footer beranda, halaman Tentang, dan Kontak. Setiap alamat akan tertaut ke Google Maps. Kosongkan URL Maps untuk auto-cari berdasarkan alamat.",
+    "Full address": "Alamat Lengkap",
+    "Street, district, city, postal code": "Jalan, kecamatan, kota, kode pos",
+    "Used for Google Maps search if Maps URL is empty.": "Dipakai untuk pencarian Google Maps jika URL Maps kosong.",
+    "Google Maps URL (optional)": "URL Google Maps (opsional)",
+    "Leave blank to auto-generate from address.": "Kosongkan untuk auto-generate dari alamat.",
+    "Add office": "Tambah Kantor"
 }
 
