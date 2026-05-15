@@ -25,6 +25,7 @@
 {{-- HERO --}}
 <section class="relative overflow-hidden">
     <div class="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 h-[36rem] w-[36rem] rounded-full bg-brand-700/25 blur-3xl"></div>
+    <x-jp.sakura-petals :count="12" />
     <div class="relative mx-auto max-w-7xl px-6 pt-16 pb-12">
         <p class="text-xs uppercase tracking-wider text-brand-400 font-semibold">{{ __('About Us') }}</p>
         <h1 class="mt-3 font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-tight max-w-4xl">

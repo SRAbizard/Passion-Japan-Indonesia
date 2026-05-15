@@ -227,6 +227,7 @@
 </footer>
 
 <x-whatsapp-float />
+<x-audio-player />
 
 <script>
     (function () {

@@ -58,7 +58,8 @@ class AdminPanelProvider extends PanelProvider
             ->viteTheme('resources/css/filament/passion-theme.css')
             ->renderHook(
                 PanelsRenderHook::AUTH_LOGIN_FORM_BEFORE,
-                fn (): string => view('filament.partials.login-jp-decoration')->render(),
+                fn (): string => view('filament.partials.login-sakura')->render()
+                    . view('filament.partials.login-jp-decoration')->render(),
             )
             ->renderHook(
                 PanelsRenderHook::AUTH_LOGIN_FORM_AFTER,
@@ -70,7 +71,8 @@ class AdminPanelProvider extends PanelProvider
             )
             ->renderHook(
                 PanelsRenderHook::BODY_END,
-                fn (): string => view('filament.partials.sidebar-exclusive-groups')->render(),
+                fn (): string => view('filament.partials.sidebar-exclusive-groups')->render()
+                    . view('filament.partials.audio-player')->render(),
             )
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')

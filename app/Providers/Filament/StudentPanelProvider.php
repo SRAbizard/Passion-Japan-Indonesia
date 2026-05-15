@@ -59,7 +59,8 @@ class StudentPanelProvider extends PanelProvider
             ->viteTheme('resources/css/filament/passion-theme.css')
             ->renderHook(
                 PanelsRenderHook::AUTH_LOGIN_FORM_BEFORE,
-                fn (): string => view('filament.partials.login-jp-decoration')->render(),
+                fn (): string => view('filament.partials.login-sakura')->render()
+                    . view('filament.partials.login-jp-decoration')->render(),
             )
             ->renderHook(
                 PanelsRenderHook::AUTH_LOGIN_FORM_AFTER,
@@ -71,7 +72,8 @@ class StudentPanelProvider extends PanelProvider
             )
             ->renderHook(
                 PanelsRenderHook::BODY_END,
-                fn (): string => view('filament.partials.sidebar-exclusive-groups')->render(),
+                fn (): string => view('filament.partials.sidebar-exclusive-groups')->render()
+                    . view('filament.partials.audio-player')->render(),
             )
             ->discoverResources(in: app_path('Filament/Student/Resources'), for: 'App\\Filament\\Student\\Resources')
             ->discoverPages(in: app_path('Filament/Student/Pages'), for: 'App\\Filament\\Student\\Pages')

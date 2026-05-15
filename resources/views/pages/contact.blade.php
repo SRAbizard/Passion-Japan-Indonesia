@@ -7,6 +7,7 @@
 @section('content')
 <section class="relative overflow-hidden">
     <div class="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 h-[32rem] w-[32rem] rounded-full bg-brand-700/20 blur-3xl"></div>
+    <x-jp.sakura-petals :count="10" />
 
     <div class="relative mx-auto max-w-7xl px-6 pt-16 pb-12">
         <p class="text-xs uppercase tracking-wider text-brand-400 font-semibold">{{ __('Contact') }}</p>

@@ -382,9 +382,13 @@ html.snap-sections, body.snap-sections {
     scroll-snap-align: start;
     scroll-snap-stop: always;   /* one section at a time, no skipping */
 }
-/* Footer should NOT be a snap target — let it scroll naturally past
-   the last section. */
-.snap-sections footer { scroll-snap-align: none; }
+/* Footer + any section with .snap-skip don't snap — used for the last
+   CTA section so the footer is actually reachable. */
+.snap-sections footer,
+.snap-sections section.snap-skip {
+    scroll-snap-align: none;
+    scroll-snap-stop: normal;
+}
 
 @media (max-width: 768px) {
     /* Disable snap on phones — sections are taller than viewport so

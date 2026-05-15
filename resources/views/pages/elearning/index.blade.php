@@ -7,9 +7,10 @@
 @endphp
 
 @section('content')
-<section class="relative mx-auto max-w-7xl px-6 pt-14 pb-10">
+<section class="relative overflow-hidden">
     <div class="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 h-[28rem] w-[28rem] rounded-full bg-brand-700/20 blur-3xl"></div>
-    <div class="relative">
+    <x-jp.sakura-petals :count="10" />
+    <div class="relative mx-auto max-w-7xl px-6 pt-14 pb-10">
         <p class="text-xs uppercase tracking-wider text-brand-400 font-semibold">{{ __('E-Learning') }}</p>
         <h1 class="mt-3 font-display text-4xl sm:text-5xl font-extrabold text-white">{{ __('Master Japanese on your own pace') }}</h1>
         <p class="mt-4 max-w-2xl text-surface-300">{{ __('Bite-sized lessons, instructor-led courses, and quizzes that prepare you for life and work in Japan.') }}</p>
