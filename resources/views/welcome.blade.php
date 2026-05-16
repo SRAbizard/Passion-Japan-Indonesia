@@ -396,7 +396,7 @@
         'success' => ['bg' => 'bg-emerald-500/15','text'=> 'text-emerald-300','border'=> 'border-emerald-500/30'],
     ];
 @endphp
-<section id="workflow" class="reveal min-h-screen flex flex-col justify-center py-20 bg-surface-900/40">
+<section id="workflow" class="reveal min-h-screen flex flex-col justify-center py-20 bg-surface-900/40 snap-end">
     <div class="mx-auto max-w-7xl px-6">
         <div class="text-center max-w-2xl mx-auto">
             <p class="text-xs uppercase tracking-wider text-brand-400 font-semibold">{{ __('Process') }}</p>
@@ -517,27 +517,9 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 @endpush
 
-{{-- ========== CTA ========== --}}
-{{-- Last section stays a snap target so `mandatory` snap can find it,
-     but it snaps to the END of the viewport so the footer sits naturally
-     below it in the same view. --}}
-<section class="reveal py-20 snap-end">
-    <div class="mx-auto max-w-5xl px-6">
-        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-700 via-brand-800 to-surface-900 p-10 lg:p-14">
-            <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.08),transparent_40%)]"></div>
-            <div class="relative flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-                <div>
-                    <h2 class="font-display text-3xl lg:text-4xl font-bold text-white max-w-xl">{{ __('Ready to start your career in Japan?') }}</h2>
-                    <p class="mt-3 text-brand-100 max-w-xl">{{ __('Free consultation. Talk to our team and get a clear path within 24 hours.') }}</p>
-                </div>
-                <a href="https://wa.me/{{ \App\Support\SiteSettings::contact('whatsapp') }}" target="_blank" rel="noopener" class="inline-flex shrink-0 items-center gap-2 px-7 py-3.5 rounded-xl bg-white text-brand-700 font-semibold hover:bg-brand-50 transition shadow-xl">
-                    {{ __('Talk to us on WhatsApp') }}
-                    <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
-                </a>
-            </div>
-        </div>
-    </div>
-</section>
+{{-- CTA card lives in the global footer now (layouts/app.blade.php) so
+     scrolling past the workflow lands directly in the footer-with-CTA
+     view. The Workflow section above is the last snap target. --}}
 
 {{-- Audio player now lives in layouts/app.blade.php so every public page has it. --}}
 @if(false)
