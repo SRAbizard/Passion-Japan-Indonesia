@@ -91,6 +91,22 @@ class SiteSettings
     }
 
     /**
+     * Public URL for the login page wallpaper. Falls back to a
+     * tasteful default Japan photo (Mt Fuji + sakura, from Unsplash)
+     * when the admin hasn't uploaded one, so the login page is never
+     * blank.
+     */
+    public static function loginBackgroundUrl(): string
+    {
+        $path = Setting::get('login.background_path');
+        if ($path) {
+            return asset('storage/'.$path);
+        }
+        // Default: Mt Fuji at sunset framed by sakura
+        return 'https://images.unsplash.com/photo-1480796927426-f609979314bd?auto=format&fit=crop&w=1920&q=70';
+    }
+
+    /**
      * Hero slideshow slides — admin can upload up to 4 images. Each
      * entry merges admin-uploaded image (if any) with a sensible
      * fallback Unsplash photo + brand-tinted background colour so

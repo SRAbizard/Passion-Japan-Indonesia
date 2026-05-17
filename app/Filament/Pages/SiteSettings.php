@@ -59,6 +59,9 @@ class SiteSettings extends Page
         $slides = Setting::get('hero.slides', []);
         $data['hero__slides'] = is_array($slides) ? $slides : [];
 
+        // Login page wallpaper
+        $data['login__background_path'] = Setting::get('login.background_path');
+
         $this->form->fill($data);
     }
 
@@ -133,6 +136,21 @@ class SiteSettings extends Page
                                 ])
                                 ->defaultItems(0)
                                 ->addActionLabel(__('Add slide')),
+                        ]),
+                ]),
+                Tab::make(__('Login background'))->icon('heroicon-o-photo')->schema([
+                    Section::make(__('Login page wallpaper'))
+                        ->description(__('Background photo shown on every login / register / password-reset page (admin & student). Leave empty to use the default Mt Fuji photo.'))
+                        ->components([
+                            FileUpload::make('login__background_path')
+                                ->label(__('Wallpaper image'))
+                                ->image()
+                                ->disk('public')
+                                ->directory('login')
+                                ->imageEditor()
+                                ->maxSize(5120)
+                                ->helperText(__('Recommended: landscape 1920×1080 or larger. JPG / PNG / WebP.'))
+                                ->columnSpanFull(),
                         ]),
                 ]),
                 Tab::make(__('Theme audio'))->icon('heroicon-o-musical-note')->schema([
@@ -226,6 +244,9 @@ class SiteSettings extends Page
             ->values()
             ->all();
         Setting::set('hero.slides', $slides, 'hero');
+
+        // Login page wallpaper single-file upload
+        Setting::set('login.background_path', $state['login__background_path'] ?? null, 'login');
 
         Notification::make()
             ->title(__('Settings saved'))

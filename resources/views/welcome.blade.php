@@ -396,7 +396,7 @@
         'success' => ['bg' => 'bg-emerald-500/15','text'=> 'text-emerald-300','border'=> 'border-emerald-500/30'],
     ];
 @endphp
-<section id="workflow" class="reveal min-h-screen flex flex-col justify-center py-20 bg-surface-900/40 snap-end">
+<section id="workflow" class="reveal min-h-screen flex flex-col justify-center py-20 bg-surface-900/40">
     <div class="mx-auto max-w-7xl px-6">
         <div class="text-center max-w-2xl mx-auto">
             <p class="text-xs uppercase tracking-wider text-brand-400 font-semibold">{{ __('Process') }}</p>
