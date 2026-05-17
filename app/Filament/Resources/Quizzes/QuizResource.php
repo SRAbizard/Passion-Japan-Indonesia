@@ -96,7 +96,7 @@ class QuizResource extends Resource
             TranslatableTabs::for('description', Textarea::class, label: __('Description')),
 
             Section::make(__('Questions'))
-                ->description(__('JLPT-style: tag each question with a section. Use the Passages tab (only available after saving) to add reading passages first, then assign Dokkai questions to them.'))
+                ->description(__('Tag with a JLPT section (Choukai/Dokkai/Bunpou/Kotoba/Kanji) for prep courses like Mina no Nihongo, or leave empty for Hiragana/Katakana drills and other course types. Use the Passages tab (available after saving) for Dokkai reading texts.'))
                 ->components([
                     Repeater::make('questions')
                         ->relationship('questions')
@@ -104,9 +104,10 @@ class QuizResource extends Resource
                         ->columns(2)
                         ->components([
                             Select::make('section')
-                                ->label(__('Section'))
+                                ->label(__('JLPT section (optional)'))
                                 ->options(QuizQuestion::SECTIONS)
-                                ->required()
+                                ->placeholder(__('— No section (general question) —'))
+                                ->helperText(__('Only relevant for JLPT-prep courses like Mina no Nihongo. Leave empty for Hiragana/Katakana drills, business Japanese, or any other course type.'))
                                 ->native(false)
                                 ->live()
                                 ->columnSpan(1),
@@ -193,9 +194,11 @@ class QuizResource extends Resource
                         ])
                         ->itemLabel(function (array $state): ?string {
                             $section = $state['section'] ?? null;
-                            $sectionLabel = $section ? (QuizQuestion::SECTIONS[$section] ?? '') : __('No section');
                             $q = $state['question']['id'] ?? $state['question']['en'] ?? $state['question']['ja'] ?? __('New question');
-                            return '['.$sectionLabel.'] '.\Str::limit($q, 60);
+                            $q = \Str::limit($q, 60);
+                            return $section
+                                ? '['.(QuizQuestion::SECTIONS[$section] ?? $section).'] '.$q
+                                : $q;
                         })
                         ->collapsible()
                         ->collapsed()
