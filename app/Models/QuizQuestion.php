@@ -13,8 +13,13 @@ class QuizQuestion extends Model
 
     protected $fillable = [
         'quiz_id',
+        'section',
+        'passage_id',
         'question',
         'choices',
+        'image_path',
+        'audio_path',
+        'max_audio_plays',
         'correct_answer',
         'points',
         'sort_order',
@@ -25,14 +30,47 @@ class QuizQuestion extends Model
     protected function casts(): array
     {
         return [
-            'question' => 'array',
-            'choices' => 'array',
+            'question'        => 'array',
+            'choices'         => 'array',
+            'max_audio_plays' => 'integer',
         ];
     }
+
+    /**
+     * Map for displaying JLPT section labels in the UI.
+     */
+    public const SECTIONS = [
+        'choukai' => '聴解 (Choukai / Listening)',
+        'dokkai'  => '読解 (Dokkai / Reading)',
+        'bunpou'  => '文法 (Bunpou / Grammar)',
+        'kotoba'  => '言葉 (Kotoba / Vocabulary)',
+        'kanji'   => '漢字 (Kanji)',
+    ];
 
     public function quiz(): BelongsTo
     {
         return $this->belongsTo(Quiz::class);
+    }
+
+    public function passage(): BelongsTo
+    {
+        return $this->belongsTo(Passage::class);
+    }
+
+    /**
+     * Public URL for the question image, or null.
+     */
+    public function imageUrl(): ?string
+    {
+        return $this->image_path ? asset('storage/'.$this->image_path) : null;
+    }
+
+    /**
+     * Public URL for the Choukai audio file, or null.
+     */
+    public function audioUrl(): ?string
+    {
+        return $this->audio_path ? asset('storage/'.$this->audio_path) : null;
     }
 
     /**

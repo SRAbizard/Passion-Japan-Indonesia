@@ -54,9 +54,29 @@ class Course extends Model
         return $this->hasManyThrough(Material::class, Chapter::class);
     }
 
+    /**
+     * The final-exam quiz for this course (type=final). Used by the
+     * student certificate flow — kept under the name `quiz()` for
+     * backward compatibility with the existing ElearningController.
+     */
     public function quiz(): HasOne
     {
-        return $this->hasOne(Quiz::class)->where('is_published', true);
+        return $this->hasOne(Quiz::class)
+            ->where('is_published', true)
+            ->where('type', 'final');
+    }
+
+    public function finalExam(): HasOne
+    {
+        return $this->quiz();
+    }
+
+    /**
+     * Per-chapter quizzes (one per bab).
+     */
+    public function chapterQuizzes(): HasMany
+    {
+        return $this->hasMany(Quiz::class)->where('type', 'chapter');
     }
 
     public function certificates(): HasMany

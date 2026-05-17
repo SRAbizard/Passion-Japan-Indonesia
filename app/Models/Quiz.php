@@ -14,6 +14,8 @@ class Quiz extends Model
 
     protected $fillable = [
         'course_id',
+        'chapter_id',
+        'type',
         'title',
         'description',
         'passing_score',
@@ -38,9 +40,19 @@ class Quiz extends Model
         return $this->belongsTo(Course::class);
     }
 
+    public function chapter(): BelongsTo
+    {
+        return $this->belongsTo(Chapter::class);
+    }
+
     public function questions(): HasMany
     {
         return $this->hasMany(QuizQuestion::class)->orderBy('sort_order');
+    }
+
+    public function passages(): HasMany
+    {
+        return $this->hasMany(Passage::class)->orderBy('sort_order');
     }
 
     public function attempts(): HasMany
@@ -51,5 +63,25 @@ class Quiz extends Model
     public function totalPoints(): int
     {
         return (int) $this->questions()->sum('points');
+    }
+
+    public function isFinalExam(): bool
+    {
+        return $this->type === 'final';
+    }
+
+    public function isChapterQuiz(): bool
+    {
+        return $this->type === 'chapter';
+    }
+
+    public function scopeChapterQuizzes($query)
+    {
+        return $query->where('type', 'chapter');
+    }
+
+    public function scopeFinalExams($query)
+    {
+        return $query->where('type', 'final');
     }
 }
