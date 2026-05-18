@@ -21,7 +21,12 @@ class MyClasses extends Page
         return Enrollment::with([
                 'course.category',
                 'course.chapters' => fn ($q) => $q->where('is_published', true)
-                    ->with(['materials' => fn ($qq) => $qq->orderBy('sort_order')]),
+                    ->with([
+                        'materials' => fn ($qq) => $qq->orderBy('sort_order'),
+                        'quizzes'   => fn ($qq) => $qq->where('is_published', true)
+                            ->withCount('questions')
+                            ->orderBy('sort_order'),
+                    ]),
             ])
             ->where('user_id', auth()->id())
             ->orderByDesc('last_activity_at')

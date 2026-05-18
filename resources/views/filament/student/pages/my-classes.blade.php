@@ -21,7 +21,12 @@
             @foreach ($enrollments as $enrollment)
                 @php
                     $course = $enrollment->course;
-                    $firstMaterial = $course?->chapters->flatMap->materials->first();
+                    // First item across the curriculum (material OR chapter quiz)
+                    $firstItem = null;
+                    foreach ($course?->chapters ?? [] as $ch) {
+                        $items = $ch->items();
+                        if ($items->isNotEmpty()) { $firstItem = $items->first(); break; }
+                    }
                 @endphp
                 <div class="fi-section rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10 overflow-hidden flex flex-col">
                     <div class="aspect-video bg-gradient-to-br from-primary-600 to-primary-800 relative">
@@ -56,8 +61,13 @@
                         </div>
 
                         <div class="mt-5 pt-4 border-t border-gray-100 dark:border-white/5 flex items-center justify-between gap-2">
-                            @if ($firstMaterial)
-                                <a href="{{ route('elearning.material', [$course->slug, $firstMaterial->id]) }}"
+                            @if ($firstItem)
+                                @php
+                                    $firstUrl = $firstItem->kind === 'quiz'
+                                        ? route('elearning.quiz',     [$course->slug, $firstItem->id])
+                                        : route('elearning.material', [$course->slug, $firstItem->id]);
+                                @endphp
+                                <a href="{{ $firstUrl }}"
                                    class="fi-btn fi-color-primary fi-size-sm gap-1.5 px-2.5 py-1.5 text-sm inline-grid grid-flow-col items-center font-semibold rounded-lg shadow-sm bg-primary-600 text-white hover:bg-primary-500">
                                     {{ $enrollment->progress_pct > 0 ? __('Continue learning') : __('Start course') }} →
                                 </a>
