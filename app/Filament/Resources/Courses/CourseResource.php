@@ -123,6 +123,14 @@ class CourseResource extends Resource
         ]);
     }
 
+    public static function getRelations(): array
+    {
+        return [
+            RelationManagers\ChaptersRelationManager::class,
+            RelationManagers\FinalExamRelationManager::class,
+        ];
+    }
+
     public static function getPages(): array
     {
         return [

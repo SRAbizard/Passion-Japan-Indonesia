@@ -72,6 +72,16 @@ class Course extends Model
     }
 
     /**
+     * HasMany variant used by the Filament FinalExamRelationManager,
+     * which needs to render a table (even if it usually has only 0 or 1
+     * row) and call CRUD actions on the relation.
+     */
+    public function finalExams(): HasMany
+    {
+        return $this->hasMany(Quiz::class)->where('type', 'final');
+    }
+
+    /**
      * Per-chapter quizzes (one per bab).
      */
     public function chapterQuizzes(): HasMany

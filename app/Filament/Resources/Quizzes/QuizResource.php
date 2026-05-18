@@ -3,12 +3,10 @@
 namespace App\Filament\Resources\Quizzes;
 
 use App\Filament\Resources\Quizzes\Pages;
-use App\Filament\Resources\Quizzes\RelationManagers\PassagesRelationManager;
 use App\Filament\Support\TranslatableTabs;
 use App\Models\Chapter;
 use App\Models\Course;
 use App\Models\Quiz;
-use App\Models\QuizQuestion;
 use BackedEnum;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Radio;
@@ -27,6 +25,22 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use UnitEnum;
 
+/**
+ * Quiz admin — simplified for ArkaLearn/Dicoding-style courses.
+ *
+ * Removed:
+ *  - JLPT 5-section taxonomy (Choukai/Dokkai/Bunpou/Kotoba/Kanji) from
+ *    questions — the ArkaLearn pattern is to split sections into their
+ *    own chapters (e.g. "Pt 1", "Choukai") rather than tagging questions.
+ *  - Passages relation manager — same rationale.
+ *
+ * Admin still has audio + image per question, but they're plain
+ * optional uploads now, not section-gated.
+ *
+ * Navigation: hidden from the sidebar. Reached via Chapter → Quizzes
+ * relation manager (chapter quizzes) or Course → Final exam relation
+ * manager (final exam).
+ */
 class QuizResource extends Resource
 {
     protected static ?string $model = Quiz::class;
@@ -38,16 +52,28 @@ class QuizResource extends Resource
     public static function getNavigationGroup(): ?string { return __('Learning'); }
     public static function getModelLabel(): string { return __('Quiz'); }
     public static function getPluralModelLabel(): string { return __('Quizzes'); }
+    public static function shouldRegisterNavigation(): bool { return false; }
 
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            Section::make(__('Settings'))->columns(2)->components([
+            Section::make(__('Basics'))->columns(2)->components([
+                TextInput::make('code')
+                    ->label(__('Code (optional)'))
+                    ->placeholder('LSN401')
+                    ->maxLength(32)
+                    ->helperText(__('Short admin-facing code, e.g. "LSN401" or "N426QZ".'))
+                    ->columnSpan(1),
+
+                Toggle::make('is_published')->label(__('Published'))->default(true)->inline(false)->columnSpan(1),
+
+                // Context selectors — usually pre-filled by the parent relation
+                // manager. Kept visible for the standalone /admin/quizzes/* page.
                 Radio::make('type')
                     ->label(__('Quiz type'))
                     ->options([
-                        'chapter' => __('Chapter quiz (per bab)'),
-                        'final'   => __('Final exam (per course)'),
+                        'chapter' => __('Chapter quiz'),
+                        'final'   => __('Final exam (course-wide)'),
                     ])
                     ->default('chapter')
                     ->inline()
@@ -75,59 +101,39 @@ class QuizResource extends Resource
                     ->searchable()
                     ->visible(fn (Get $get) => $get('type') === 'chapter')
                     ->required(fn (Get $get) => $get('type') === 'chapter')
-                    ->helperText(__('Pick the chapter this quiz belongs to. Final exams leave this empty.')),
+                    ->helperText(__('Final exams leave this empty.')),
+            ]),
 
+            TranslatableTabs::for('title', TextInput::class, label: __('Title'), required: true),
+            TranslatableTabs::for('subtitle', TextInput::class, label: __('Subtitle (optional)'),
+                componentMods: ['helperText' => [__('Small line below the title on the quiz intro page.')]]),
+
+            Section::make(__('Settings'))->columns(4)->collapsible()->collapsed()->components([
                 TextInput::make('passing_score')
                     ->label(__('Passing score'))
                     ->numeric()->minValue(0)->maxValue(100)
                     ->default(70)->suffix('%'),
                 TextInput::make('time_limit_minutes')
-                    ->label(__('Time limit (minutes)'))
+                    ->label(__('Time limit (min)'))
                     ->numeric()->minValue(0)
                     ->placeholder(__('No limit')),
                 TextInput::make('max_attempts')
                     ->label(__('Max attempts'))
                     ->numeric()->minValue(0)->default(0)
                     ->helperText(__('0 = unlimited')),
-                Toggle::make('is_published')->label(__('Published'))->default(true)->inline(false),
+                TextInput::make('sort_order')
+                    ->label(__('Position in chapter'))
+                    ->numeric()->default(0)
+                    ->helperText(__('Lower = earlier in the timeline.')),
             ]),
 
-            TranslatableTabs::for('title', TextInput::class, label: __('Title'), required: true),
-            TranslatableTabs::for('description', Textarea::class, label: __('Description')),
-
             Section::make(__('Questions'))
-                ->description(__('Tag with a JLPT section (Choukai/Dokkai/Bunpou/Kotoba/Kanji) for prep courses like Mina no Nihongo, or leave empty for Hiragana/Katakana drills and other course types. Use the Passages tab (available after saving) for Dokkai reading texts.'))
                 ->components([
                     Repeater::make('questions')
                         ->relationship('questions')
                         ->orderColumn('sort_order')
                         ->columns(2)
                         ->components([
-                            Select::make('section')
-                                ->label(__('JLPT section (optional)'))
-                                ->options(QuizQuestion::SECTIONS)
-                                ->placeholder(__('— No section (general question) —'))
-                                ->helperText(__('Only relevant for JLPT-prep courses like Mina no Nihongo. Leave empty for Hiragana/Katakana drills, business Japanese, or any other course type.'))
-                                ->native(false)
-                                ->live()
-                                ->columnSpan(1),
-                            Select::make('passage_id')
-                                ->label(__('Reading passage'))
-                                ->options(function (Get $get, $livewire) {
-                                    // Only passages of THIS quiz
-                                    $quizId = $livewire->record?->id;
-                                    if (! $quizId) return [];
-                                    return \App\Models\Passage::where('quiz_id', $quizId)
-                                        ->orderBy('sort_order')
-                                        ->get()
-                                        ->mapWithKeys(fn ($p) => [$p->id => '#'.$p->sort_order.' — '.\Str::limit(($p->t('title') ?: strip_tags($p->t('content'))), 40)]);
-                                })
-                                ->searchable()
-                                ->visible(fn (Get $get) => $get('section') === 'dokkai')
-                                ->placeholder(__('Pick a passage'))
-                                ->helperText(__('Required for Dokkai. Create passages in the Passages tab first.'))
-                                ->columnSpan(1),
-
                             TranslatableTabs::for('question', Textarea::class, label: __('Question'), required: true),
 
                             FileUpload::make('image_path')
@@ -137,11 +143,11 @@ class QuizResource extends Resource
                                 ->directory('quiz-images')
                                 ->maxSize(2048)
                                 ->imageEditor()
-                                ->helperText(__('Useful for Kotoba / Kanji questions.'))
+                                ->helperText(__('Attach when the question references a visual (kanji, photo, diagram).'))
                                 ->columnSpanFull(),
 
                             FileUpload::make('audio_path')
-                                ->label(__('Audio'))
+                                ->label(__('Audio (optional)'))
                                 ->disk('public')
                                 ->directory('quiz-audio')
                                 ->acceptedFileTypes(['audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/x-m4a', 'audio/mp4', 'audio/ogg'])
@@ -149,15 +155,13 @@ class QuizResource extends Resource
                                 ->previewable(false)
                                 ->openable()
                                 ->downloadable()
-                                ->visible(fn (Get $get) => $get('section') === 'choukai')
-                                ->required(fn (Get $get) => $get('section') === 'choukai')
+                                ->helperText(__('Use for listening (Choukai) questions.'))
                                 ->columnSpan(1),
 
                             TextInput::make('max_audio_plays')
                                 ->label(__('Max plays'))
-                                ->numeric()->minValue(0)->default(2)
-                                ->helperText(__('0 = unlimited'))
-                                ->visible(fn (Get $get) => $get('section') === 'choukai')
+                                ->numeric()->minValue(0)->default(0)
+                                ->helperText(__('0 = unlimited (only matters if audio is attached).'))
                                 ->columnSpan(1),
 
                             Repeater::make('choices')
@@ -171,7 +175,7 @@ class QuizResource extends Resource
                                         ->required()
                                         ->maxLength(8)
                                         ->placeholder('a')
-                                        ->helperText(__('Short identifier (a, b, c, ...)')),
+                                        ->helperText(__('a, b, c, ...')),
                                     TextInput::make('text.id')
                                         ->label(__('Text (ID)'))
                                         ->required(),
@@ -187,23 +191,20 @@ class QuizResource extends Resource
                                 ->label(__('Correct answer key'))
                                 ->required()
                                 ->maxLength(8)
-                                ->helperText(__('Must match one of the choice keys above')),
+                                ->helperText(__('Must match one of the choice keys above.')),
                             TextInput::make('points')
                                 ->label(__('Points'))
                                 ->numeric()->minValue(1)->default(1),
                         ])
                         ->itemLabel(function (array $state): ?string {
-                            $section = $state['section'] ?? null;
                             $q = $state['question']['id'] ?? $state['question']['en'] ?? $state['question']['ja'] ?? __('New question');
-                            $q = \Str::limit($q, 60);
-                            return $section
-                                ? '['.(QuizQuestion::SECTIONS[$section] ?? $section).'] '.$q
-                                : $q;
+                            return \Str::limit(strip_tags($q), 70);
                         })
                         ->collapsible()
                         ->collapsed()
                         ->cloneable()
-                        ->defaultItems(0),
+                        ->defaultItems(0)
+                        ->reorderableWithButtons(),
                 ]),
         ]);
     }
@@ -211,6 +212,7 @@ class QuizResource extends Resource
     public static function table(Table $table): Table
     {
         return $table->columns([
+            TextColumn::make('code')->label(__('Code'))->badge()->color('gray'),
             TextColumn::make('title')->label(__('Title'))
                 ->formatStateUsing(fn ($state, $record) => $record->t('title'))
                 ->searchable()->limit(50)->wrap(),
@@ -243,9 +245,8 @@ class QuizResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            PassagesRelationManager::class,
-        ];
+        // PassagesRelationManager intentionally removed — see class doc.
+        return [];
     }
 
     public static function getPages(): array

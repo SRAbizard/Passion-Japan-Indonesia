@@ -29,6 +29,7 @@ class ChapterResource extends Resource
 
     public static function getNavigationLabel(): string { return __('Chapters'); }
     public static function getNavigationGroup(): ?string { return __('Learning'); }
+    public static function shouldRegisterNavigation(): bool { return false; }
 
     public static function form(Schema $schema): Schema
     {
@@ -37,7 +38,17 @@ class ChapterResource extends Resource
                 Select::make('course_id')->label(__('Course'))->required()
                     ->options(fn () => Course::orderBy('id')->get()->mapWithKeys(fn ($c) => [$c->id => $c->t('title')]))
                     ->searchable(),
-                TextInput::make('sort_order')->numeric()->default(0),
+                TextInput::make('sort_order')->label(__('Position'))->numeric()->default(0),
+                Select::make('unlock_mode')
+                    ->label(__('Lesson access'))
+                    ->options([
+                        'free'       => __('Free — all lessons & quizzes open at once'),
+                        'sequential' => __('Sequential — unlock next only after previous done'),
+                    ])
+                    ->default('free')
+                    ->required()
+                    ->native(false)
+                    ->helperText(__('Sequential mode is the Dicoding-style locked progression.')),
                 Toggle::make('is_published')->default(true)->inline(false),
             ]),
             TranslatableTabs::for('title', TextInput::class, label: __('Title'), required: true),
@@ -63,6 +74,14 @@ class ChapterResource extends Resource
             SelectFilter::make('course_id')->label(__('Course'))
                 ->options(fn () => Course::orderBy('id')->get()->mapWithKeys(fn ($c) => [$c->id => $c->t('title')])),
         ]);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            RelationManagers\MaterialsRelationManager::class,
+            RelationManagers\QuizzesRelationManager::class,
+        ];
     }
 
     public static function getPages(): array
