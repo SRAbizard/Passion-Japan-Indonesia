@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['chapter_id', 'title', 'type', 'video_url', 'pdf_path', 'content', 'duration_minutes', 'sort_order', 'is_free_preview'])]
+#[Fillable(['code', 'chapter_id', 'title', 'type', 'video_url', 'embed_url', 'pdf_path', 'content', 'duration_minutes', 'sort_order', 'is_free_preview'])]
 class Material extends Model
 {
     use HasJsonTranslations;

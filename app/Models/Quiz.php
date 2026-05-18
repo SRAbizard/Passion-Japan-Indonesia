@@ -13,24 +13,28 @@ class Quiz extends Model
     use HasFactory, HasJsonTranslations;
 
     protected $fillable = [
+        'code',
         'course_id',
         'chapter_id',
         'type',
         'title',
+        'subtitle',
         'description',
         'passing_score',
         'time_limit_minutes',
         'max_attempts',
+        'sort_order',
         'is_published',
     ];
 
-    public array $translatable = ['title', 'description'];
+    public array $translatable = ['title', 'subtitle', 'description'];
 
     protected function casts(): array
     {
         return [
-            'title' => 'array',
-            'description' => 'array',
+            'title'        => 'array',
+            'subtitle'     => 'array',
+            'description'  => 'array',
             'is_published' => 'boolean',
         ];
     }
@@ -73,6 +77,15 @@ class Quiz extends Model
     public function isChapterQuiz(): bool
     {
         return $this->type === 'chapter';
+    }
+
+    public function isPassedBy(?User $user): bool
+    {
+        if (! $user) return false;
+        return $this->attempts()
+            ->where('user_id', $user->id)
+            ->where('passed', true)
+            ->exists();
     }
 
     public function scopeChapterQuizzes($query)
