@@ -39,25 +39,40 @@ class Enrollment extends Model
     }
 
     /**
-     * Recompute progress based on lesson_progress vs total materials in course.
+     * Recompute progress as (completed materials + passed chapter quizzes)
+     * divided by (total materials + total chapter quizzes) for the course.
+     * Final exam is intentionally excluded — it's the "gate" to issue a
+     * certificate, not part of the chapter-level progress.
      */
     public function recomputeProgress(): void
     {
-        $totalMaterials = $this->course->materials()->count();
+        $course = $this->course;
 
-        if ($totalMaterials === 0) {
+        $materialIds = $course->materials()->pluck('materials.id');
+        $chapterQuizIds = $course->chapterQuizzes()->pluck('id');
+
+        $total = $materialIds->count() + $chapterQuizIds->count();
+
+        if ($total === 0) {
             $this->progress_pct = 0;
             $this->save();
             return;
         }
 
-        $completed = LessonProgress::query()
+        $completedMaterials = LessonProgress::query()
             ->where('user_id', $this->user_id)
-            ->whereIn('material_id', $this->course->materials()->pluck('materials.id'))
+            ->whereIn('material_id', $materialIds)
             ->whereNotNull('completed_at')
             ->count();
 
-        $pct = (int) round($completed / $totalMaterials * 100);
+        $passedQuizzes = QuizAttempt::query()
+            ->where('user_id', $this->user_id)
+            ->whereIn('quiz_id', $chapterQuizIds)
+            ->where('passed', true)
+            ->distinct('quiz_id')->count('quiz_id');
+
+        $completed = $completedMaterials + $passedQuizzes;
+        $pct = (int) round($completed / $total * 100);
 
         $this->forceFill([
             'progress_pct'     => $pct,

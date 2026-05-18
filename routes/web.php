@@ -35,9 +35,15 @@ Route::get('elearning/{slug}/learn/{material}',  [ElearningController::class, 'm
     ->whereNumber('material')->name('elearning.material');
 Route::post('elearning/{slug}/learn/{material}/complete', [ElearningController::class, 'complete'])
     ->whereNumber('material')->middleware('throttle:30,1')->name('elearning.complete');
-Route::get('elearning/{slug}/quiz',              [ElearningController::class, 'quiz'])->name('elearning.quiz');
-Route::post('elearning/{slug}/quiz',             [ElearningController::class, 'quizSubmit'])
-    ->middleware('throttle:10,1')->name('elearning.quiz.submit');
+
+// Quiz routes — work for both chapter quizzes AND final exam (same Quiz model).
+Route::get('elearning/{slug}/quiz/{quiz}',        [ElearningController::class, 'quizIntro'])
+    ->whereNumber('quiz')->name('elearning.quiz');
+Route::get('elearning/{slug}/quiz/{quiz}/take',   [ElearningController::class, 'quizTake'])
+    ->whereNumber('quiz')->name('elearning.quiz.take');
+Route::post('elearning/{slug}/quiz/{quiz}/submit', [ElearningController::class, 'quizSubmit'])
+    ->whereNumber('quiz')->middleware('throttle:10,1')->name('elearning.quiz.submit');
+
 Route::get('certificate/{number}',               [ElearningController::class, 'certificate'])->name('certificate.show');
 Route::get('certificate/{number}/download',      [ElearningController::class, 'certificateDownload'])->name('certificate.download');
 

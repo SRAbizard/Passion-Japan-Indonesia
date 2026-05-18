@@ -80,4 +80,54 @@ class Chapter extends Model
     {
         return $this->unlock_mode === self::UNLOCK_SEQUENTIAL;
     }
+
+    /**
+     * Decorate each item in $this->items() with `done` and `locked` flags
+     * for a given user. Lock logic:
+     *   - free chapter        → nothing is locked
+     *   - sequential chapter  → item locked unless ALL previous items in the
+     *                           same chapter are done
+     */
+    public function itemsFor(?User $user): Collection
+    {
+        $items = $this->items();
+        if ($items->isEmpty()) return $items;
+
+        $completedMaterialIds = $user
+            ? LessonProgress::where('user_id', $user->id)
+                ->whereIn('material_id', $items->where('kind', 'material')->pluck('id'))
+                ->whereNotNull('completed_at')
+                ->pluck('material_id')->all()
+            : [];
+
+        $passedQuizIds = $user
+            ? QuizAttempt::where('user_id', $user->id)
+                ->whereIn('quiz_id', $items->where('kind', 'quiz')->pluck('id'))
+                ->where('passed', true)
+                ->pluck('quiz_id')->all()
+            : [];
+
+        $allPrevDone = true;
+        return $items->map(function ($it) use ($completedMaterialIds, $passedQuizIds, &$allPrevDone) {
+            $it->done = $it->kind === 'material'
+                ? in_array($it->id, $completedMaterialIds, true)
+                : in_array($it->id, $passedQuizIds, true);
+            $it->locked = $this->isSequential() && ! $allPrevDone;
+            if (! $it->done) $allPrevDone = false;
+            return $it;
+        });
+    }
+
+    /**
+     * Quick progress tuple ['done' => int, 'total' => int] for the curriculum
+     * sidebar "X/Y" badge next to each chapter title.
+     */
+    public function progressFor(?User $user): array
+    {
+        $items = $this->itemsFor($user);
+        return [
+            'done'  => $items->where('done', true)->count(),
+            'total' => $items->count(),
+        ];
+    }
 }

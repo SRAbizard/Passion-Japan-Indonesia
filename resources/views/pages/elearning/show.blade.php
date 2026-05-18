@@ -98,46 +98,55 @@
             <h2 class="font-display text-xl font-bold text-white mb-4">{{ __('Course content') }}</h2>
             <div class="space-y-4">
                 @foreach($course->chapters as $chIdx => $chapter)
+                    @php
+                        $items = $chapter->itemsFor(auth()->user());
+                        $progress = ['done' => $items->where('done', true)->count(), 'total' => $items->count()];
+                    @endphp
                     <details class="group border border-surface-800 rounded-xl" @if($chIdx === 0) open @endif>
                         <summary class="flex items-center justify-between gap-3 cursor-pointer list-none px-4 py-3 select-none">
                             <div class="flex items-center gap-3 min-w-0">
                                 <span class="text-xs font-mono text-surface-500">{{ str_pad($chIdx + 1, 2, '0', STR_PAD_LEFT) }}</span>
                                 <div class="min-w-0">
                                     <p class="font-semibold text-white truncate">{{ $chapter->t('title') }}</p>
-                                    <p class="text-xs text-surface-400">{{ trans_choice('{1} :count lesson|[2,*] :count lessons', $chapter->materials->count(), ['count' => $chapter->materials->count()]) }}</p>
+                                    <p class="text-xs text-surface-400">{{ $progress['done'] }}/{{ $progress['total'] }} {{ __('items') }}{{ $chapter->isSequential() ? ' · '.__('Sequential') : '' }}</p>
                                 </div>
                             </div>
                             <svg class="h-4 w-4 text-surface-400 transition group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                         </summary>
                         <ul class="border-t border-surface-800">
-                            @foreach($chapter->materials as $mat)
+                            @foreach($items as $it)
                                 @php
-                                    $accessible = $enrollment || $mat->is_free_preview;
-                                    $done = in_array($mat->id, $completedIds);
+                                    $isQuiz = $it->kind === 'quiz';
+                                    $mat = $isQuiz ? null : $it->model;
+                                    $accessible = $enrollment || (! $isQuiz && $mat?->is_free_preview);
+                                    $href = $isQuiz
+                                        ? route('elearning.quiz', [$course->slug, $it->id])
+                                        : route('elearning.material', [$course->slug, $it->id]);
                                 @endphp
                                 <li class="px-4 py-3 flex items-center gap-3 text-sm border-b border-surface-800/50 last:border-0">
-                                    @if($done)
+                                    @if($it->done)
                                         <svg class="h-4 w-4 text-emerald-400 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-                                    @elseif($mat->type === 'video')
-                                        <svg class="h-4 w-4 text-surface-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                    @elseif($mat->type === 'pdf')
-                                        <svg class="h-4 w-4 text-surface-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                    @elseif($it->locked)
+                                        <svg class="h-4 w-4 text-surface-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0-2.21 1.79-4 4-4s4 1.79 4 4v2M5 11h14a2 2 0 012 2v7a2 2 0 01-2 2H5a2 2 0 01-2-2v-7a2 2 0 012-2z"/></svg>
+                                    @elseif($isQuiz)
+                                        <svg class="h-4 w-4 text-brand-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
                                     @else
-                                        <svg class="h-4 w-4 text-surface-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                                        <svg class="h-4 w-4 text-surface-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/></svg>
                                     @endif
-                                    @if($accessible)
-                                        <a href="{{ route('elearning.material', [$course->slug, $mat->id]) }}" class="flex-1 text-surface-200 hover:text-brand-400 truncate">{{ $mat->t('title') }}</a>
+
+                                    @if($accessible && ! $it->locked)
+                                        <a href="{{ $href }}" class="flex-1 min-w-0 text-surface-200 hover:text-brand-400">
+                                            @if($it->code)<span class="font-mono text-[10px] text-surface-500 mr-1">{{ $it->code }}</span>@endif
+                                            <span class="truncate">{{ $it->title }}</span>
+                                        </a>
                                     @else
-                                        <span class="flex-1 text-surface-500 truncate">{{ $mat->t('title') }}</span>
+                                        <span class="flex-1 min-w-0 text-surface-500">
+                                            @if($it->code)<span class="font-mono text-[10px] text-surface-600 mr-1">{{ $it->code }}</span>@endif
+                                            <span class="truncate">{{ $it->title }}</span>
+                                        </span>
                                     @endif
-                                    @if($mat->is_free_preview && ! $enrollment)
-                                        <span class="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-md bg-emerald-600/15 text-emerald-300">{{ __('Preview') }}</span>
-                                    @elseif(! $accessible)
-                                        <svg class="h-4 w-4 text-surface-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-                                    @endif
-                                    @if($mat->duration_minutes > 0)
-                                        <span class="text-xs text-surface-500 shrink-0">{{ $mat->duration_minutes }}m</span>
-                                    @endif
+
+                                    <span class="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-md bg-surface-800 text-surface-400 shrink-0">{{ $it->badge }}</span>
                                 </li>
                             @endforeach
                         </ul>
@@ -164,17 +173,19 @@
                         </div>
                     </div>
 
-                    @php
-                        $firstMaterial = $course->chapters->flatMap->materials->first();
-                    @endphp
-                    @if($firstMaterial)
-                        <a href="{{ route('elearning.material', [$course->slug, $firstMaterial->id]) }}" class="btn-brand w-full text-center">
+                    @if($firstItem)
+                        @php
+                            $firstUrl = $firstItem->kind === 'quiz'
+                                ? route('elearning.quiz',     [$course->slug, $firstItem->id])
+                                : route('elearning.material', [$course->slug, $firstItem->id]);
+                        @endphp
+                        <a href="{{ $firstUrl }}" class="btn-brand w-full text-center">
                             {{ $enrollment->progress_pct > 0 ? __('Continue learning') : __('Start course') }}
                         </a>
                     @endif
 
-                    @if($course->hasQuiz() && $enrollment->progress_pct >= 100)
-                        <a href="{{ route('elearning.quiz', $course->slug) }}" class="btn-ghost w-full text-center">{{ __('Take final quiz') }}</a>
+                    @if($course->finalExam && $enrollment->progress_pct >= 100)
+                        <a href="{{ route('elearning.quiz', [$course->slug, $course->finalExam->id]) }}" class="btn-ghost w-full text-center">{{ __('Take final exam') }}</a>
                     @endif
 
                     @if($hasCertificate)
@@ -202,8 +213,8 @@
             <ul class="mt-6 space-y-2.5 text-sm text-surface-300 border-t border-surface-800 pt-5">
                 <li class="flex items-center gap-2"><svg class="h-4 w-4 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> {{ trans_choice('{1} :count day access|[2,*] :count days access', $course->duration_days, ['count' => $course->duration_days]) }}</li>
                 <li class="flex items-center gap-2"><svg class="h-4 w-4 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/></svg> {{ trans_choice('{1} :count lesson|[2,*] :count lessons', $course->materials_count, ['count' => $course->materials_count]) }}</li>
-                @if($course->hasQuiz())
-                    <li class="flex items-center gap-2"><svg class="h-4 w-4 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg> {{ __('Includes final quiz') }}</li>
+                @if($course->finalExam)
+                    <li class="flex items-center gap-2"><svg class="h-4 w-4 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg> {{ __('Includes final exam') }}</li>
                 @endif
                 <li class="flex items-center gap-2"><svg class="h-4 w-4 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg> {{ __('Certificate of completion') }}</li>
             </ul>

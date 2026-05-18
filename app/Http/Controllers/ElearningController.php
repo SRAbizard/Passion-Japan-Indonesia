@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Certificate;
+use App\Models\Chapter;
 use App\Models\Course;
 use App\Models\CourseCategory;
 use App\Models\Enrollment;
@@ -54,33 +55,37 @@ class ElearningController extends Controller
             ->with([
                 'category',
                 'instructor',
-                'chapters' => fn ($q) => $q->where('is_published', true)->with(['materials' => fn ($qq) => $qq->orderBy('sort_order')]),
-                'quiz.questions',
+                'chapters' => fn ($q) => $q->where('is_published', true)
+                    ->with([
+                        'materials' => fn ($qq) => $qq->orderBy('sort_order'),
+                        'quizzes'   => fn ($qq) => $qq->where('is_published', true)
+                            ->withCount('questions')
+                            ->orderBy('sort_order'),
+                    ]),
+                'finalExam.questions',
             ])
             ->withCount('enrollments', 'chapters', 'materials')
             ->firstOrFail();
 
         $enrollment = null;
-        $completedIds = [];
         $hasCertificate = null;
         if ($user = $request->user()) {
             $enrollment = Enrollment::where('user_id', $user->id)
                 ->where('course_id', $course->id)->first();
-            if ($enrollment) {
-                $completedIds = LessonProgress::where('user_id', $user->id)
-                    ->whereIn('material_id', $course->materials->pluck('id'))
-                    ->pluck('material_id')->all();
-            }
             $hasCertificate = Certificate::where('user_id', $user->id)
                 ->where('course_id', $course->id)->first();
         }
+
+        $firstItem = $this->firstItemFor($course);
 
         $related = Course::published()
             ->where('id', '!=', $course->id)
             ->when($course->course_category_id, fn ($q, $cid) => $q->where('course_category_id', $cid))
             ->limit(3)->get();
 
-        return view('pages.elearning.show', compact('course', 'enrollment', 'completedIds', 'hasCertificate', 'related'));
+        return view('pages.elearning.show', compact(
+            'course', 'enrollment', 'hasCertificate', 'related', 'firstItem'
+        ));
     }
 
     public function enroll(string $slug, Request $request): RedirectResponse
@@ -111,14 +116,15 @@ class ElearningController extends Controller
             ? __('You are now enrolled. Happy learning!')
             : __('You are already enrolled in this course.');
 
-        // Redirect to first material (if any)
-        $first = $course->chapters()->where('is_published', true)
-            ->with(['materials' => fn ($q) => $q->orderBy('sort_order')])
-            ->orderBy('sort_order')->get()
-            ->flatMap->materials->first();
+        $first = $this->firstItemFor($course->load([
+            'chapters' => fn ($q) => $q->where('is_published', true)->with([
+                'materials' => fn ($qq) => $qq->orderBy('sort_order'),
+                'quizzes'   => fn ($qq) => $qq->where('is_published', true)->orderBy('sort_order'),
+            ]),
+        ]));
 
         if ($first) {
-            return redirect()->route('elearning.material', [$slug, $first->id])->with('status', $msg);
+            return redirect($this->urlForItem($course, $first))->with('status', $msg);
         }
 
         return redirect()->route('elearning.show', $slug)->with('status', $msg);
@@ -126,10 +132,7 @@ class ElearningController extends Controller
 
     public function material(string $slug, int $materialId, Request $request): View|RedirectResponse
     {
-        $course = Course::published()->where('slug', $slug)
-            ->with(['chapters' => fn ($q) => $q->where('is_published', true)
-                ->with(['materials' => fn ($qq) => $qq->orderBy('sort_order')])])
-            ->firstOrFail();
+        $course = $this->loadCourseWithCurriculum($slug);
 
         $material = Material::with('chapter')->where('id', $materialId)->firstOrFail();
         if ($material->chapter->course_id !== $course->id) abort(404);
@@ -139,34 +142,39 @@ class ElearningController extends Controller
             ? Enrollment::where('user_id', $user->id)->where('course_id', $course->id)->first()
             : null;
 
-        // Access guard: must be enrolled OR free preview
+        // Access guards: enrolled OR free preview, plus sequential lock check
         if (! $material->is_free_preview && ! $enrollment) {
             return redirect()->route('elearning.show', $slug)
                 ->with('status', __('Please enroll in this course to access this lesson.'));
         }
 
-        // Build flat ordered material list across all chapters for prev/next nav
-        $allMaterials = $course->chapters->flatMap->materials->values();
-        $currentIndex = $allMaterials->search(fn ($m) => $m->id === $material->id);
-        $prev = $currentIndex > 0 ? $allMaterials[$currentIndex - 1] : null;
-        $next = $currentIndex < $allMaterials->count() - 1 ? $allMaterials[$currentIndex + 1] : null;
+        if ($this->isItemLockedForUser($material->chapter, 'material', $material->id, $user)) {
+            return redirect()->route('elearning.show', $slug)
+                ->with('status', __('Finish the previous lesson before opening this one.'));
+        }
 
-        $completedIds = $user
-            ? LessonProgress::where('user_id', $user->id)
-                ->whereIn('material_id', $allMaterials->pluck('id'))->pluck('material_id')->all()
-            : [];
+        $nav = $this->itemNavigation($course, 'material', $material->id, $user);
 
-        $isCompleted = in_array($material->id, $completedIds);
-
-        // Touch last_activity_at
         if ($enrollment) {
             $enrollment->update(['last_activity_at' => now()]);
         }
 
-        return view('pages.elearning.material', compact(
-            'course', 'material', 'enrollment', 'allMaterials',
-            'completedIds', 'isCompleted', 'prev', 'next'
-        ));
+        $isCompleted = $user
+            ? LessonProgress::where('user_id', $user->id)
+                ->where('material_id', $material->id)
+                ->whereNotNull('completed_at')->exists()
+            : false;
+
+        return view('pages.elearning.material', [
+            'course'      => $course,
+            'material'    => $material,
+            'enrollment'  => $enrollment,
+            'isCompleted' => $isCompleted,
+            'prev'        => $nav['prev'],
+            'next'        => $nav['next'],
+            'currentKind' => 'material',
+            'currentId'   => $material->id,
+        ]);
     }
 
     public function complete(string $slug, int $materialId, Request $request): RedirectResponse
@@ -190,70 +198,127 @@ class ElearningController extends Controller
             $enrollment->recomputeProgress();
         });
 
-        // Auto-issue certificate if course is now complete AND no quiz required
-        $this->maybeIssueCertificate($enrollment->fresh(), $course->load('quiz'));
+        $this->maybeIssueCertificate($enrollment->fresh(), $course);
 
-        // Find next material; if none, redirect to course show or quiz
-        $allMaterials = $course->chapters()->where('is_published', true)
-            ->with(['materials' => fn ($q) => $q->orderBy('sort_order')])
-            ->orderBy('sort_order')->get()
-            ->flatMap->materials->values();
-
-        $currentIndex = $allMaterials->search(fn ($m) => $m->id === $material->id);
-        $next = $currentIndex < $allMaterials->count() - 1 ? $allMaterials[$currentIndex + 1] : null;
+        $course = $this->loadCourseWithCurriculum($slug);
+        $next = $this->itemNavigation($course, 'material', $material->id, $user)['next'];
 
         if ($next) {
-            return redirect()->route('elearning.material', [$slug, $next->id])
+            return redirect($this->urlForItem($course, $next))
                 ->with('status', __('Lesson marked complete!'));
         }
 
-        // Last lesson done
-        if ($course->hasQuiz()) {
-            return redirect()->route('elearning.quiz', $slug)
-                ->with('status', __('All lessons done! Take the final quiz now.'));
-        }
-
         return redirect()->route('elearning.show', $slug)
-            ->with('status', __('Congratulations! You completed this course.'));
+            ->with('status', __('Course complete!'));
     }
 
-    public function quiz(string $slug, Request $request): View|RedirectResponse
+    /**
+     * Quiz intro page (Dicoding-style): shows total questions, passing
+     * score, time limit, then a big "Mulai Quiz" button.
+     */
+    public function quizIntro(string $slug, int $quizId, Request $request): View|RedirectResponse
     {
-        $course = Course::published()->where('slug', $slug)
-            ->with(['quiz.questions'])
+        $course = $this->loadCourseWithCurriculum($slug);
+        $quiz = Quiz::with('questions')->where('id', $quizId)
+            ->where('course_id', $course->id)
+            ->where('is_published', true)
             ->firstOrFail();
 
-        if (! $course->quiz) abort(404);
-        if (! $user = $request->user()) {
+        $user = $request->user();
+        if (! $user) {
             return redirect()->route('filament.student.auth.login');
         }
 
         $enrollment = Enrollment::where('user_id', $user->id)
             ->where('course_id', $course->id)->firstOrFail();
 
+        // Sequential-lock check for chapter quizzes
+        if ($quiz->isChapterQuiz() && $this->isItemLockedForUser($quiz->chapter, 'quiz', $quiz->id, $user)) {
+            return redirect()->route('elearning.show', $slug)
+                ->with('status', __('Finish the previous lesson before opening this quiz.'));
+        }
+
         $attempts = QuizAttempt::where('user_id', $user->id)
-            ->where('quiz_id', $course->quiz->id)
+            ->where('quiz_id', $quiz->id)
             ->orderByDesc('finished_at')->get();
-
         $bestAttempt = $attempts->where('passed', true)->first() ?? $attempts->sortByDesc('score')->first();
+        $reachedMax = $quiz->max_attempts > 0 && $attempts->count() >= $quiz->max_attempts;
 
-        return view('pages.elearning.quiz', compact('course', 'enrollment', 'attempts', 'bestAttempt'));
+        $certificate = $quiz->isFinalExam()
+            ? Certificate::where('user_id', $user->id)->where('course_id', $course->id)->first()
+            : null;
+
+        $nav = $this->itemNavigation($course, 'quiz', $quiz->id, $user);
+
+        return view('pages.elearning.quiz-intro', [
+            'course'      => $course,
+            'quiz'        => $quiz,
+            'enrollment'  => $enrollment,
+            'attempts'    => $attempts,
+            'bestAttempt' => $bestAttempt,
+            'reachedMax'  => $reachedMax,
+            'certificate' => $certificate,
+            'prev'        => $nav['prev'],
+            'next'        => $nav['next'],
+            'currentKind' => 'quiz',
+            'currentId'   => $quiz->id,
+        ]);
     }
 
-    public function quizSubmit(string $slug, Request $request): RedirectResponse
+    /**
+     * Actual quiz form (after clicking "Mulai Quiz" on the intro).
+     */
+    public function quizTake(string $slug, int $quizId, Request $request): View|RedirectResponse
     {
-        $course = Course::published()->where('slug', $slug)
-            ->with(['quiz.questions'])->firstOrFail();
-        if (! $course->quiz) abort(404);
+        $course = $this->loadCourseWithCurriculum($slug);
+        $quiz = Quiz::with('questions')->where('id', $quizId)
+            ->where('course_id', $course->id)
+            ->where('is_published', true)
+            ->firstOrFail();
+
+        $user = $request->user();
+        if (! $user) return redirect()->route('filament.student.auth.login');
+
+        Enrollment::where('user_id', $user->id)->where('course_id', $course->id)->firstOrFail();
+
+        if ($quiz->isChapterQuiz() && $this->isItemLockedForUser($quiz->chapter, 'quiz', $quiz->id, $user)) {
+            return redirect()->route('elearning.show', $slug);
+        }
+
+        $attemptCount = QuizAttempt::where('user_id', $user->id)
+            ->where('quiz_id', $quiz->id)->count();
+        if ($quiz->max_attempts > 0 && $attemptCount >= $quiz->max_attempts) {
+            return redirect()->route('elearning.quiz', [$slug, $quiz->id])
+                ->with('status', __('You have reached the maximum number of attempts.'));
+        }
+
+        $nav = $this->itemNavigation($course, 'quiz', $quiz->id, $user);
+
+        return view('pages.elearning.quiz-take', [
+            'course'      => $course,
+            'quiz'        => $quiz,
+            'prev'        => $nav['prev'],
+            'next'        => $nav['next'],
+            'currentKind' => 'quiz',
+            'currentId'   => $quiz->id,
+        ]);
+    }
+
+    public function quizSubmit(string $slug, int $quizId, Request $request): RedirectResponse
+    {
+        $course = Course::published()->where('slug', $slug)->firstOrFail();
+        $quiz = Quiz::with('questions')->where('id', $quizId)
+            ->where('course_id', $course->id)
+            ->where('is_published', true)
+            ->firstOrFail();
 
         $user = $request->user() ?? abort(401);
         $enrollment = Enrollment::where('user_id', $user->id)
             ->where('course_id', $course->id)->firstOrFail();
 
-        $quiz = $course->quiz;
         $attemptCount = QuizAttempt::where('user_id', $user->id)->where('quiz_id', $quiz->id)->count();
         if ($quiz->max_attempts > 0 && $attemptCount >= $quiz->max_attempts) {
-            return redirect()->route('elearning.quiz', $slug)
+            return redirect()->route('elearning.quiz', [$slug, $quiz->id])
                 ->with('status', __('You have reached the maximum number of attempts.'));
         }
 
@@ -269,23 +334,29 @@ class ElearningController extends Controller
         $score = $totalPoints > 0 ? (int) round(($earnedPoints / $totalPoints) * 100) : 0;
         $passed = $score >= $quiz->passing_score;
 
-        QuizAttempt::create([
-            'user_id'     => $user->id,
-            'quiz_id'     => $quiz->id,
-            'score'       => $score,
-            'passed'      => $passed,
-            'answers'     => $answers,
-            'started_at'  => now(),
-            'finished_at' => now(),
-        ]);
+        DB::transaction(function () use ($user, $quiz, $score, $passed, $answers, $enrollment) {
+            QuizAttempt::create([
+                'user_id'     => $user->id,
+                'quiz_id'     => $quiz->id,
+                'score'       => $score,
+                'passed'      => $passed,
+                'answers'     => $answers,
+                'started_at'  => now(),
+                'finished_at' => now(),
+            ]);
+            // Chapter quizzes count toward course progress
+            if ($quiz->isChapterQuiz() && $passed) {
+                $enrollment->recomputeProgress();
+            }
+        });
 
         if ($passed) {
-            $this->maybeIssueCertificate($enrollment->fresh(), $course, $score);
-            return redirect()->route('elearning.quiz', $slug)
+            $this->maybeIssueCertificate($enrollment->fresh(), $course, $quiz->isFinalExam() ? $score : null);
+            return redirect()->route('elearning.quiz', [$slug, $quiz->id])
                 ->with('status', __('You passed with :score%! 🎉', ['score' => $score]));
         }
 
-        return redirect()->route('elearning.quiz', $slug)
+        return redirect()->route('elearning.quiz', [$slug, $quiz->id])
             ->with('status', __('You scored :score%. Passing score is :pass%. Try again!', [
                 'score' => $score, 'pass' => $quiz->passing_score,
             ]));
@@ -310,20 +381,108 @@ class ElearningController extends Controller
         return $pdf->download('certificate-'.$certificate->certificate_number.'.pdf');
     }
 
+    // =================================================================
+    // Helpers
+    // =================================================================
+
+    /**
+     * Eager-load a course with full curriculum (chapters → materials + quizzes).
+     * Used by every learn/quiz route so the sidebar has data without N+1.
+     */
+    protected function loadCourseWithCurriculum(string $slug): Course
+    {
+        return Course::published()
+            ->where('slug', $slug)
+            ->with([
+                'chapters' => fn ($q) => $q->where('is_published', true)
+                    ->with([
+                        'materials' => fn ($qq) => $qq->orderBy('sort_order'),
+                        'quizzes'   => fn ($qq) => $qq->where('is_published', true)
+                            ->withCount('questions')
+                            ->orderBy('sort_order'),
+                    ]),
+                'finalExam' => fn ($q) => $q->withCount('questions'),
+            ])
+            ->firstOrFail();
+    }
+
+    /**
+     * First curriculum item across the whole course (used by "Start learning"
+     * button on the course detail page and by /enroll redirect).
+     */
+    protected function firstItemFor(Course $course): ?object
+    {
+        foreach ($course->chapters as $chapter) {
+            $items = $chapter->items();
+            if ($items->isNotEmpty()) return $items->first();
+        }
+        return null;
+    }
+
+    /**
+     * Build the URL for any curriculum item (material or quiz).
+     */
+    protected function urlForItem(Course $course, object $item): string
+    {
+        return $item->kind === 'quiz'
+            ? route('elearning.quiz',     [$course->slug, $item->id])
+            : route('elearning.material', [$course->slug, $item->id]);
+    }
+
+    /**
+     * Walk every item across all chapters in a course (flat ordered list)
+     * to find prev/next neighbours for the given current item.
+     */
+    protected function itemNavigation(Course $course, string $kind, int $id, $user): array
+    {
+        $flat = collect();
+        foreach ($course->chapters as $chapter) {
+            $flat = $flat->concat($chapter->items());
+        }
+        if ($course->finalExam) {
+            $flat->push((object) [
+                'kind'  => 'quiz',
+                'id'    => $course->finalExam->id,
+                'model' => $course->finalExam,
+                'title' => $course->finalExam->t('title'),
+                'badge' => __('Final exam'),
+                'code'  => $course->finalExam->code,
+                'sort_order' => 99999,
+            ]);
+        }
+        $flat = $flat->values();
+
+        $idx = $flat->search(fn ($it) => $it->kind === $kind && $it->id === $id);
+        if ($idx === false) return ['prev' => null, 'next' => null];
+
+        return [
+            'prev' => $idx > 0 ? $flat[$idx - 1] : null,
+            'next' => $idx < $flat->count() - 1 ? $flat[$idx + 1] : null,
+        ];
+    }
+
+    protected function isItemLockedForUser(Chapter $chapter, string $kind, int $id, $user): bool
+    {
+        if (! $chapter->isSequential()) return false;
+        $items = $chapter->itemsFor($user);
+        $target = $items->first(fn ($it) => $it->kind === $kind && $it->id === $id);
+        return $target ? (bool) $target->locked : false;
+    }
+
     /**
      * Issue certificate when:
-     *  - All materials are completed (progress 100%)
-     *  - AND quiz passed (if quiz exists)
+     *  - Progress 100% (all materials done + all chapter quizzes passed)
+     *  - AND final exam passed (if course has one)
      */
     protected function maybeIssueCertificate(Enrollment $enrollment, Course $course, ?int $finalScore = null): ?Certificate
     {
-        $course->loadMissing('quiz');
+        $course->loadMissing('finalExam');
 
         if ($enrollment->progress_pct < 100) return null;
 
-        if ($course->quiz) {
+        if ($course->finalExam) {
             $passed = QuizAttempt::where('user_id', $enrollment->user_id)
-                ->where('quiz_id', $course->quiz->id)
+                ->where('quiz_id', $course->finalExam->id)
                 ->where('passed', true)
                 ->exists();
             if (! $passed) return null;
