@@ -50,20 +50,24 @@ class MaterialsRelationManager extends RelationManager
                 Toggle::make('is_free_preview')->label(__('Free preview'))->inline(false)->columnSpanFull(),
             ]),
             TranslatableTabs::for('title', TextInput::class, label: __('Title'), required: true),
-            Section::make(__('Content'))->components([
-                TextInput::make('video_url')->label(__('Video URL'))->url()
-                    ->visible(fn (Get $get) => $get('type') === 'video')
-                    ->prefix('https://')->placeholder('https://www.youtube.com/embed/...'),
-                TextInput::make('embed_url')->label(__('Embed URL'))->url()
-                    ->visible(fn (Get $get) => $get('type') === 'embed')
-                    ->prefix('https://')->placeholder('https://view.genial.ly/...'),
-                FileUpload::make('pdf_path')->label(__('PDF file'))
-                    ->disk('public')->directory('materials/pdfs')
-                    ->acceptedFileTypes(['application/pdf'])->maxSize(20480)
-                    ->visible(fn (Get $get) => $get('type') === 'pdf'),
-                TranslatableTabs::for('content', RichEditor::class, label: __('Text content'))
-                    ->visible(fn (Get $get) => $get('type') === 'text'),
-            ]),
+
+            // Type-specific content fields — only the matching one renders,
+            // so no outer Section wrapper (avoids double-card nesting around
+            // the RichEditor's own translatable Section).
+            TextInput::make('video_url')->label(__('Video URL'))->url()
+                ->visible(fn (Get $get) => $get('type') === 'video')
+                ->prefix('https://')->placeholder('https://www.youtube.com/embed/...')
+                ->helperText(__('YouTube embed URL or any direct mp4 link.')),
+            TextInput::make('embed_url')->label(__('Embed URL'))->url()
+                ->visible(fn (Get $get) => $get('type') === 'embed')
+                ->prefix('https://')->placeholder('https://view.genial.ly/...')
+                ->helperText(__('Paste the embed URL from Genially, Canva, or any iframe-friendly source.')),
+            FileUpload::make('pdf_path')->label(__('PDF file'))
+                ->disk('public')->directory('materials/pdfs')
+                ->acceptedFileTypes(['application/pdf'])->maxSize(20480)
+                ->visible(fn (Get $get) => $get('type') === 'pdf'),
+            TranslatableTabs::for('content', RichEditor::class, label: __('Text content'))
+                ->visible(fn (Get $get) => $get('type') === 'text'),
         ]);
     }
 
