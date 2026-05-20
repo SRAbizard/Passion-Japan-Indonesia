@@ -38,10 +38,16 @@ class TranslatableTabs
         ) {
             $meta = config("passion.locales.{$locale}");
 
+            // Native names live in config but should still pass through the
+            // translator so JP user sees "インドネシア語" instead of "Indonesia"
+            // (and vice versa). __() falls back to the original string when no
+            // translation key exists, so this is safe for any new locale added.
+            $nativeName = __($meta['native'] ?? strtoupper($locale));
+
             /** @var Field $input */
             $input = $component::make("{$field}.{$locale}")
                 ->hiddenLabel()
-                ->placeholder($meta['native'] ?? strtoupper($locale));
+                ->placeholder($nativeName);
 
             $shouldBeRequired = $required && (
                 ! $requiredOnDefaultLocaleOnly || $locale === $defaultLocale
@@ -62,7 +68,7 @@ class TranslatableTabs
                 $input = $input->{$method}(...(array) $args);
             }
 
-            $tabLabel = strtoupper($locale).' · '.($meta['native'] ?? '');
+            $tabLabel = strtoupper($locale).' · '.$nativeName;
             if ($shouldBeRequired) {
                 $tabLabel .= ' *';
             }
@@ -82,10 +88,10 @@ class TranslatableTabs
         } elseif ($required && $requiredOnDefaultLocaleOnly) {
             $defaultMeta = config("passion.locales.{$defaultLocale}");
             $section->description(__('Required in :default. :other are optional.', [
-                'default' => $defaultMeta['native'] ?? strtoupper($defaultLocale),
+                'default' => __($defaultMeta['native'] ?? strtoupper($defaultLocale)),
                 'other'   => collect($locales)
                     ->reject(fn ($l) => $l === $defaultLocale)
-                    ->map(fn ($l) => config("passion.locales.{$l}.native") ?? strtoupper($l))
+                    ->map(fn ($l) => __(config("passion.locales.{$l}.native") ?? strtoupper($l)))
                     ->join(' & '),
             ]));
         }

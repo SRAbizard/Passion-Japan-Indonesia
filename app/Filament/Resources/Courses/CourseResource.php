@@ -59,7 +59,7 @@ class CourseResource extends Resource
     {
         return $schema->components([
             Section::make(__('Basics'))->columns(2)->components([
-                TextInput::make('slug')->required()->unique(ignoreRecord: true)->maxLength(120)
+                TextInput::make('slug')->label(__('Slug'))->required()->unique(ignoreRecord: true)->maxLength(120)
                     ->live(onBlur: true)->afterStateUpdated(fn ($state, $set) => $set('slug', Str::slug($state ?? ''))),
                 Select::make('course_category_id')->label(__('Category'))
                     ->options(fn () => CourseCategory::orderBy('sort_order')->get()->mapWithKeys(fn ($c) => [$c->id => $c->t('name')]))
@@ -73,8 +73,8 @@ class CourseResource extends Resource
                         'intermediate' => __('Intermediate'),
                         'advanced'     => __('Advanced'),
                     ])->default('beginner'),
-                TextInput::make('duration_days')->numeric()->default(365)->suffix(__('days')),
-                DateTimePicker::make('published_at')->seconds(false)->default(now()),
+                TextInput::make('duration_days')->label(__('Duration days'))->numeric()->default(365)->suffix(__('days')),
+                DateTimePicker::make('published_at')->label(__('Published at'))->seconds(false)->default(now()),
             ]),
             TranslatableTabs::for('title', TextInput::class, label: __('Title'), required: true),
             TranslatableTabs::for('subtitle', TextInput::class, label: __('Subtitle')),
@@ -84,14 +84,14 @@ class CourseResource extends Resource
             TranslatableTabs::for('prerequisites', Textarea::class, label: __('Prerequisites'),
                 componentMods: ['rows' => [3]]),
             Section::make(__('Media'))->columns(2)->components([
-                FileUpload::make('thumbnail_path')->image()->disk('public')->directory('courses')->imageEditor(),
-                TextInput::make('intro_video_url')->url()->prefix('https://')->helperText(__('YouTube or Vimeo embed URL.')),
+                FileUpload::make('thumbnail_path')->label(__('Thumbnail'))->image()->disk('public')->directory('courses')->imageEditor(),
+                TextInput::make('intro_video_url')->label(__('Intro video URL'))->url()->prefix('https://')->helperText(__('YouTube or Vimeo embed URL.')),
             ]),
             Section::make(__('Pricing & status'))->columns(4)->components([
-                TextInput::make('price')->numeric()->default(0),
-                Select::make('currency')->options(['IDR' => 'IDR', 'JPY' => 'JPY', 'USD' => 'USD'])->default('IDR'),
-                Toggle::make('is_free')->inline(false),
-                Toggle::make('is_featured')->inline(false),
+                TextInput::make('price')->label(__('Price'))->numeric()->default(0),
+                Select::make('currency')->label(__('Currency'))->options(['IDR' => 'IDR', 'JPY' => 'JPY', 'USD' => 'USD'])->default('IDR'),
+                Toggle::make('is_free')->label(__('Free'))->inline(false),
+                Toggle::make('is_featured')->label(__('Featured'))->inline(false),
             ]),
         ]);
     }

@@ -861,6 +861,20 @@
     "Background music": "背景音楽",
     "Upload an MP3/OGG file. Plays muted on the homepage; visitors can unmute via the floating speaker button.": "MP3/OGGファイルをアップロード。ホームページではミュートで再生されます。訪問者はフローティングスピーカーボタンでミュート解除できます。",
     "Theme song": "テーマソング",
-    "Toggle background music": "背景音楽のオン／オフ"
+    "Toggle background music": "背景音楽のオン／オフ",
+
+    "Homepage Workflow": "ホームページ・ワークフロー",
+    "Published at": "公開日時",
+    "Thumbnail": "サムネイル",
+    "Intro video URL": "紹介動画URL",
+    "Price": "料金",
+    "Currency": "通貨",
+    "Featured": "おすすめ",
+
+    "Indonesia": "インドネシア語",
+    "English": "英語",
+    "日本語": "日本語",
+
+    "Required in :default. :other are optional.": ":default は必須です。:other は任意です。"
 }
 
