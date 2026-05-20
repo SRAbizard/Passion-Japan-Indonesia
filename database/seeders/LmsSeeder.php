@@ -137,7 +137,7 @@ class LmsSeeder extends Seeder
                 'en' => '<p>Comprehensive module with medical vocabulary, elder-care procedures, and exam-style drills.</p>',
                 'ja' => '<p>医療語彙、高齢者ケア手順、模擬試験を含む総合モジュール。</p>',
             ],
-            'level'         => 'elementary',
+            'level'         => 'beginner',
             'duration_days' => 45,
             'price'         => 500000,
             'currency'      => 'IDR',

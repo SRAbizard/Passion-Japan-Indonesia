@@ -385,6 +385,69 @@
 
     "document.status.pending": "Pending",
     "document.status.verified": "Verified",
-    "document.status.rejected": "Rejected"
+    "document.status.rejected": "Rejected",
+
+    "Slug": "Slug",
+    "Duration days": "Duration (days)",
+    "days": "days",
+    "min": "min",
+    "Pass": "Pass",
+    "Status": "Status",
+    "Sort order": "Sort order",
+    "Edit chapter": "Edit chapter",
+
+    "Code": "Code",
+    "Code (optional)": "Code (optional)",
+    "Subtitle": "Subtitle",
+    "Subtitle (optional)": "Subtitle (optional)",
+
+    "Lesson type": "Lesson type",
+    "Lesson access": "Lesson access",
+    "Sequential": "Sequential",
+    "Sequential — locked progression": "Sequential — locked progression",
+    "Free — all open": "Free — all open",
+
+    "Embed": "Embed",
+    "Embed URL": "Embed URL",
+    "Embed (Genially / Canva / iframe)": "Embed (Genially / Canva / iframe)",
+    "PDF file": "PDF file",
+    "Text / Reading": "Text / Reading",
+
+    "Image (optional)": "Image (optional)",
+    "Audio (optional)": "Audio (optional)",
+    "Max plays": "Max plays",
+
+    "Chapter quiz": "Chapter quiz",
+    "Final exam": "Final exam",
+    "Final Exam": "Final Exam",
+    "Final exam (course-wide)": "Final exam (course-wide)",
+    "Time limit (min)": "Time limit (min)",
+
+    "+ Tambah Bab": "+ Add Chapter",
+    "+ Tambah Materi": "+ Add Lesson",
+    "+ Tambah Quiz": "+ Add Quiz",
+    "+ Buat Final Exam": "+ Create Final Exam",
+    "Kelola materi & quiz": "Manage lessons & quizzes",
+    "Kelola soal": "Manage questions",
+    "Bab": "Chapter",
+    "Bab / Chapter": "Chapter",
+    "Materi": "Lesson",
+    "Materi / Lesson": "Lesson",
+    "Items": "Items",
+    "Duration": "Duration",
+    "Enrolled": "Enrolled",
+
+    "Start Quiz": "Start Quiz",
+    "Continue learning": "Continue learning",
+    "Start course": "Start course",
+    "Complete & Next": "Complete & Next",
+    "Take final exam": "Take final exam",
+    "Includes final exam": "Includes final exam",
+    "Total questions": "Total questions",
+    "Pass score": "Pass score",
+    "Time limit": "Time limit",
+    "Time remaining": "Time remaining",
+    "items": "items",
+    "Retake quiz": "Retake quiz"
 }
 

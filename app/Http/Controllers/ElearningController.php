@@ -44,7 +44,7 @@ class ElearningController extends Controller
         return view('pages.elearning.index', [
             'courses'    => $q->orderByDesc('is_featured')->orderByDesc('published_at')->paginate(9)->withQueryString(),
             'categories' => CourseCategory::orderBy('sort_order')->withCount('courses')->get(),
-            'levels'     => ['beginner', 'elementary', 'intermediate', 'advanced'],
+            'levels'     => ['beginner', 'intermediate', 'advanced'],
         ]);
     }
 

@@ -67,10 +67,9 @@ class CourseResource extends Resource
                 Select::make('instructor_id')->label(__('Instructor'))
                     ->options(fn () => User::role(['admin', 'superadmin'])->pluck('name', 'id'))
                     ->searchable(),
-                Select::make('level')
+                Select::make('level')->label(__('Level'))
                     ->options([
                         'beginner'     => __('Beginner'),
-                        'elementary'   => __('Elementary'),
                         'intermediate' => __('Intermediate'),
                         'advanced'     => __('Advanced'),
                     ])->default('beginner'),
@@ -119,7 +118,12 @@ class CourseResource extends Resource
         ->filters([
             SelectFilter::make('course_category_id')->label(__('Category'))
                 ->options(fn () => CourseCategory::all()->mapWithKeys(fn ($c) => [$c->id => $c->t('name')])),
-            SelectFilter::make('level')->options(['beginner' => 'Beginner', 'elementary' => 'Elementary', 'intermediate' => 'Intermediate', 'advanced' => 'Advanced']),
+            SelectFilter::make('level')->label(__('Level'))
+                ->options([
+                    'beginner'     => __('Beginner'),
+                    'intermediate' => __('Intermediate'),
+                    'advanced'     => __('Advanced'),
+                ]),
         ]);
     }
 
