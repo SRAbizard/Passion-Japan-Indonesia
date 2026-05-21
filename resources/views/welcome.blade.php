@@ -192,10 +192,13 @@
             <div class="relative aspect-video rounded-3xl overflow-hidden glass-card shadow-2xl shadow-brand-900/40 ring-1 ring-brand-500/20">
                 @if($companyVideo['type'] === 'youtube')
                     <iframe src="{{ $companyVideo['url'] }}"
+                            title="Passion Japan — Company Profile"
                             class="absolute inset-0 h-full w-full"
                             frameborder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowfullscreen></iframe>
+                            referrerpolicy="strict-origin-when-cross-origin"
+                            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowfullscreen
+                            loading="lazy"></iframe>
                 @else
                     <video src="{{ $companyVideo['url'] }}"
                            @if($companyVideo['poster']) poster="{{ $companyVideo['poster'] }}" @endif

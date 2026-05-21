@@ -97,9 +97,15 @@ class SiteSettings
             return ['type' => 'file', 'url' => asset('storage/'.$path), 'poster' => $posterUrl];
         }
         if ($yt) {
-            // Normalise to embed URL
+            // Normalise to embed URL on youtube-nocookie.com.
+            // The privacy-enhanced domain is more permissive in browsers
+            // with strict 3rd-party-cookie blocking (incognito, Firefox,
+            // Brave, etc.) and won't get hung on the loading spinner that
+            // youtube.com sometimes shows when its tracking cookies are
+            // blocked. rel=0 hides "more videos" suggestions from other
+            // channels at the end.
             if (preg_match('~(?:youtu\.be/|youtube\.com/(?:watch\?v=|embed/|shorts/))([\w-]{11})~', $yt, $m)) {
-                return ['type' => 'youtube', 'url' => "https://www.youtube.com/embed/{$m[1]}", 'poster' => $posterUrl];
+                return ['type' => 'youtube', 'url' => "https://www.youtube-nocookie.com/embed/{$m[1]}?rel=0", 'poster' => $posterUrl];
             }
             return ['type' => 'youtube', 'url' => $yt, 'poster' => $posterUrl];
         }
