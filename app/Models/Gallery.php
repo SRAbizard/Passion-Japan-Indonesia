@@ -60,15 +60,12 @@ class Gallery extends Model
 
     /**
      * Convert any YouTube URL into an embed URL the iframe can load.
-     * Uses youtube-nocookie.com for better playback in strict-cookie
-     * browser modes (incognito, Firefox strict tracking protection,
-     * etc.) where youtube.com sometimes hangs on a loading spinner.
      */
     public function getYoutubeEmbedUrlAttribute(): ?string
     {
         if (! $this->youtube_url) return null;
         if (preg_match('~(?:youtu\.be/|youtube\.com/(?:watch\?v=|embed/|shorts/))([\w-]{11})~', $this->youtube_url, $m)) {
-            return "https://www.youtube-nocookie.com/embed/{$m[1]}?rel=0";
+            return "https://www.youtube.com/embed/{$m[1]}?rel=0";
         }
         return $this->youtube_url;
     }
