@@ -1,28 +1,28 @@
 <script>
 /**
- * Force-collapse all sidebar nav groups on the user's first visit since
- * the config version changed. Bypasses Filament's PHP-side ->collapsed()
- * + localStorage seeding because the closure-based label matching in
- * AdminPanelProvider was unreliable across locales. Reads group labels
- * straight from the rendered DOM and writes them into the same
- * localStorage key Filament uses, so subsequent reloads behave normally.
+ * Force sidebar nav groups into a clean state on EVERY admin/student
+ * page load. The state expected by the user is:
  *
- * Bump CURRENT_VERSION whenever you want the reset to fire again.
+ *   - Dashboard (no active item)           → all groups collapsed
+ *   - Deep page (e.g. /admin/courses/...)  → the group containing
+ *                                            the active item is open,
+ *                                            every other group closed
+ *
+ * Earlier versions of this file tried to honour Filament's own
+ * localStorage persistence (collapsedGroups), which led to surprises
+ * like "I expanded Recruitment two days ago and now Dashboard still
+ * shows it open." We deliberately ignore the cached state now.
+ *
+ * Runs at BODY_START, polls until the sidebar DOM appears, then writes
+ * the desired state into both localStorage AND the Alpine store so the
+ * paint shows it correctly on the first frame.
  */
 (function () {
-    const CURRENT_VERSION = '2026-05-18-v3';
-    const VERSION_KEY     = 'pj_nav_version';
-    const STATE_KEY       = 'collapsedGroups';
+    const STATE_KEY = 'collapsedGroups';
 
-    if (localStorage.getItem(VERSION_KEY) === CURRENT_VERSION) return;
-
-    // The sidebar mounts after this script. Poll briefly until the
-    // group elements appear, then collapse all of them. We leave any
-    // group containing the active page untouched so users navigating
-    // directly into a deep page still see context.
     let tries = 0;
     const interval = setInterval(() => {
-        if (++tries > 40) { clearInterval(interval); return; } // give up after ~4s
+        if (++tries > 40) { clearInterval(interval); return; } // ~4s
 
         const groups = document.querySelectorAll('.fi-sidebar-group[data-group-label]');
         if (groups.length === 0) return;
@@ -32,30 +32,36 @@
         groups.forEach(g => {
             const label = g.dataset.groupLabel;
             if (! label) return;
-            // Skip the group containing the currently active item so it
-            // stays expanded (Filament marks it with .fi-active).
+            // Keep the group containing the active page expanded.
             const hasActive = g.querySelector('.fi-sidebar-item.fi-active, .fi-active');
             if (hasActive) return;
             labelsToCollapse.push(label);
         });
 
-        // Persist for Filament (it reads this on next boot).
         try {
             localStorage.setItem(STATE_KEY, JSON.stringify(labelsToCollapse));
-            localStorage.setItem(VERSION_KEY, CURRENT_VERSION);
-        } catch (e) { /* localStorage unavailable */ }
+        } catch (e) { /* localStorage unavailable in some browser modes */ }
 
-        // Apply visually now, this tick, via Alpine store.
         const store = window.Alpine?.store?.('sidebar');
         if (store && typeof store.toggleCollapsedGroup === 'function') {
+            // Bring the runtime store into sync with what we just wrote.
             labelsToCollapse.forEach(label => {
                 if (! store.groupIsCollapsed(label)) {
                     store.toggleCollapsedGroup(label);
                 }
             });
+            // Conversely, make sure the active group is *expanded*.
+            groups.forEach(g => {
+                const label = g.dataset.groupLabel;
+                if (! label) return;
+                const hasActive = g.querySelector('.fi-sidebar-item.fi-active, .fi-active');
+                if (hasActive && store.groupIsCollapsed(label)) {
+                    store.toggleCollapsedGroup(label);
+                }
+            });
         } else {
-            // Alpine not ready: add the class directly so the user
-            // doesn't see a flash of expanded groups.
+            // Fallback: add the CSS class directly to avoid a flash of
+            // expanded groups while Alpine hasn't booted yet.
             groups.forEach(g => {
                 if (labelsToCollapse.includes(g.dataset.groupLabel)) {
                     g.classList.add('fi-collapsed');
