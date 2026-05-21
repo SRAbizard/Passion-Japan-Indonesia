@@ -181,11 +181,14 @@
     <div class="mx-auto max-w-7xl px-6">
         <div class="text-center max-w-2xl mx-auto">
             <p class="text-xs uppercase tracking-wider text-brand-400 font-semibold">{{ __('Company Profile') }}</p>
-            <h2 class="mt-2 font-display text-3xl sm:text-4xl font-bold text-white">{{ __('Get to know us in 2 minutes') }}</h2>
-            <p class="mt-4 text-surface-400">{{ __('A quick look inside Passion Japan Indonesia — our team, our students, our mission.') }}</p>
+            <h2 class="mt-2 font-display text-3xl sm:text-4xl font-bold text-white">
+                {{ __('Get to know') }} <span class="text-brand-500">Passion Japan</span> {{ __('closer') }}
+            </h2>
         </div>
 
-        <div class="mt-10 mx-auto max-w-5xl">
+        {{-- 2-column: video left · feature highlights right --}}
+        <div class="mt-12 grid gap-10 lg:grid-cols-2 items-center">
+            {{-- Video --}}
             <div class="relative aspect-video rounded-3xl overflow-hidden glass-card shadow-2xl shadow-brand-900/40 ring-1 ring-brand-500/20">
                 @if($companyVideo['type'] === 'youtube')
                     <iframe src="{{ $companyVideo['url'] }}"
@@ -201,6 +204,28 @@
                            class="absolute inset-0 h-full w-full bg-black object-cover">
                     </video>
                 @endif
+            </div>
+
+            {{-- Feature highlights --}}
+            @php
+                $companyHighlights = [
+                    ['icon' => 'M9 17v-2a4 4 0 014-4h6m-3-3l3 3-3 3M9 7H6a4 4 0 00-4 4v6', 'title' => __('Quality Interactive Training'), 'desc' => __('Curriculum designed with native Japanese instructors and tailored to JLPT / SSW exam standards.')],
+                    ['icon' => 'M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z', 'title' => __('Real Job Placement'), 'desc' => __('Direct partnership with companies in Japan — students go straight to verified job offers, not theory.')],
+                    ['icon' => 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z', 'title' => __('Transparent Process, No Hidden Costs'), 'desc' => __('Every fee, every step, every promise — written, signed, and explained before you commit.')],
+                ];
+            @endphp
+            <div class="space-y-5">
+                @foreach($companyHighlights as $h)
+                    <div class="flex items-start gap-4 glass-card p-5 hover:border-brand-500/40 transition">
+                        <div class="shrink-0 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-brand-600/15 text-brand-400">
+                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $h['icon'] }}"/></svg>
+                        </div>
+                        <div>
+                            <h3 class="font-display font-semibold text-white">{{ $h['title'] }}</h3>
+                            <p class="mt-1 text-sm text-surface-400 leading-relaxed">{{ $h['desc'] }}</p>
+                        </div>
+                    </div>
+                @endforeach
             </div>
         </div>
     </div>
@@ -349,22 +374,15 @@
 {{-- ========== GALLERY PREVIEW ========== --}}
 @php $galleryPreview = \App\Models\Gallery::published()->orderBy('sort_order')->orderByDesc('id')->limit(8)->get(); @endphp
 @if($galleryPreview->isNotEmpty())
-<section class="reveal min-h-screen flex flex-col justify-center py-20 bg-surface-900/40">
+<section class="reveal min-h-screen py-20 bg-surface-900/40">
     <div class="mx-auto max-w-7xl px-6">
-        <div class="flex items-end justify-between flex-wrap gap-4">
-            <div>
-                <p class="text-xs uppercase tracking-wider text-brand-400 font-semibold">{{ __('Documentation') }}</p>
-                <h2 class="mt-2 font-display text-3xl sm:text-4xl font-bold text-white">{{ __('Gallery') }}</h2>
-                <p class="mt-2 text-surface-400 max-w-xl">{{ __('Photos and videos from our trainings, events, and student journeys.') }}</p>
-            </div>
-            <a href="{{ route('gallery.index') }}" wire:navigate
-               class="inline-flex items-center gap-1 text-sm text-brand-400 hover:text-brand-300 font-semibold">
-                {{ __('See all') }}
-                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-            </a>
+        <div class="text-center max-w-2xl mx-auto">
+            <p class="text-xs uppercase tracking-wider text-brand-400 font-semibold">{{ __('Documentation') }}</p>
+            <h2 class="mt-2 font-display text-3xl sm:text-4xl font-bold text-white">{{ __('Gallery') }}</h2>
+            <p class="mt-3 text-surface-400">{{ __('Photos and videos from our trainings, events, and student journeys.') }}</p>
         </div>
 
-        <div class="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             @foreach($galleryPreview as $g)
                 <a href="{{ route('gallery.index') }}" wire:navigate
                    class="group relative aspect-square overflow-hidden rounded-2xl bg-surface-900 border border-surface-800 hover:border-brand-500/50 transition">
@@ -381,8 +399,21 @@
                             <svg class="h-4 w-4 ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                         </span>
                     @endif
+                    @if($g->t('title'))
+                        <div class="absolute bottom-0 inset-x-0 p-3 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
+                            <p class="text-xs font-semibold text-white truncate">{{ $g->t('title') }}</p>
+                        </div>
+                    @endif
                 </a>
             @endforeach
+        </div>
+
+        <div class="mt-10 text-center">
+            <a href="{{ route('gallery.index') }}" wire:navigate
+               class="btn-brand inline-flex items-center gap-2">
+                {{ __('See all') }}
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </a>
         </div>
     </div>
 </section>
