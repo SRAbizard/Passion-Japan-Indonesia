@@ -3,15 +3,11 @@
 @section('og_title', __('Upcoming events at Passion Japan Indonesia'))
 
 @section('content')
-<section class="relative overflow-hidden">
-    <div class="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 h-[28rem] w-[28rem] rounded-full bg-brand-700/20 blur-3xl"></div>
-    <x-jp.sakura-petals :count="10" />
-    <div class="relative mx-auto max-w-7xl px-6 pt-14 pb-10">
-        <p class="text-xs uppercase tracking-wider text-brand-400 font-semibold">{{ __('Events') }}</p>
-        <h1 class="mt-3 font-display text-4xl sm:text-5xl font-extrabold text-white">{{ __('Workshops, seminars, and job fairs') }}</h1>
-        <p class="mt-4 max-w-2xl text-surface-300">{{ __('Join our upcoming events to meet recruiters, mentors, and the Passion Japan community.') }}</p>
-    </div>
-</section>
+<x-jp.page-hero
+    :eyebrow="__('Events')"
+    :title="__('Workshops, seminars, and job fairs')"
+    :subtitle="__('Join our upcoming events to meet recruiters, mentors, and the Passion Japan community.')"
+    :petals="10" />
 
 <section class="mx-auto max-w-7xl px-6 mb-6">
     <div class="flex items-center gap-2">

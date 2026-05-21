@@ -58,8 +58,12 @@
             if (window.__pjAudioInit) return;
             window.__pjAudioInit = true;
 
+            // Muted by default — only honour an explicit "unmuted" preference
+            // from a previous session. New visitors land in silence and choose
+            // to turn the music on themselves via the floating button.
             var saved = null;
             try { saved = localStorage.getItem('pj-audio-muted'); } catch (e) {}
+            var startUnmuted = saved === '0';
 
             // Resume position across navigation (sessionStorage, expires after 60s)
             var resumeAt = 0;
@@ -79,12 +83,14 @@
             if (audio.readyState >= 1) seekToResume();
             else audio.addEventListener('loadedmetadata', seekToResume, { once: true });
 
-            audio.muted = saved === '1';
-            audio.play().catch(function () {
-                audio.muted = true;
-                audio.play().catch(function () {});
-                if (saved !== '1') showHint();
-            }).finally(updateUI);
+            audio.muted = ! startUnmuted;
+            // Always attempt to play muted — keeps audio context warm so the
+            // unmute click takes effect instantly. If autoplay fails (Safari
+            // strictness etc.) just stay paused; the toggle still works.
+            audio.play().catch(function () {}).finally(updateUI);
+
+            // Show a one-shot hint to first-time visitors that there IS music.
+            if (saved === null) showHint();
 
             // Save current position so the next page picks up where this left off
             var savePos = function () {
@@ -99,19 +105,9 @@
             window.addEventListener('pagehide',     savePos);
             window.addEventListener('beforeunload', savePos);
 
-            var unmuteOnce = function () {
-                if (saved !== '1' && audio.muted) {
-                    audio.muted = false;
-                    audio.play().then(updateUI).catch(function () {});
-                }
-                hideHint();
-                ['click','keydown','touchstart','wheel'].forEach(function (e) {
-                    window.removeEventListener(e, unmuteOnce);
-                });
-            };
-            ['click','keydown','touchstart','wheel'].forEach(function (e) {
-                window.addEventListener(e, unmuteOnce, { passive: true });
-            });
+            // Removed the "auto-unmute on first gesture" listener: users
+            // explicitly enabled muted-by-default, so we honour silence
+            // until they tap the speaker button themselves.
 
             toggle.addEventListener('click', function (ev) {
                 ev.stopPropagation();

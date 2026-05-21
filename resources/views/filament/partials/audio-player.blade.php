@@ -33,8 +33,10 @@
             if (window.__pjAudioInit) return;
             window.__pjAudioInit = true;
 
+            // Muted by default — only honour an explicit "unmuted" preference.
             var saved = null;
             try { saved = localStorage.getItem('pj-audio-muted'); } catch (e) {}
+            var startUnmuted = saved === '0';
 
             // Resume position across navigation (sessionStorage)
             var resumeAt = 0;
@@ -54,11 +56,8 @@
             if (audio.readyState >= 1) seekToResume();
             else audio.addEventListener('loadedmetadata', seekToResume, { once: true });
 
-            audio.muted = saved === '1';
-            audio.play().catch(function () {
-                audio.muted = true;
-                audio.play().catch(function () {});
-            }).finally(updateUI);
+            audio.muted = ! startUnmuted;
+            audio.play().catch(function () {}).finally(updateUI);
 
             var savePos = function () {
                 if (audio.currentTime > 0 && ! audio.paused) {
@@ -72,18 +71,8 @@
             window.addEventListener('pagehide',     savePos);
             window.addEventListener('beforeunload', savePos);
 
-            var unmuteOnce = function () {
-                if (saved !== '1' && audio.muted) {
-                    audio.muted = false;
-                    audio.play().then(updateUI).catch(function () {});
-                }
-                ['click','keydown','touchstart','wheel'].forEach(function (e) {
-                    window.removeEventListener(e, unmuteOnce);
-                });
-            };
-            ['click','keydown','touchstart','wheel'].forEach(function (e) {
-                window.addEventListener(e, unmuteOnce, { passive: true });
-            });
+            // Auto-unmute on first gesture removed — admin/student must
+            // explicitly click the speaker button to enable music.
 
             toggle.addEventListener('click', function (ev) {
                 ev.stopPropagation();

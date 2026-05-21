@@ -4,15 +4,11 @@
 @section('og_description', __('Articles, tips, and alumni stories about working and studying in Japan.'))
 
 @section('content')
-<section class="relative overflow-hidden">
-    <div class="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 h-[28rem] w-[28rem] rounded-full bg-brand-700/20 blur-3xl"></div>
-    <x-jp.sakura-petals :count="10" />
-    <div class="relative mx-auto max-w-7xl px-6 pt-14 pb-10">
-        <p class="text-xs uppercase tracking-wider text-brand-400 font-semibold">{{ __('Blog') }}</p>
-        <h1 class="mt-3 font-display text-4xl sm:text-5xl font-extrabold text-white">{{ __('Insights for your Japan journey') }}</h1>
-        <p class="mt-4 max-w-2xl text-surface-300">{{ __('Articles, tips, and alumni stories — refreshed regularly by the Passion Japan team.') }}</p>
-    </div>
-</section>
+<x-jp.page-hero
+    :eyebrow="__('Blog')"
+    :title="__('Insights for your Japan journey')"
+    :subtitle="__('Articles, tips, and alumni stories — refreshed regularly by the Passion Japan team.')"
+    :petals="10" />
 
 {{-- Filters --}}
 <section class="mx-auto max-w-7xl px-6 mb-6">

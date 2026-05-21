@@ -5,20 +5,11 @@
 @section('og_description', __('Get in touch with our team for consultation, job opportunities, or course enrollment.'))
 
 @section('content')
-<section class="relative overflow-hidden">
-    <div class="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 h-[32rem] w-[32rem] rounded-full bg-brand-700/20 blur-3xl"></div>
-    <x-jp.sakura-petals :count="10" />
-
-    <div class="relative mx-auto max-w-7xl px-6 pt-16 pb-12">
-        <p class="text-xs uppercase tracking-wider text-brand-400 font-semibold">{{ __('Contact') }}</p>
-        <h1 class="mt-3 font-display text-4xl sm:text-5xl font-extrabold text-white leading-tight">
-            {{ __('Let\'s talk about your Japan journey.') }}
-        </h1>
-        <p class="mt-4 max-w-2xl text-lg text-surface-300 leading-relaxed">
-            {{ __('Free consultation. Our team replies within 24 hours.') }}
-        </p>
-    </div>
-</section>
+<x-jp.page-hero
+    :eyebrow="__('Contact')"
+    :title="__('Let\'s talk about your Japan journey.')"
+    :subtitle="__('Free consultation. Our team replies within 24 hours.')"
+    :petals="10" />
 
 <section class="pb-24">
     <div class="mx-auto max-w-7xl px-6 grid gap-10 lg:grid-cols-3">

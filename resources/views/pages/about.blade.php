@@ -23,33 +23,25 @@
 @section('content')
 
 {{-- HERO --}}
-<section class="relative overflow-hidden">
-    <div class="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 h-[36rem] w-[36rem] rounded-full bg-brand-700/25 blur-3xl"></div>
-    <x-jp.sakura-petals :count="12" />
-    <div class="relative mx-auto max-w-7xl px-6 pt-16 pb-12">
-        <p class="text-xs uppercase tracking-wider text-brand-400 font-semibold">{{ __('About Us') }}</p>
-        <h1 class="mt-3 font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-tight max-w-4xl">
-            {{ __('Bridging Indonesian talent with Japanese opportunity.') }}
-        </h1>
-        <p class="mt-6 max-w-2xl text-lg text-surface-300 leading-relaxed">
-            {{ __('Passion Japan Indonesia is a career-and-education platform that prepares Indonesian workers and students for life and work in Japan — from language and culture training, to job placement and post-arrival support.') }}
-        </p>
-
-        @php $companyProfileUrl = \App\Support\SiteSettings::companyProfileUrl(); @endphp
-        @if($companyProfileUrl)
-            <a href="{{ $companyProfileUrl }}" target="_blank" rel="noopener noreferrer" download
-               class="mt-8 inline-flex items-center gap-3 px-5 py-3 rounded-xl bg-brand-600 text-white font-semibold hover:bg-brand-700 hover:shadow-lg hover:shadow-brand-500/40 transition group">
-                <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-white/15 group-hover:scale-110 transition">
-                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                </span>
-                <span>
-                    <span class="block text-[10px] uppercase tracking-wider opacity-80">{{ __('Download') }}</span>
-                    <span class="block">{{ __('Company Profile') }}</span>
-                </span>
-            </a>
-        @endif
-    </div>
-</section>
+<x-jp.page-hero
+    :eyebrow="__('About Us')"
+    :title="__('Bridging Indonesian talent with Japanese opportunity.')"
+    :subtitle="__('Passion Japan Indonesia is a career-and-education platform that prepares Indonesian workers and students for life and work in Japan — from language and culture training, to job placement and post-arrival support.')"
+    :petals="12">
+    @php $companyProfileUrl = \App\Support\SiteSettings::companyProfileUrl(); @endphp
+    @if($companyProfileUrl)
+        <a href="{{ $companyProfileUrl }}" target="_blank" rel="noopener noreferrer" download
+           class="mt-8 inline-flex items-center gap-3 px-5 py-3 rounded-xl bg-brand-600 text-white font-semibold hover:bg-brand-700 hover:shadow-lg hover:shadow-brand-500/40 transition group">
+            <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-white/15 group-hover:scale-110 transition">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            </span>
+            <span>
+                <span class="block text-[10px] uppercase tracking-wider opacity-80">{{ __('Download') }}</span>
+                <span class="block">{{ __('Company Profile') }}</span>
+            </span>
+        </a>
+    @endif
+</x-jp.page-hero>
 
 {{-- MISSION + VISION --}}
 <section class="py-16 bg-surface-900/40">
