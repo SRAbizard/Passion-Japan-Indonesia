@@ -74,12 +74,43 @@
 
         <div class="hidden lg:flex items-center gap-7 text-sm text-surface-200">
             <a href="{{ url('/') }}" wire:navigate class="hover:text-white transition">{{ __('Home') }}</a>
-            <a href="{{ route('job.index') }}" wire:navigate class="hover:text-white transition">{{ __('Job Vacancies') }}</a>
-            <a href="{{ route('elearning.index') }}" wire:navigate class="hover:text-white transition">{{ __('E-Learning') }}</a>
+
+            {{-- Program Passion dropdown — bundles the two service offerings --}}
+            <div class="relative group">
+                <button type="button" class="inline-flex items-center gap-1 hover:text-white transition">
+                    {{ __('Program Passion') }}
+                    <svg class="h-3 w-3 opacity-60 transition group-hover:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+                </button>
+                <div class="absolute left-0 mt-2 hidden group-hover:block group-focus-within:block min-w-[220px] glass-card p-1 z-30">
+                    <a href="{{ route('job.index') }}" wire:navigate class="block px-3 py-2 rounded-lg hover:bg-surface-700/60 text-surface-100">
+                        <span class="block font-semibold">{{ __('Job Vacancies') }}</span>
+                        <span class="block text-xs text-surface-400">{{ __('Verified jobs from partner companies') }}</span>
+                    </a>
+                    <a href="{{ route('elearning.index') }}" wire:navigate class="block px-3 py-2 rounded-lg hover:bg-surface-700/60 text-surface-100">
+                        <span class="block font-semibold">{{ __('E-Learning') }}</span>
+                        <span class="block text-xs text-surface-400">{{ __('Japanese & job-skill courses') }}</span>
+                    </a>
+                </div>
+            </div>
+
             <a href="{{ route('event.index') }}" wire:navigate class="hover:text-white transition">{{ __('Event') }}</a>
             <a href="{{ route('blog.index') }}" wire:navigate class="hover:text-white transition">{{ __('Blog') }}</a>
-            <a href="{{ route('about') }}" wire:navigate class="hover:text-white transition">{{ __('About Us') }}</a>
-            <a href="{{ route('contact') }}" wire:navigate class="hover:text-white transition">{{ __('Contact') }}</a>
+
+            {{-- Perusahaan dropdown — About + Contact --}}
+            <div class="relative group">
+                <button type="button" class="inline-flex items-center gap-1 hover:text-white transition">
+                    {{ __('Company') }}
+                    <svg class="h-3 w-3 opacity-60 transition group-hover:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+                </button>
+                <div class="absolute left-0 mt-2 hidden group-hover:block group-focus-within:block min-w-[200px] glass-card p-1 z-30">
+                    <a href="{{ route('about') }}" wire:navigate class="block px-3 py-2 rounded-lg hover:bg-surface-700/60 text-surface-100">
+                        {{ __('About Us') }}
+                    </a>
+                    <a href="{{ route('contact') }}" wire:navigate class="block px-3 py-2 rounded-lg hover:bg-surface-700/60 text-surface-100">
+                        {{ __('Contact') }}
+                    </a>
+                </div>
+            </div>
         </div>
 
         <div class="flex items-center gap-2">
@@ -133,12 +164,17 @@
                 <summary class="list-none btn-ghost px-2.5 py-2 cursor-pointer">
                     <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
                 </summary>
-                <div class="absolute right-0 mt-2 min-w-[220px] glass-card p-2 flex flex-col text-sm">
+                <div class="absolute right-0 mt-2 min-w-[240px] glass-card p-2 flex flex-col text-sm">
                     <a href="{{ url('/') }}" wire:navigate class="px-3 py-2 rounded-lg hover:bg-surface-700/60">{{ __('Home') }}</a>
+
+                    <p class="px-3 pt-3 pb-1 text-[10px] uppercase tracking-wider text-surface-500 font-semibold">{{ __('Program Passion') }}</p>
                     <a href="{{ route('job.index') }}" wire:navigate class="px-3 py-2 rounded-lg hover:bg-surface-700/60">{{ __('Job Vacancies') }}</a>
                     <a href="{{ route('elearning.index') }}" wire:navigate class="px-3 py-2 rounded-lg hover:bg-surface-700/60">{{ __('E-Learning') }}</a>
-                    <a href="{{ route('event.index') }}" wire:navigate class="px-3 py-2 rounded-lg hover:bg-surface-700/60">{{ __('Event') }}</a>
+
+                    <a href="{{ route('event.index') }}" wire:navigate class="mt-2 px-3 py-2 rounded-lg hover:bg-surface-700/60">{{ __('Event') }}</a>
                     <a href="{{ route('blog.index') }}" wire:navigate class="px-3 py-2 rounded-lg hover:bg-surface-700/60">{{ __('Blog') }}</a>
+
+                    <p class="px-3 pt-3 pb-1 text-[10px] uppercase tracking-wider text-surface-500 font-semibold">{{ __('Company') }}</p>
                     <a href="{{ route('about') }}" wire:navigate class="px-3 py-2 rounded-lg hover:bg-surface-700/60">{{ __('About Us') }}</a>
                     <a href="{{ route('contact') }}" wire:navigate class="px-3 py-2 rounded-lg hover:bg-surface-700/60">{{ __('Contact') }}</a>
                 </div>

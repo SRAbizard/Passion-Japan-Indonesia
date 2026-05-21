@@ -875,6 +875,10 @@
     "English": "英語",
     "日本語": "日本語",
 
-    "Required in :default. :other are optional.": ":default は必須です。:other は任意です。"
+    "Required in :default. :other are optional.": ":default は必須です。:other は任意です。",
+
+    "Program Passion": "プログラム",
+    "Verified jobs from partner companies": "提携企業の認証済み求人",
+    "Japanese & job-skill courses": "日本語と職業スキルのコース"
 }
 
