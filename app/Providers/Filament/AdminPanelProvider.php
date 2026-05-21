@@ -8,7 +8,6 @@ use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\MenuItem;
-use Filament\Navigation\NavigationGroup;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -44,18 +43,11 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->defaultThemeMode(ThemeMode::Dark)
             ->sidebarCollapsibleOnDesktop()
-            // Declare nav groups explicitly so we control:
-            //  - the order (Recruitment → Learning → Students → CMS)
-            //  - collapsed-by-default state (Filament's default is expanded,
-            //    which made the sidebar feel busy when admin opened the
-            //    dashboard with no active group). Groups auto-expand when
-            //    the current page lives inside them, so context isn't lost.
-            ->navigationGroups([
-                NavigationGroup::make()->label(fn () => __('Recruitment'))->collapsed(),
-                NavigationGroup::make()->label(fn () => __('Learning'))->collapsed(),
-                NavigationGroup::make()->label(fn () => __('Students'))->collapsed(),
-                NavigationGroup::make()->label(fn () => __('CMS'))->collapsed(),
-            ])
+            // Initial collapsed state is enforced client-side by
+            // sidebar-nav-init.blade.php. Filament's PHP-side ->collapsed()
+            // didn't match our translated nav-group labels reliably, and a
+            // string-based navigationGroups() call would have to call __()
+            // at panel-boot time (before the locale middleware runs).
             ->userMenuItems(array_merge(
                 [
                     MenuItem::make()
