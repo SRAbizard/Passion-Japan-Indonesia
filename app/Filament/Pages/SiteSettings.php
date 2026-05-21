@@ -52,6 +52,11 @@ class SiteSettings extends Page
         // Company profile PDF path
         $data['company__profile_pdf_path'] = Setting::get('company.profile_pdf_path');
 
+        // Company profile video (file OR YouTube URL + optional poster)
+        $data['company__video_path']         = Setting::get('company.video_path');
+        $data['company__video_youtube_url']  = Setting::get('company.video_youtube_url');
+        $data['company__video_poster_path']  = Setting::get('company.video_poster_path');
+
         // Theme audio file path
         $data['audio__theme_path'] = Setting::get('audio.theme_path');
 
@@ -262,6 +267,12 @@ class SiteSettings extends Page
 
         // Company profile single-file upload
         Setting::set('company.profile_pdf_path', $state['company__profile_pdf_path'] ?? null, 'company');
+
+        // Company profile video — store both file path and YouTube URL;
+        // SiteSettings::companyVideo() picks file first, YouTube fallback.
+        Setting::set('company.video_path',         $state['company__video_path']        ?? null, 'company');
+        Setting::set('company.video_youtube_url',  $state['company__video_youtube_url'] ?? null, 'company');
+        Setting::set('company.video_poster_path',  $state['company__video_poster_path'] ?? null, 'company');
 
         // Theme audio single-file upload
         Setting::set('audio.theme_path', $state['audio__theme_path'] ?? null, 'audio');
