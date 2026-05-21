@@ -77,7 +77,9 @@ class StudentPanelProvider extends PanelProvider
                         return view('filament.partials.login-background')->render()
                             . view('filament.partials.login-sakura')->render();
                     }
-                    return '';
+                    // Same nav-version reset as the admin panel — keeps
+                    // student-panel sidebar in sync with config changes.
+                    return view('filament.partials.sidebar-nav-init')->render();
                 },
             )
             ->renderHook(

@@ -84,15 +84,21 @@ class AdminPanelProvider extends PanelProvider
             ->renderHook(
                 PanelsRenderHook::BODY_START,
                 function (): string {
+                    $route = request()->route()?->getName() ?? '';
+
                     // Auth pages (login / register / password-reset / email-verification)
                     // get the Mt Fuji background + falling sakura BEFORE the main content
                     // so they sit behind the form. BODY_END would render them on top.
-                    $route = request()->route()?->getName() ?? '';
                     if (str_contains($route, '.auth.')) {
                         return view('filament.partials.login-background')->render()
                             . view('filament.partials.login-sakura')->render();
                     }
-                    return '';
+
+                    // Authenticated admin pages: reset cached nav-group state
+                    // BEFORE Filament's sidebar Livewire boots. BODY_END is
+                    // too late — Filament has already read localStorage by
+                    // then and rendered the sidebar in the old state.
+                    return view('filament.partials.sidebar-nav-init')->render();
                 },
             )
             ->renderHook(

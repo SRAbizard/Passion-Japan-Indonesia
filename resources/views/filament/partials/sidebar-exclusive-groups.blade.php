@@ -1,35 +1,19 @@
 <script data-navigate-once>
 /**
- * Sidebar nav behavior — two concerns:
+ * Exclusive sidebar navigation groups — only one expanded at a time.
  *
- *  1. Initial-state migration. Filament writes a JSON array to
- *     localStorage('collapsedGroups') ONCE on first visit; after that,
- *     it never re-runs the init. When we change the panel's default
- *     collapsed config (AdminPanelProvider::navigationGroups()), users
- *     with an existing entry are stuck with the old state. We bump
- *     `pj_nav_version` and force-reseed when it changes.
+ * Filament v5 stores expand/collapse state in the Alpine store
+ * `$store.sidebar` (collapsedGroups + groupIsCollapsed/toggleCollapsedGroup).
+ * Each <li class="fi-sidebar-group"> carries its label in
+ * `data-group-label`. When the user opens a group, we walk every other
+ * group and toggle it closed via the same store API Filament uses, so
+ * the persisted state stays consistent.
  *
- *  2. Exclusive groups — only one nav group expanded at a time. Each
- *     <li class="fi-sidebar-group"> carries its label in
- *     `data-group-label`. When the user opens a group, walk every
- *     other group and collapse it via the same store API Filament
- *     uses, so the persisted state stays consistent.
+ * Initial collapsed state on first visit is handled by the separate
+ * sidebar-nav-init partial (rendered at BODY_START so it runs before
+ * Filament's sidebar init reads localStorage).
  */
 (function () {
-    // ── (1) One-time reset on config-version change ──────────────────
-    // Bump CURRENT_VERSION whenever you change the panel's default
-    // collapsed state in AdminPanelProvider so existing users pick it up.
-    const CURRENT_VERSION = '2026-05-18-collapsed-default';
-    const VERSION_KEY     = 'pj_nav_version';
-
-    if (localStorage.getItem(VERSION_KEY) !== CURRENT_VERSION) {
-        // Wipe Filament's cached state — its boot script will re-init
-        // from the new collapsed() config on next render tick.
-        localStorage.removeItem('collapsedGroups');
-        localStorage.setItem(VERSION_KEY, CURRENT_VERSION);
-    }
-
-    // ── (2) Exclusive groups (run once per page) ─────────────────────
     if (window.__passionExclusiveNav) return;
     window.__passionExclusiveNav = true;
 
