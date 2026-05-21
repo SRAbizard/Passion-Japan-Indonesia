@@ -81,6 +81,32 @@ class SiteSettings
     }
 
     /**
+     * Returns the company-profile video URL — either the uploaded mp4 or
+     * the admin-pasted YouTube embed. Returns ['type' => 'file'|'youtube',
+     * 'url' => string, 'poster' => ?string] for the blade to switch on,
+     * or null when neither is configured.
+     */
+    public static function companyVideo(): ?array
+    {
+        $path = Setting::get('company.video_path');
+        $yt   = Setting::get('company.video_youtube_url');
+        $poster = Setting::get('company.video_poster_path');
+        $posterUrl = $poster ? asset('storage/'.$poster) : null;
+
+        if ($path) {
+            return ['type' => 'file', 'url' => asset('storage/'.$path), 'poster' => $posterUrl];
+        }
+        if ($yt) {
+            // Normalise to embed URL
+            if (preg_match('~(?:youtu\.be/|youtube\.com/(?:watch\?v=|embed/|shorts/))([\w-]{11})~', $yt, $m)) {
+                return ['type' => 'youtube', 'url' => "https://www.youtube.com/embed/{$m[1]}", 'poster' => $posterUrl];
+            }
+            return ['type' => 'youtube', 'url' => $yt, 'poster' => $posterUrl];
+        }
+        return null;
+    }
+
+    /**
      * Public URL for the uploaded background theme song, or null if
      * none uploaded. Plays as muted-autoplay on the homepage.
      */

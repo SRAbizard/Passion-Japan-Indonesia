@@ -879,6 +879,37 @@
 
     "Program Passion": "プログラム",
     "Verified jobs from partner companies": "提携企業の認証済み求人",
-    "Japanese & job-skill courses": "日本語と職業スキルのコース"
+    "Japanese & job-skill courses": "日本語と職業スキルのコース",
+
+    "Gallery": "ギャラリー",
+    "Gallery item": "ギャラリー項目",
+    "Documentation": "ドキュメント",
+    "Moments from our journey": "私たちの歩みの瞬間",
+    "Photos and videos from our trainings, events, and student journeys.": "研修・イベント・学生の歩みの写真と動画。",
+    "No gallery items published yet.": "公開中のギャラリー項目はまだありません。",
+    "Media type": "メディアタイプ",
+    "Photo": "写真",
+    "Uploaded video (mp4)": "アップロード動画（mp4）",
+    "YouTube link": "YouTubeリンク",
+    "YouTube URL": "YouTube URL",
+    "Thumbnail / poster (optional)": "サムネイル / ポスター（任意）",
+    "Video file (mp4)": "動画ファイル（mp4）",
+    "The main image shown in the gallery.": "ギャラリーに表示されるメイン画像。",
+    "Shown on the gallery card before the video plays. Optional but recommended.": "動画再生前にギャラリーカードに表示されます。任意ですが推奨。",
+    "Any YouTube watch / share / shorts URL — we extract the ID automatically.": "YouTubeのwatch / share / shorts URL — IDを自動抽出します。",
+    "Taken at": "撮影日",
+    "Caption": "キャプション",
+    "YouTube": "YouTube",
+
+    "Company Profile Video": "会社紹介動画",
+    "Get to know us in 2 minutes": "2分で私たちを知る",
+    "A quick look inside Passion Japan Indonesia — our team, our students, our mission.": "Passion Japan Indonesia の中身を簡単に — チーム・学生・ミッション。",
+    "Upload a short video (mp4 / webm) OR paste a YouTube URL. Shown on the homepage under the \"About\" section.": "短い動画（mp4 / webm）をアップロード、またはYouTube URLを貼り付けてください。ホームページの「About」セクションの下に表示されます。",
+    "Video file (mp4 / webm)": "動画ファイル（mp4 / webm）",
+    "Either upload a file or use the YouTube URL field — not both.": "ファイルをアップロードするか、YouTube URLを使用するか — 両方ではありません。",
+    "YouTube URL (alternative)": "YouTube URL（代替）",
+    "Use this instead of uploading if your video is hosted on YouTube.": "動画がYouTubeにある場合はアップロードの代わりにこちらを使用してください。",
+    "Poster image (optional)": "ポスター画像（任意）",
+    "Shown before the video plays. Recommended 1920×1080.": "動画再生前に表示されます。推奨1920×1080。"
 }
 

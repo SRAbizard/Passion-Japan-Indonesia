@@ -112,6 +112,35 @@ class SiteSettings extends Page
                                 ->maxSize(10240)
                                 ->columnSpanFull(),
                         ]),
+                    Section::make(__('Company Profile Video'))
+                        ->description(__('Upload a short video (mp4 / webm) OR paste a YouTube URL. Shown on the homepage under the "About" section.'))
+                        ->columns(2)
+                        ->components([
+                            FileUpload::make('company__video_path')
+                                ->label(__('Video file (mp4 / webm)'))
+                                ->disk('public')
+                                ->directory('company')
+                                ->acceptedFileTypes(['video/mp4', 'video/webm', 'video/quicktime'])
+                                ->maxSize(204800) // 200 MB
+                                ->previewable(false)
+                                ->openable()
+                                ->downloadable()
+                                ->helperText(__('Either upload a file or use the YouTube URL field — not both.')),
+                            TextInput::make('company__video_youtube_url')
+                                ->label(__('YouTube URL (alternative)'))
+                                ->url()
+                                ->placeholder('https://www.youtube.com/watch?v=...')
+                                ->helperText(__('Use this instead of uploading if your video is hosted on YouTube.')),
+                            FileUpload::make('company__video_poster_path')
+                                ->label(__('Poster image (optional)'))
+                                ->image()
+                                ->disk('public')
+                                ->directory('company')
+                                ->imageEditor()
+                                ->maxSize(5120)
+                                ->helperText(__('Shown before the video plays. Recommended 1920×1080.'))
+                                ->columnSpanFull(),
+                        ]),
                 ]),
                 Tab::make(__('Hero slideshow'))->icon('heroicon-o-photo')->schema([
                     Section::make(__('Hero background slides'))

@@ -874,6 +874,37 @@
 
     "Program Passion": "Program Passion",
     "Verified jobs from partner companies": "Lowongan terverifikasi dari perusahaan mitra",
-    "Japanese & job-skill courses": "Kursus bahasa Jepang & keterampilan kerja"
+    "Japanese & job-skill courses": "Kursus bahasa Jepang & keterampilan kerja",
+
+    "Gallery": "Galeri",
+    "Gallery item": "Item Galeri",
+    "Documentation": "Dokumentasi",
+    "Moments from our journey": "Momen dari perjalanan kami",
+    "Photos and videos from our trainings, events, and student journeys.": "Foto dan video dari pelatihan, acara, dan perjalanan siswa kami.",
+    "No gallery items published yet.": "Belum ada item galeri yang dipublikasikan.",
+    "Media type": "Tipe media",
+    "Photo": "Foto",
+    "Uploaded video (mp4)": "Video diunggah (mp4)",
+    "YouTube link": "Tautan YouTube",
+    "YouTube URL": "URL YouTube",
+    "Thumbnail / poster (optional)": "Thumbnail / poster (opsional)",
+    "Video file (mp4)": "File video (mp4)",
+    "The main image shown in the gallery.": "Gambar utama yang ditampilkan di galeri.",
+    "Shown on the gallery card before the video plays. Optional but recommended.": "Ditampilkan di kartu galeri sebelum video diputar. Opsional tapi disarankan.",
+    "Any YouTube watch / share / shorts URL — we extract the ID automatically.": "URL YouTube apa saja (watch / share / shorts) — ID akan diambil otomatis.",
+    "Taken at": "Diambil pada",
+    "Caption": "Keterangan",
+    "YouTube": "YouTube",
+
+    "Company Profile Video": "Video Profil Perusahaan",
+    "Get to know us in 2 minutes": "Kenali kami dalam 2 menit",
+    "A quick look inside Passion Japan Indonesia — our team, our students, our mission.": "Sekilas tentang Passion Japan Indonesia — tim, siswa, dan misi kami.",
+    "Upload a short video (mp4 / webm) OR paste a YouTube URL. Shown on the homepage under the \"About\" section.": "Unggah video singkat (mp4 / webm) ATAU tempel URL YouTube. Ditampilkan di beranda di bawah section \"Tentang\".",
+    "Video file (mp4 / webm)": "File video (mp4 / webm)",
+    "Either upload a file or use the YouTube URL field — not both.": "Unggah file ATAU isi URL YouTube — bukan keduanya.",
+    "YouTube URL (alternative)": "URL YouTube (alternatif)",
+    "Use this instead of uploading if your video is hosted on YouTube.": "Gunakan ini jika video Anda di-host di YouTube (alternatif dari upload).",
+    "Poster image (optional)": "Gambar poster (opsional)",
+    "Shown before the video plays. Recommended 1920×1080.": "Ditampilkan sebelum video diputar. Rekomendasi 1920×1080."
 }
 

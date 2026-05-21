@@ -95,6 +95,7 @@
 
             <a href="{{ route('event.index') }}" wire:navigate class="hover:text-white transition">{{ __('Event') }}</a>
             <a href="{{ route('blog.index') }}" wire:navigate class="hover:text-white transition">{{ __('Blog') }}</a>
+            <a href="{{ route('gallery.index') }}" wire:navigate class="hover:text-white transition">{{ __('Gallery') }}</a>
 
             {{-- Perusahaan dropdown — About + Contact --}}
             <div class="relative group">
@@ -173,6 +174,7 @@
 
                     <a href="{{ route('event.index') }}" wire:navigate class="mt-2 px-3 py-2 rounded-lg hover:bg-surface-700/60">{{ __('Event') }}</a>
                     <a href="{{ route('blog.index') }}" wire:navigate class="px-3 py-2 rounded-lg hover:bg-surface-700/60">{{ __('Blog') }}</a>
+                    <a href="{{ route('gallery.index') }}" wire:navigate class="px-3 py-2 rounded-lg hover:bg-surface-700/60">{{ __('Gallery') }}</a>
 
                     <p class="px-3 pt-3 pb-1 text-[10px] uppercase tracking-wider text-surface-500 font-semibold">{{ __('Company') }}</p>
                     <a href="{{ route('about') }}" wire:navigate class="px-3 py-2 rounded-lg hover:bg-surface-700/60">{{ __('About Us') }}</a>
@@ -237,6 +239,7 @@
                 <li><a href="{{ route('elearning.index') }}" wire:navigate class="hover:text-brand-400">{{ __('E-Learning') }}</a></li>
                 <li><a href="{{ route('event.index') }}" wire:navigate class="hover:text-brand-400">{{ __('Event') }}</a></li>
                 <li><a href="{{ route('blog.index') }}" wire:navigate class="hover:text-brand-400">{{ __('Blog') }}</a></li>
+                <li><a href="{{ route('gallery.index') }}" wire:navigate class="hover:text-brand-400">{{ __('Gallery') }}</a></li>
                 <li><a href="{{ route('about') }}" wire:navigate class="hover:text-brand-400">{{ __('About Us') }}</a></li>
                 <li><a href="{{ route('contact') }}" wire:navigate class="hover:text-brand-400">{{ __('Contact') }}</a></li>
             </ul>
