@@ -27,7 +27,8 @@ Route::post('jobs/{slug}/apply',  [\App\Http\Controllers\JobController::class, '
     ->middleware('throttle:10,1')
     ->name('job.apply');
 
-Route::get('gallery', [\App\Http\Controllers\GalleryController::class, 'index'])->name('gallery.index');
+Route::get('gallery',         [\App\Http\Controllers\GalleryController::class, 'index'])->name('gallery.index');
+Route::get('gallery/{slug}',  [\App\Http\Controllers\GalleryController::class, 'show'])->name('gallery.show');
 
 Route::get('elearning',                          [ElearningController::class, 'index'])->name('elearning.index');
 Route::get('elearning/{slug}',                   [ElearningController::class, 'show'])->name('elearning.show');

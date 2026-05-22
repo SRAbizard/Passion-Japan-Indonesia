@@ -499,6 +499,20 @@
     "Mensetsu Online": "Online Interview",
     "Sosialisasi Kampus": "Campus Outreach",
     "Umum": "General",
-    "All": "All"
+    "All": "All",
+
+    "Album": "Album",
+    "Albums": "Albums",
+    "Album info": "Album info",
+    "Album title": "Album title",
+    "Album description": "Album description",
+    "Cover image": "Cover image",
+    "Photos / videos": "Photos / videos",
+    "Photos & videos": "Photos & videos",
+    "Caption / description": "Caption / description",
+    "+ Tambah Foto / Video": "+ Add Photo / Video",
+    "Back to Gallery": "Back to Gallery",
+    "No items in this album yet.": "No items in this album yet.",
+    "Item": "Item"
 }
 

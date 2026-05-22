@@ -925,6 +925,21 @@
     "Mensetsu Online": "オンライン面接",
     "Sosialisasi Kampus": "大学訪問",
     "Umum": "一般",
-    "All": "すべて"
+    "All": "すべて",
+
+    "Album": "アルバム",
+    "Albums": "アルバム",
+    "Album info": "アルバム情報",
+    "Album title": "アルバムタイトル",
+    "Album description": "アルバム説明",
+    "Cover image": "カバー画像",
+    "Shown on the album card in the public gallery. If empty, the first item's thumbnail is used.": "公開ギャラリーのアルバムカードに表示されます。空欄の場合、最初の項目のサムネイルが使用されます。",
+    "Photos / videos": "写真 / 動画",
+    "Photos & videos": "写真と動画",
+    "Caption / description": "キャプション / 説明",
+    "+ Tambah Foto / Video": "+ 写真 / 動画を追加",
+    "Back to Gallery": "ギャラリーへ戻る",
+    "No items in this album yet.": "このアルバムにはまだ項目がありません。",
+    "Item": "項目"
 }
 

@@ -8,26 +8,34 @@ use Illuminate\View\View;
 
 class GalleryController extends Controller
 {
+    /**
+     * Album list — shows each Gallery as a card with cover + item count.
+     */
     public function index(Request $request): View
     {
-        $activeCategory = $request->string('category')->toString() ?: null;
-
-        $items = Gallery::published()
-            ->when($activeCategory, fn ($q) => $q->where('category', $activeCategory))
+        $albums = Gallery::published()
+            ->withCount(['publishedItems as items_count'])
+            ->with(['publishedItems' => fn ($q) => $q->limit(1)])  // for cover fallback
+            ->having('items_count', '>', 0)                         // hide empty albums
             ->orderBy('sort_order')
             ->orderByDesc('taken_at')
             ->orderByDesc('id')
-            ->paginate(24)
+            ->paginate(12)
             ->withQueryString();
 
-        // Count per category for the tab badges. Only show tabs that
-        // actually have items so the strip doesn't lie.
-        $counts = Gallery::published()
-            ->selectRaw('category, COUNT(*) as c')
-            ->groupBy('category')
-            ->pluck('c', 'category')
-            ->all();
+        return view('pages.gallery.index', compact('albums'));
+    }
 
-        return view('pages.gallery.index', compact('items', 'activeCategory', 'counts'));
+    /**
+     * Single album — grid of all its items with a lightbox.
+     */
+    public function show(string $slug): View
+    {
+        $album = Gallery::published()
+            ->where('slug', $slug)
+            ->with(['publishedItems'])
+            ->firstOrFail();
+
+        return view('pages.gallery.show', compact('album'));
     }
 }

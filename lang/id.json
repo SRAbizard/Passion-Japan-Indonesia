@@ -921,6 +921,21 @@
     "Sosialisasi Kampus": "Sosialisasi Kampus",
     "Umum": "Umum",
     "All": "Semua",
-    "Determines which tab this item appears under on the public gallery.": "Menentukan tab mana item ini muncul di galeri publik."
+    "Determines which tab this item appears under on the public gallery.": "Menentukan tab mana item ini muncul di galeri publik.",
+
+    "Album": "Album",
+    "Albums": "Album",
+    "Album info": "Info Album",
+    "Album title": "Judul Album",
+    "Album description": "Deskripsi Album",
+    "Cover image": "Gambar Sampul",
+    "Shown on the album card in the public gallery. If empty, the first item's thumbnail is used.": "Ditampilkan di kartu album pada galeri publik. Jika kosong, thumbnail item pertama akan digunakan.",
+    "Photos / videos": "Foto / video",
+    "Photos & videos": "Foto & Video",
+    "Caption / description": "Keterangan / Deskripsi",
+    "+ Tambah Foto / Video": "+ Tambah Foto / Video",
+    "Back to Gallery": "Kembali ke Galeri",
+    "No items in this album yet.": "Belum ada item di album ini.",
+    "Item": "Item"
 }
 
