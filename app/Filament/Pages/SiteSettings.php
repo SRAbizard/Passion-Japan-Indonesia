@@ -126,11 +126,11 @@ class SiteSettings extends Page
                                 ->disk('public')
                                 ->directory('company')
                                 ->acceptedFileTypes(['video/mp4', 'video/webm', 'video/quicktime'])
-                                ->maxSize(204800) // 200 MB
+                                ->maxSize(1024000) // 1 GB — also requires php.ini limits raised
                                 ->previewable(false)
                                 ->openable()
                                 ->downloadable()
-                                ->helperText(__('Either upload a file or use the YouTube URL field — not both.')),
+                                ->helperText(__('Up to 1 GB. For large files, raise upload_max_filesize + post_max_size in php.ini.')),
                             TextInput::make('company__video_youtube_url')
                                 ->label(__('YouTube URL (alternative)'))
                                 ->url()
