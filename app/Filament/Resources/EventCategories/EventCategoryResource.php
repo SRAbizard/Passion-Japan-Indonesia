@@ -44,7 +44,8 @@ class EventCategoryResource extends Resource
     {
         return $table->columns([
             TextColumn::make('sort_order')->label('#'),
-            TextColumn::make('name')->label(__('Name'))->formatStateUsing(fn ($r) => $r->t('name'))->searchable(),
+            TextColumn::make('name')->label(__('Name'))
+                ->formatStateUsing(fn ($state, $record) => $record->t('name'))->searchable(),
             TextColumn::make('slug')->copyable(),
             ColorColumn::make('color'),
             TextColumn::make('events_count')->counts('events')->label(__('Events')),
