@@ -365,11 +365,36 @@
             var isHome = location.pathname === '/' || location.pathname === '';
             document.documentElement.classList.toggle('snap-sections', isHome);
             document.body.classList.toggle('snap-sections', isHome);
+            // Subtle Japanese gradient on every non-home page so the body
+            // doesn't feel flat after the page-hero ends.
+            document.body.classList.toggle('pj-jp-body', !isHome);
         }
         pjApplySnap();
+
+        // ─── Lite YouTube embed: click poster to load iframe ─────────
+        function pjBindLiteYT () {
+            document.querySelectorAll('[data-pj-lite-yt]:not([data-pj-bound])').forEach(function (el) {
+                el.setAttribute('data-pj-bound', '1');
+                el.addEventListener('click', function () {
+                    var url = el.dataset.embedUrl;
+                    if (!url) return;
+                    var iframe = document.createElement('iframe');
+                    iframe.src = url;
+                    iframe.className = 'absolute inset-0 h-full w-full';
+                    iframe.setAttribute('frameborder', '0');
+                    iframe.setAttribute('allowfullscreen', '');
+                    iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
+                    iframe.setAttribute('title', 'YouTube video');
+                    el.replaceWith(iframe);
+                });
+            });
+        }
+        pjBindLiteYT();
+
         document.addEventListener('livewire:navigated', function () {
             pjApplySnap();
             pjBindReveal();
+            pjBindLiteYT();
         });
     })();
 </script>

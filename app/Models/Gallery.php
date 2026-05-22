@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 #[Fillable([
-    'slug', 'title', 'caption', 'type',
+    'slug', 'title', 'caption', 'type', 'category',
     'image_path', 'video_path', 'youtube_url',
     'taken_at', 'sort_order', 'is_published',
 ])]
@@ -17,6 +17,33 @@ class Gallery extends Model
     use HasJsonTranslations;
 
     public array $translatable = ['title', 'caption'];
+
+    /**
+     * Categories shown as filter tabs on /gallery. Keys are stored in
+     * the `category` column; labels go through __() so each locale can
+     * translate them in lang/{locale}.json.
+     */
+    public const CATEGORIES = [
+        'mensetsu_offline'    => 'Mensetsu Offline',
+        'mensetsu_online'     => 'Mensetsu Online',
+        'sosialisasi_kampus'  => 'Sosialisasi Kampus',
+        'general'             => 'Umum',
+    ];
+
+    public static function categoryOptions(): array
+    {
+        $out = [];
+        foreach (self::CATEGORIES as $key => $label) {
+            $out[$key] = __($label);
+        }
+        return $out;
+    }
+
+    public function getCategoryLabelAttribute(): ?string
+    {
+        if (! $this->category) return __(self::CATEGORIES['general']);
+        return __(self::CATEGORIES[$this->category] ?? $this->category);
+    }
 
     protected function casts(): array
     {

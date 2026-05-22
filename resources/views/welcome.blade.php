@@ -188,17 +188,26 @@
 
         {{-- 2-column: video left · feature highlights right --}}
         <div class="mt-12 grid gap-10 lg:grid-cols-2 items-center">
-            {{-- Video --}}
+            {{-- Video — lite-embed pattern: show poster + custom play
+                 button, only attach the YouTube iframe (with autoplay=1)
+                 after user clicks. Bypasses the third-party-cookie
+                 loading-spinner hang that some browsers / networks hit
+                 on a vanilla YouTube embed. --}}
             <div class="relative aspect-video rounded-3xl overflow-hidden glass-card shadow-2xl shadow-brand-900/40 ring-1 ring-brand-500/20">
                 @if($companyVideo['type'] === 'youtube')
-                    <iframe src="{{ $companyVideo['url'] }}"
-                            title="Passion Japan — Company Profile"
-                            class="absolute inset-0 h-full w-full"
-                            frameborder="0"
-                            referrerpolicy="strict-origin-when-cross-origin"
-                            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                            allowfullscreen
-                            loading="lazy"></iframe>
+                    <div data-pj-lite-yt
+                         data-embed-url="{{ $companyVideo['url'] }}"
+                         class="group absolute inset-0 cursor-pointer">
+                        <img src="{{ $companyVideo['poster'] }}"
+                             alt="{{ __('Company Profile') }}"
+                             loading="lazy"
+                             class="absolute inset-0 h-full w-full object-cover">
+                        <div class="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/50 transition">
+                            <span class="inline-flex h-20 w-20 items-center justify-center rounded-full bg-brand-600 text-white shadow-2xl group-hover:scale-110 transition">
+                                <svg class="h-10 w-10 ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                            </span>
+                        </div>
+                    </div>
                 @else
                     <video src="{{ $companyVideo['url'] }}"
                            @if($companyVideo['poster']) poster="{{ $companyVideo['poster'] }}" @endif

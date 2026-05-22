@@ -97,14 +97,15 @@ class SiteSettings
             return ['type' => 'file', 'url' => asset('storage/'.$path), 'poster' => $posterUrl];
         }
         if ($yt) {
-            // Stick to standard youtube.com/embed — some uploaders restrict
-            // embedding on youtube-nocookie.com, which surfaces as a
-            // "Video unavailable" message. The standard host plays for
-            // any video that allows embedding at all.
             if (preg_match('~(?:youtu\.be/|youtube\.com/(?:watch\?v=|embed/|shorts/))([\w-]{11})~', $yt, $m)) {
-                return ['type' => 'youtube', 'url' => "https://www.youtube.com/embed/{$m[1]}?rel=0", 'poster' => $posterUrl];
+                return [
+                    'type'    => 'youtube',
+                    'url'     => "https://www.youtube.com/embed/{$m[1]}?rel=0&autoplay=1",
+                    'poster'  => $posterUrl ?: "https://img.youtube.com/vi/{$m[1]}/maxresdefault.jpg",
+                    'video_id'=> $m[1],
+                ];
             }
-            return ['type' => 'youtube', 'url' => $yt, 'poster' => $posterUrl];
+            return ['type' => 'youtube', 'url' => $yt, 'poster' => $posterUrl, 'video_id' => null];
         }
         return null;
     }

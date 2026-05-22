@@ -44,9 +44,16 @@ class GalleryResource extends Resource
                     ->unique(ignoreRecord: true)->maxLength(120)
                     ->live(onBlur: true)
                     ->afterStateUpdated(fn ($state, $set) => $set('slug', Str::slug($state ?? ''))),
+                \Filament\Forms\Components\Select::make('category')
+                    ->label(__('Category'))
+                    ->options(Gallery::categoryOptions())
+                    ->default('general')
+                    ->native(false)
+                    ->required()
+                    ->helperText(__('Determines which tab this item appears under on the public gallery.')),
                 DatePicker::make('taken_at')->label(__('Taken at')),
                 TextInput::make('sort_order')->label(__('Position'))->numeric()->default(0),
-                Toggle::make('is_published')->label(__('Published'))->default(true)->inline(false),
+                Toggle::make('is_published')->label(__('Published'))->default(true)->inline(false)->columnSpanFull(),
             ]),
 
             TranslatableTabs::for('title', TextInput::class, label: __('Title')),
@@ -105,6 +112,9 @@ class GalleryResource extends Resource
             TextColumn::make('title')->label(__('Title'))
                 ->formatStateUsing(fn ($state, $record) => $record->t('title') ?: '—')
                 ->limit(50)->wrap(),
+            TextColumn::make('category')->label(__('Category'))->badge()
+                ->color('info')
+                ->formatStateUsing(fn ($state) => $state ? __(Gallery::CATEGORIES[$state] ?? $state) : '—'),
             TextColumn::make('type')->badge()
                 ->colors(['primary' => 'image', 'warning' => 'video', 'danger' => 'youtube']),
             TextColumn::make('taken_at')->date('d M Y')->sortable()->toggleable(),
@@ -115,6 +125,8 @@ class GalleryResource extends Resource
         ->defaultSort('sort_order')
         ->reorderable('sort_order')
         ->filters([
+            SelectFilter::make('category')->label(__('Category'))
+                ->options(Gallery::categoryOptions()),
             SelectFilter::make('type')->options([
                 'image' => __('Photo'), 'video' => __('Video'), 'youtube' => __('YouTube'),
             ]),

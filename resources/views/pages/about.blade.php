@@ -123,23 +123,6 @@
     </div>
 </section>
 
-{{-- CTA --}}
-<section class="py-20">
-    <div class="mx-auto max-w-5xl px-6">
-        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-700 via-brand-800 to-surface-900 p-10 lg:p-14">
-            <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.08),transparent_40%)]"></div>
-            <div class="relative flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-                <div>
-                    <h2 class="font-display text-3xl lg:text-4xl font-bold text-white max-w-xl">{{ __('Have questions? Reach out.') }}</h2>
-                    <p class="mt-3 text-brand-100 max-w-xl">{{ __('Drop us a message and our team will reply within 24 hours.') }}</p>
-                </div>
-                <a href="{{ route('contact') }}" class="inline-flex shrink-0 items-center gap-2 px-7 py-3.5 rounded-xl bg-white text-brand-700 font-semibold hover:bg-brand-50 transition shadow-xl">
-                    {{ __('Contact us') }}
-                    <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
-                </a>
-            </div>
-        </div>
-    </div>
-</section>
+{{-- "Have questions?" CTA removed — duplicates the WhatsApp CTA in the global footer. --}}
 
 @endsection
