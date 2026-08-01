@@ -1,20 +1,27 @@
 {
     "version": 2,
     "functions": {
-        "api/index.php": { "runtime": "vercel-php@0.7.2" }
+        "api/index.php": {
+            "runtime": "vercel-php@0.7.2"
+        }
     },
     "routes": [
         {
             "src": "/build/(.*)",
             "dest": "/public/build/$1"
-       },
-       {
-           "src": "/(css|js|images)/(.*)",
-           "dest": "/public/$1/$2"
-       },
-       {
-           "src": "/(.*)",
-           "dest": "api/index.php"
-       }
-    ]
+        },
+        {
+            "src": "/(css|js|images)/(.*)",
+            "dest": "/public/$1/$2"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "api/index.php"
+        }
+    ],
+    "overrides": {
+        "api/index.php": {
+            "build": "composer install --no-dev --prefer-dist --optimize-autoloader"
+        }
+    }
 }
