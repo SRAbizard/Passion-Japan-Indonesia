@@ -19,9 +19,11 @@
             "dest": "api/index.php"
         }
     ],
-    "overrides": {
-        "api/index.php": {
-            "build": "composer install --no-dev --prefer-dist --optimize-autoloader"
-        }
+    "env": {
+        "APP_ENV": "production",
+        "APP_DEBUG": "true",
+        "VIEW_COMPILED_PATH": "/tmp",
+        "CACHE_STORE": "array",
+        "SESSION_DRIVER": "array"
     }
 }
