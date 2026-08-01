@@ -1,6 +1,5 @@
 {
     "version": 2,
-    "framework": null,
     "functions": {
         "api/index.php": { "runtime": "vercel-php@0.7.2" }
     },
@@ -8,18 +7,14 @@
         {
             "src": "/build/(.*)",
             "dest": "/public/build/$1"
-        },
-        {
-            "src": "/(css|js|images)/(.*)",
-            "dest": "/public/$1/$2"
-        },
-        {
-            "src": "/(.*)",
-            "dest": "api/index.php"
-        }
-    ],
-    "builds": [
-        { "src": "api/index.php", "use": "vercel-php@0.7.2" },
-        { "src": "package.json", "use": "@vercel/static-build", "config": { "distDir": "public" } }
+       },
+       {
+           "src": "/(css|js|images)/(.*)",
+           "dest": "/public/$1/$2"
+       },
+       {
+           "src": "/(.*)",
+           "dest": "api/index.php"
+       }
     ]
 }
