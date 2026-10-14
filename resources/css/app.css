@@ -111,7 +111,7 @@ html.light .bg-surface-900\/40 { background-color: var(--pj-washi-2) !important;
 
 html { background-color: var(--pj-washi); }
 html, body { color: var(--pj-ink); }
-body { background: transparent; }
+body { background: transparent; overflow-x: clip; }
 /* Faint washi grid behind every page */
 body::before {
     content: "";

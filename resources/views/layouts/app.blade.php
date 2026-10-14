@@ -115,14 +115,14 @@
 
             <div class="flex items-center gap-1.5">
                 {{-- Theme toggle (sun/moon) --}}
-                <button type="button" id="theme-toggle" class="pj-iconbtn"
+                <button type="button" data-theme-toggle class="pj-iconbtn hidden! sm:inline-flex!"
                         title="{{ __('Toggle dark / light mode') }}" aria-label="{{ __('Toggle dark / light mode') }}">
                     <svg class="theme-icon-sun h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
                     <svg class="theme-icon-moon h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
                 </button>
 
                 {{-- Language switcher --}}
-                <div class="relative group">
+                <div class="relative group hidden sm:block">
                     <button type="button" class="pj-iconbtn" aria-label="{{ __('Language') }}">
                         <span>{{ config('passion.locales.'.app()->getLocale().'.flag') }}</span>
                         <span class="uppercase">{{ app()->getLocale() }}</span>
@@ -151,7 +151,7 @@
                     </form>
                 @else
                     <a href="/dashboard/login" class="pj-navlink hidden sm:inline-flex">{{ __('Login') }}</a>
-                    <a href="/dashboard/register" class="pj-btn is-red py-2.5! px-4! text-sm">{{ __('Start Mission') }}</a>
+                    <a href="/dashboard/register" class="pj-btn is-red py-2.5! px-4! text-sm whitespace-nowrap">{{ __('Start Mission') }}</a>
                 @endauth
 
                 {{-- Mobile menu --}}
@@ -175,6 +175,17 @@
                         @guest
                             <a href="/dashboard/login" class="sm:hidden font-bold">{{ __('Login') }}</a>
                         @endguest
+                        <div class="sm:hidden mt-2 pt-2 border-t-2 border-dashed border-current/20 flex items-center gap-1.5 px-1">
+                            @foreach(config('passion.locales') as $code => $meta)
+                                <a href="{{ route('locale.switch', $code) }}" class="pj-iconbtn {{ app()->getLocale() === $code ? 'bg-[var(--pj-sakura)]!' : '' }}" aria-label="{{ $meta['native'] }}">
+                                    {{ $meta['flag'] }} <span class="uppercase">{{ $code }}</span>
+                                </a>
+                            @endforeach
+                            <button type="button" data-theme-toggle class="pj-iconbtn ml-auto" aria-label="{{ __('Toggle dark / light mode') }}">
+                                <svg class="theme-icon-sun h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                                <svg class="theme-icon-moon h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                            </button>
+                        </div>
                     </div>
                 </details>
             </div>
@@ -292,7 +303,7 @@
         // ─── Theme toggle ────────────────────────────────────────────
         // Bound by delegation so it keeps working after wire:navigate swaps.
         document.addEventListener('click', function (e) {
-            if (! e.target.closest('#theme-toggle')) return;
+            if (! e.target.closest('[data-theme-toggle]')) return;
             var html = document.documentElement;
             var goingDark = ! html.classList.contains('dark');
             html.classList.toggle('dark', goingDark);
