@@ -117,15 +117,15 @@ class JobVacancyResource extends Resource
     {
         return $table->columns([
             TextColumn::make('title')->label(__('Title'))
-                ->formatStateUsing(fn ($state, $record) => $record->t('title'))
+                ->getStateUsing(fn ($record) => $record->t('title'))
                 ->searchable(query: fn ($q, $search) => $q->where('title->id', 'like', "%{$search}%")->orWhere('title->en', 'like', "%{$search}%"))
                 ->limit(50)->wrap(),
             TextColumn::make('company.name')->label(__('Company'))->searchable()->toggleable(),
             TextColumn::make('jobCategory.name')->label(__('Category'))
-                ->formatStateUsing(fn ($state, $record) => $record->jobCategory?->t('name') ?? '—')
+                ->getStateUsing(fn ($record) => $record->jobCategory?->t('name') ?? '—')
                 ->badge(),
             TextColumn::make('visaCategory.name')->label(__('Visa'))
-                ->formatStateUsing(fn ($state, $record) => $record->visaCategory?->t('name') ?? '—')
+                ->getStateUsing(fn ($record) => $record->visaCategory?->t('name') ?? '—')
                 ->badge()->color('primary'),
             TextColumn::make('location_city')->label(__('Location'))->toggleable(),
             TextColumn::make('salary_range')->label(__('Salary'))

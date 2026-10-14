@@ -72,7 +72,7 @@ class ApplicationResource extends Resource
             TextColumn::make('user.name')->label(__('Applicant'))->searchable()->weight('bold'),
             TextColumn::make('user.email')->label(__('Email'))->searchable()->toggleable(isToggledHiddenByDefault: true),
             TextColumn::make('vacancy.title')->label(__('Job'))
-                ->formatStateUsing(fn ($state, $record) => $record->vacancy?->t('title') ?? '—')
+                ->getStateUsing(fn ($record) => $record->vacancy?->t('title') ?? '—')
                 ->limit(40)->searchable(),
             TextColumn::make('vacancy.company.name')->label(__('Company'))->toggleable(),
             TextColumn::make('status')->badge()

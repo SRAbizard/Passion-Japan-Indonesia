@@ -62,7 +62,7 @@ class TestimonialResource extends Resource
                 ImageColumn::make('avatar_path')->circular()->disk('public')->label(''),
                 TextColumn::make('name')->searchable()->weight('bold'),
                 TextColumn::make('kind')->badge()->colors(['primary' => 'student', 'success' => 'company']),
-                TextColumn::make('role')->label(__('Role'))->formatStateUsing(fn ($state, $record) => $record->t('role'))->limit(40),
+                TextColumn::make('role')->label(__('Role'))->getStateUsing(fn ($record) => $record->t('role'))->limit(40),
                 TextColumn::make('sort_order')->label('#'),
                 IconColumn::make('is_published')->boolean(),
             ])

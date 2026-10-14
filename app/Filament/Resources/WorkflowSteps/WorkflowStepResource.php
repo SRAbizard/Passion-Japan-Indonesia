@@ -96,7 +96,7 @@ class WorkflowStepResource extends Resource
                 ImageColumn::make('icon_path')->label(__('Image'))->disk('public')->circular()->size(40),
                 TextColumn::make('title')
                     ->label(__('Step'))
-                    ->formatStateUsing(fn ($state, $record) => $record->t('title'))
+                    ->getStateUsing(fn ($record) => $record->t('title'))
                     ->wrap()->weight('bold')
                     ->searchable(query: function ($q, $search) {
                         $q->where('title->id', 'like', "%{$search}%")
@@ -106,7 +106,7 @@ class WorkflowStepResource extends Resource
                 TextColumn::make('icon')->label(__('Heroicon'))->fontFamily('mono')->color('gray')->toggleable(),
                 TextColumn::make('badge_label')
                     ->label(__('Badge'))
-                    ->formatStateUsing(fn ($state, $record) => $record->badge_label ? $record->t('badge_label') : null)
+                    ->getStateUsing(fn ($record) => $record->badge_label ? $record->t('badge_label') : null)
                     ->placeholder('—')
                     ->badge()
                     ->color(fn ($state, $record) => match ($record->badge_color) {
@@ -118,7 +118,7 @@ class WorkflowStepResource extends Resource
                     }),
                 TextColumn::make('visa.name')
                     ->label(__('Visa'))
-                    ->formatStateUsing(fn ($state, $record) => $record->visa?->t('name') ?? '—')
+                    ->getStateUsing(fn ($record) => $record->visa?->t('name') ?? '—')
                     ->badge()
                     ->color('info')
                     ->sortable(),

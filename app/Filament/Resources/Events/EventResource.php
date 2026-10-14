@@ -69,11 +69,11 @@ class EventResource extends Resource
             ->columns([
                 ImageColumn::make('image_path')->disk('public')->square()->label(''),
                 TextColumn::make('title')->label(__('Title'))
-                    ->formatStateUsing(fn ($state, $record) => $record->t('title'))
+                    ->getStateUsing(fn ($record) => $record->t('title'))
                     ->limit(50)->wrap()
                     ->searchable(query: fn ($q, $search) => $q->where('title->id','like',"%{$search}%")->orWhere('title->en','like',"%{$search}%")),
                 TextColumn::make('category.name')->label(__('Category'))
-                    ->formatStateUsing(fn ($state, $record) => $record->category?->t('name') ?? '—')
+                    ->getStateUsing(fn ($record) => $record->category?->t('name') ?? '—')
                     ->badge(),
                 TextColumn::make('starts_at')->dateTime('d M Y H:i')->sortable(),
                 IconColumn::make('is_featured')->boolean()->label('★'),

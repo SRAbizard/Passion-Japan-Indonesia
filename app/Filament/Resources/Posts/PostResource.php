@@ -74,11 +74,11 @@ class PostResource extends Resource
             ->columns([
                 ImageColumn::make('thumbnail_path')->disk('public')->square()->label(''),
                 TextColumn::make('title')->label(__('Title'))
-                    ->formatStateUsing(fn ($state, $record) => $record->t('title'))
+                    ->getStateUsing(fn ($record) => $record->t('title'))
                     ->searchable(query: fn ($q, $search) => $q->where('title->id', 'like', "%{$search}%")->orWhere('title->en', 'like', "%{$search}%"))
                     ->limit(60)->wrap(),
                 TextColumn::make('category.name')->label(__('Category'))
-                    ->formatStateUsing(fn ($state, $record) => $record->category?->t('name') ?? '—')
+                    ->getStateUsing(fn ($record) => $record->category?->t('name') ?? '—')
                     ->badge(),
                 IconColumn::make('is_featured')->boolean()->label('★'),
                 TextColumn::make('published_at')->dateTime('d M Y')->sortable(),

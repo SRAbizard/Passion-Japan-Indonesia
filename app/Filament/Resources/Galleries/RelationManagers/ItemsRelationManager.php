@@ -95,7 +95,7 @@ class ItemsRelationManager extends RelationManager
             ImageColumn::make('image_path')->label('')->disk('public')->square()
                 ->defaultImageUrl(fn ($record) => $record->thumbnail_url),
             TextColumn::make('caption')->label(__('Caption'))
-                ->formatStateUsing(fn ($state, $record) => $record->t('caption') ?: '—')
+                ->getStateUsing(fn ($record) => $record->t('caption') ?: '—')
                 ->limit(60)->wrap(),
             TextColumn::make('type')->badge()
                 ->colors(['primary' => 'image', 'warning' => 'video', 'danger' => 'youtube']),

@@ -48,7 +48,7 @@ class FaqResource extends Resource
                 TextColumn::make('sort_order')->label('#')->sortable(),
                 TextColumn::make('question')
                     ->label(__('Question'))
-                    ->formatStateUsing(fn ($state, $record) => $record->t('question'))
+                    ->getStateUsing(fn ($record) => $record->t('question'))
                     ->searchable()
                     ->limit(80),
                 IconColumn::make('is_published')->boolean(),

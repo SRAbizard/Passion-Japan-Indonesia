@@ -81,7 +81,7 @@ class DocumentTypeResource extends Resource
             TextColumn::make('key')->label(__('Key'))->copyable()->searchable()
                 ->fontFamily('mono')->color('gray'),
             TextColumn::make('label')->label(__('Label'))
-                ->formatStateUsing(fn ($state, $record) => $record->t('label'))
+                ->getStateUsing(fn ($record) => $record->t('label'))
                 ->searchable(query: function ($q, $search) {
                     $q->where('label->id', 'like', "%{$search}%")
                       ->orWhere('label->en', 'like', "%{$search}%")

@@ -31,11 +31,11 @@ class MyApplications extends Page implements HasTable
                 ->where('user_id', auth()->id()))
             ->columns([
                 TextColumn::make('jobVacancy.title')->label(__('Position'))
-                    ->formatStateUsing(fn ($state, $record) => $record->jobVacancy?->t('title') ?? '—')
+                    ->getStateUsing(fn ($record) => $record->jobVacancy?->t('title') ?? '—')
                     ->searchable()->limit(60)->wrap()->weight('bold'),
                 TextColumn::make('jobVacancy.company.name')->label(__('Company'))->searchable(),
                 TextColumn::make('jobVacancy.visaCategory.name')->label(__('Visa'))
-                    ->formatStateUsing(fn ($state, $record) => $record->jobVacancy?->visaCategory?->t('name') ?? '—')
+                    ->getStateUsing(fn ($record) => $record->jobVacancy?->visaCategory?->t('name') ?? '—')
                     ->badge()->color('info'),
                 TextColumn::make('status')->label(__('Status'))->badge()
                     ->formatStateUsing(fn ($state) => __('application.status.'.$state))

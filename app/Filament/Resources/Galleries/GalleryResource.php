@@ -71,7 +71,7 @@ class GalleryResource extends Resource
         return $table->columns([
             ImageColumn::make('cover_image_path')->label('')->disk('public')->square(),
             TextColumn::make('title')->label(__('Album'))
-                ->formatStateUsing(fn ($state, $record) => $record->t('title') ?: '—')
+                ->getStateUsing(fn ($record) => $record->t('title') ?: '—')
                 ->limit(60)->wrap()->searchable(),
             TextColumn::make('items_count')->counts('items')->label(__('Photos / videos'))->badge()->color('info'),
             TextColumn::make('taken_at')->date('d M Y')->sortable()->toggleable(),
