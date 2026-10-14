@@ -33,6 +33,10 @@ class AdminWelcomeWidget extends Widget
     protected string $view = 'filament.widgets.mission-control';
     protected int|string|array $columnSpan = 'full';
 
+    // Render with the page: it is the whole dashboard, so a lazy
+    // placeholder would just flash an empty card first.
+    protected static bool $isLazy = false;
+
     /** Activity chart range in days. */
     public int $range = 30;
 
