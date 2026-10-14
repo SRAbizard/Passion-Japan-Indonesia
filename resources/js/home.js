@@ -55,7 +55,7 @@ function boot() {
             gsap.fromTo(el, { y: -6 }, { y: 0, duration: 0.35, ease: 'back.out(3)' });
         });
     }
-    function updateFinder() {
+    function updateFinder(wobble = true) {
         if (!finder) return;
         bump(countEl, matches().length);
         const region = regionByKey[fRegion.value] || regionByKey.kanto || data.regions[0];
@@ -65,9 +65,9 @@ function boot() {
         }
         $('[data-pj-bp-seat]').textContent = fCat.value ? fCat.selectedOptions[0].text : t.allFields;
         $$('[data-pj-chip]').forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.pjChip === fCat.value)));
-        if (!reduce) ctx.add(() => gsap.fromTo('.pj-pass', { rotate: -7 }, { rotate: -4, duration: 0.6, ease: 'elastic.out(1, .4)' }));
+        if (wobble && !reduce) ctx.add(() => gsap.fromTo('.pj-pass', { rotate: -7 }, { rotate: -4, duration: 0.6, ease: 'elastic.out(1, .4)' }));
     }
-    [fCat, fVisa, fRegion].forEach((s) => on(s, 'change', updateFinder));
+    [fCat, fVisa, fRegion].forEach((s) => on(s, 'change', () => updateFinder()));
     $$('[data-pj-chip]').forEach((c) => on(c, 'click', () => {
         fCat.value = fCat.value === c.dataset.pjChip ? '' : c.dataset.pjChip;
         updateFinder();
@@ -313,7 +313,34 @@ function boot() {
         });
     }
 
-    updateFinder();
+    updateFinder(false);
+
+    /* ---------- hero entrance (every homepage visit) ---------- */
+    if (!reduce) {
+        const enter = () => ctx.add(() => {
+            const tl = gsap.timeline({ defaults: { ease: 'back.out(1.7)' } });
+            tl.from('.pj-hero .pj-sticker', { y: -40, rotate: -18, opacity: 0, duration: 0.5 })
+                .from('.pj-hero h1 .l', { yPercent: 80, opacity: 0, duration: 0.55, stagger: 0.1, ease: 'power3.out' }, '-=0.25')
+                .from('.pj-hero h1 .flag', { scale: 1.8, rotate: -14, opacity: 0, duration: 0.4, ease: 'power4.in' }, '-=0.15')
+                .from('.pj-hero .pj-lede', { y: 16, opacity: 0, duration: 0.4, ease: 'power2.out' }, '-=0.1')
+                .from('.pj-hero .pj-finder', { y: 50, opacity: 0, duration: 0.6 }, '-=0.25')
+                .from('.pj-scene .sun', { scale: 0, duration: 0.7 }, 0.15)
+                .from('.pj-scene .fuji', { yPercent: 40, opacity: 0, duration: 0.6, ease: 'power3.out' }, 0.35)
+                .from('.pj-scene .cloud.c1', { x: 120, opacity: 0, duration: 0.8, ease: 'power2.out' }, 0.5)
+                .from('.pj-scene .cloud.c2', { x: -120, opacity: 0, duration: 0.8, ease: 'power2.out' }, 0.55)
+                .from('.pj-scene .crane', { x: -160, y: 80, rotate: -25, opacity: 0, duration: 0.9, ease: 'power2.out' }, 0.6)
+                .from('.pj-scene .photo', { y: -120, rotate: 30, opacity: 0, duration: 0.7 }, 0.7)
+                .from('.pj-pass', { x: 220, rotate: 14, opacity: 0, duration: 0.7 }, 0.8);
+            // Hand the inline transforms back to the stylesheet afterwards.
+            tl.eventCallback('onComplete', () => gsap.set('.pj-hero .pj-sticker, .pj-hero h1 .l, .pj-hero h1 .flag, .pj-hero .pj-finder, .pj-scene > *', { clearProps: 'transform,opacity' }));
+        });
+        const html = document.documentElement;
+        if (html.dataset.pjIntro === 'running' || html.classList.contains('pj-intro')) {
+            on(document, 'pj:intro-done', enter, { once: true });
+        } else {
+            enter();
+        }
+    }
 
     teardown = () => {
         ac.abort();

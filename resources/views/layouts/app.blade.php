@@ -16,6 +16,8 @@
             html.classList.add('pj-js');
             try {
                 if (localStorage.getItem('pj-theme') === 'dark') { html.classList.remove('light'); html.classList.add('dark'); }
+                // First visit this session → washi cover until resources/js/intro.js takes over.
+                if (! sessionStorage.getItem('pj-intro-seen') && ! matchMedia('(prefers-reduced-motion: reduce)').matches) html.classList.add('pj-intro');
             } catch (e) {}
         })();
     </script>

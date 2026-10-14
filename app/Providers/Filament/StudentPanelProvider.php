@@ -66,6 +66,19 @@ class StudentPanelProvider extends PanelProvider
                 fn (): string => view('filament.partials.back-to-home-login')->render(),
             )
             ->renderHook(
+                PanelsRenderHook::AUTH_REGISTER_FORM_BEFORE,
+                fn (): string => view('filament.partials.login-jp-decoration')->render(),
+            )
+            ->renderHook(
+                PanelsRenderHook::AUTH_REGISTER_FORM_AFTER,
+                fn (): string => view('filament.partials.back-to-home-login')->render(),
+            )
+            // Site fonts (Dela Gothic One for the auth headings).
+            ->renderHook(
+                PanelsRenderHook::HEAD_END,
+                fn (): string => app(\Illuminate\Foundation\Vite::class)->fonts()->toHtml(),
+            )
+            ->renderHook(
                 PanelsRenderHook::TOPBAR_END,
                 fn (): string => view('filament.partials.back-to-home-topbar')->render(),
             )
@@ -74,8 +87,7 @@ class StudentPanelProvider extends PanelProvider
                 function (): string {
                     $route = request()->route()?->getName() ?? '';
                     if (str_contains($route, '.auth.')) {
-                        return view('filament.partials.login-background')->render()
-                            . view('filament.partials.login-sakura')->render();
+                        return view('filament.partials.login-background')->render();
                     }
                     // Same nav-version reset as the admin panel — keeps
                     // student-panel sidebar in sync with config changes.

@@ -69,6 +69,11 @@ class AdminPanelProvider extends PanelProvider
                 PanelsRenderHook::AUTH_LOGIN_FORM_AFTER,
                 fn (): string => view('filament.partials.back-to-home-login')->render(),
             )
+            // Site fonts (Dela Gothic One for the auth headings).
+            ->renderHook(
+                PanelsRenderHook::HEAD_END,
+                fn (): string => app(\Illuminate\Foundation\Vite::class)->fonts()->toHtml(),
+            )
             ->renderHook(
                 PanelsRenderHook::TOPBAR_END,
                 fn (): string => view('filament.partials.back-to-home-topbar')->render(),
@@ -82,8 +87,7 @@ class AdminPanelProvider extends PanelProvider
                     // get the Mt Fuji background + falling sakura BEFORE the main content
                     // so they sit behind the form. BODY_END would render them on top.
                     if (str_contains($route, '.auth.')) {
-                        return view('filament.partials.login-background')->render()
-                            . view('filament.partials.login-sakura')->render();
+                        return view('filament.partials.login-background')->render();
                     }
 
                     // Authenticated admin pages: reset cached nav-group state
