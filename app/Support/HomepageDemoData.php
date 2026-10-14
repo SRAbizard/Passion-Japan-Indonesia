@@ -151,13 +151,13 @@ final class HomepageDemoData
                 'ja' => '技能試験は日本の公式機関が直接実施します。登録、研修、模擬試験までサポートいたします。',
             ]],
             ['q' => [
-                'id' => 'Berapa lama proses dari melamar sampai berangkat?',
-                'en' => 'How long does it take from applying to departure?',
-                'ja' => '応募から出国までどれくらいかかりますか？',
+                'id' => 'Bagaimana cara memantau status lamaran saya?',
+                'en' => 'How can I track my application status?',
+                'ja' => '応募状況はどのように確認できますか？',
             ], 'a' => [
-                'id' => 'Rata-rata 4–8 bulan, tergantung jenis visa, jadwal wawancara (mensetsu), dan kelengkapan dokumen. Progres lamaran bisa dipantau dari dashboard Anda.',
-                'en' => 'On average 4–8 months, depending on the visa type, interview (mensetsu) schedule, and document readiness. You can track your application from your dashboard.',
-                'ja' => 'ビザの種類、面接日程、書類の準備状況により、平均4〜8か月です。応募状況はダッシュボードで確認できます。',
+                'id' => 'Masuk ke dashboard lalu buka menu Lamaran Saya. Di sana terlihat tahap lamaran Anda (dikirim, ditinjau, jadwal interview, hingga penawaran kerja), dan Anda akan mendapat notifikasi setiap kali statusnya berubah.',
+                'en' => 'Log in to your dashboard and open My Applications. You can see which stage each application is at (submitted, under review, interview scheduled, through to a job offer), and you get a notification whenever the status changes.',
+                'ja' => 'ダッシュボードにログインし「応募履歴」を開いてください。各応募の進捗（送信済み、審査中、面接予定、内定まで）を確認でき、ステータスが変わるたびに通知が届きます。',
             ]],
             ['q' => [
                 'id' => 'Bagaimana cara mendaftar ke program ini?',
