@@ -206,7 +206,8 @@ body:has(.pj-auth) .fi-simple-main-ctn { position: relative; z-index: 10; }
 }
 
 @media (min-width: 1024px) {
-    body:has(.pj-auth) .fi-simple-main-ctn { align-items: flex-end; padding-right: clamp(40px, 7vw, 120px); }
+    body:has(.pj-auth) .fi-simple-main-ctn { padding-right: clamp(40px, 7vw, 120px); }
+    body:has(.pj-auth) .fi-simple-main { margin-inline-start: auto !important; margin-inline-end: 0 !important; }
     .pj-auth-sun { display: none; }
     .pj-auth-art {
         display: grid; gap: 1.1rem; justify-items: start; align-content: center;

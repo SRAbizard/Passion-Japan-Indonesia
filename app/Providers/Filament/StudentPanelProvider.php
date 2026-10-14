@@ -38,7 +38,7 @@ class StudentPanelProvider extends PanelProvider
                 'warning' => Color::Amber,
                 'info'    => Color::Sky,
             ])
-            ->defaultThemeMode(ThemeMode::Dark)
+            ->defaultThemeMode(ThemeMode::Light)
             ->sidebarCollapsibleOnDesktop()
             ->userMenuItems(array_merge(
                 [
