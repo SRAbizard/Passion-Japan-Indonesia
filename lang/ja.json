@@ -2,71 +2,57 @@
     "Passion Japan Indonesia": "Passion Japan Indonesia",
     "Integrated Japan Career, Recruitment, Internship & E-Learning Platform": "日本でのキャリア・採用・実習・eラーニングを統合したプラットフォーム",
     "Japan Career Ecosystem Platform": "日本キャリア統合プラットフォーム",
-
     "Home": "ホーム",
     "Job Portal": "求人情報",
-    "Job Vacancies": "求人情報",
+    "Job Vacancies": "求人",
     "E-Learning": "Eラーニング",
     "Event": "イベント",
     "Blog": "ブログ",
     "About Us": "私たちについて",
     "Contact": "お問い合わせ",
     "Login": "ログイン",
-    "Register": "新規登録",
+    "Register": "登録",
     "Get Started": "はじめる",
     "Admin Panel": "管理パネル",
     "Student Dashboard": "生徒ダッシュボード",
     "Language": "言語",
-
     "Step Toward a Successful Career in Japan": "日本での成功するキャリアへの一歩",
     "We accompany you from language training and work skills, to official job placement in Japan.": "語学研修と実務スキル研修から、日本での正規雇用までサポートします。",
     "Search jobs": "求人を探す",
     "Start learning": "学習を始める",
     "Join Now": "今すぐ参加",
-
     "Trusted by": "信頼されています",
     "Thousands of Indonesian workers and dozens of partner companies in Japan.": "数千人のインドネシア人労働者と日本の数十社のパートナー企業に。",
     "Trained Students": "研修生",
     "Workers": "労働者",
     "Partner Companies": "パートナー企業",
-
     "Why Us": "私たちが選ばれる理由",
     "Why": "なぜ",
     "Three reasons thousands of students choose us.": "数千人の生徒が私たちを選ぶ3つの理由。",
-
     "Programs": "プログラム",
     "Popular Programs": "人気のプログラム",
     "See all": "すべて見る",
-
     "Careers": "キャリア",
     "Portal": "ポータル",
     "Explore Job Opportunities in Japan.": "日本での就職機会を探す。",
-
     "Learn": "学ぶ",
     "Master Japanese language and work culture on your own schedule.": "自分のペースで日本語と日本の仕事文化をマスターしよう。",
-
     "FAQ": "FAQ",
     "Frequently Asked Questions": "よくある質問",
-
     "Testimonials": "お客様の声",
     "What people say about us": "私たちについての声",
     "Students": "生徒",
-
     "Process": "プロセス",
     "Workflow": "ワークフロー",
     "Ten clear steps from consultation to arrival in Japan.": "コンサルティングから日本到着までの10ステップ。",
-
     "Ready to start your career in Japan?": "日本でのキャリアを始める準備はできましたか？",
     "Free consultation. Talk to our team and get a clear path within 24 hours.": "無料相談。24時間以内に明確なキャリアパスをお届けします。",
     "Talk to us on WhatsApp": "WhatsAppで相談する",
-
     "Quick Links": "クイックリンク",
     "All rights reserved.": "無断複写・転載を禁じます。",
-
     "Current locale": "現在の言語",
     "Phase 0 ready": "フェーズ 0 準備完了",
     "Foundation installed": "基盤のインストール完了",
-
     "Logout": "ログアウト",
     "Student": "生徒",
     "Welcome back, :name": "おかえりなさい、:name さん",
@@ -78,7 +64,6 @@
     "Please verify your email address.": "メールアドレスをご確認ください。",
     "Edit profile": "プロフィール編集",
     "Back to website": "サイトに戻る",
-
     "Bridging Indonesian talent with Japanese opportunity.": "インドネシアの人材と日本の機会をつなぐ。",
     "Our Mission": "私たちのミッション",
     "Open the path to Japan, end-to-end.": "日本への道を、最初から最後まで開く。",
@@ -97,10 +82,9 @@
     "Have questions? Reach out.": "ご質問は？ぜひお問い合わせを。",
     "Drop us a message and our team will reply within 24 hours.": "メッセージをお寄せください。24時間以内に返信します。",
     "Contact us": "お問い合わせ",
-
     "Let's talk about your Japan journey.": "あなたの日本での旅についてお話ししましょう。",
     "Free consultation. Our team replies within 24 hours.": "無料相談。24時間以内に返信いたします。",
-    "Name": "お名前",
+    "Name": "名前",
     "Phone": "電話番号",
     "Subject": "件名",
     "Message": "メッセージ",
@@ -111,16 +95,13 @@
     "Reach us directly": "直接お問い合わせ",
     "Offices": "オフィス",
     "Please correct the errors below:": "以下のエラーを修正してください：",
-
     "Page not found": "ページが見つかりません",
     "Back to home": "ホームに戻る",
     "We'll be back soon": "間もなく再開します",
     "Passion Japan Indonesia is undergoing scheduled maintenance. Please check back in a few minutes.": "Passion Japan Indonesia は現在メンテナンス中です。数分後に再度お試しください。",
-
     "New contact message:": "新しいお問い合わせ：",
     "From": "送信者",
     "Open in admin": "管理画面で開く",
-
     "Title": "タイトル",
     "Excerpt": "抜粋",
     "Body": "本文",
@@ -136,7 +117,6 @@
     "Basics": "基本情報",
     "Media & meta": "メディア・メタ",
     "Required in :default. :other are optional.": ":default は必須です。:other は任意です。",
-
     "CMS": "CMS",
     "Contact Messages": "お問い合わせ",
     "Blog Posts": "ブログ記事",
@@ -145,8 +125,6 @@
     "Events": "イベント",
     "Event Categories": "イベントカテゴリ",
     "FAQs": "よくある質問",
-    "FAQ": "FAQ",
-    "Testimonials": "お客様の声",
     "Website Settings": "サイト設定",
     "Social media": "ソーシャルメディア",
     "Stats": "統計",
@@ -155,20 +133,17 @@
     "Digits only, no spaces or plus sign.": "数字のみ、スペースまたはプラス記号なし。",
     "Category": "カテゴリ",
     "Categories": "カテゴリ",
-    "Name": "名前",
     "Posts": "記事",
     "Read": "既読",
     "Unread": "未読",
     "Unread only": "未読のみ",
     "Lang": "言語",
     "Received": "受信日",
-    "From": "送信者",
     "Sender": "送信者",
     "Meta": "メタ",
     "Reply via email": "メールで返信",
     "User agent": "ユーザーエージェント",
     "Locale": "言語",
-
     "Insights for your Japan journey": "日本でのキャリアへのヒント",
     "Articles, tips, and alumni stories — refreshed regularly by the Passion Japan team.": "記事、ヒント、卒業生のストーリー — Passion Japan チームが定期的に更新します。",
     "All": "すべて",
@@ -178,7 +153,6 @@
     "Articles, tips, and alumni stories about working and studying in Japan.": "日本での就職と学習に関する記事、ヒント、卒業生のストーリー。",
     "Back to Blog": "ブログに戻る",
     "Related articles": "関連記事",
-
     "Workshops, seminars, and job fairs": "ワークショップ、セミナー、ジョブフェア",
     "Join our upcoming events to meet recruiters, mentors, and the Passion Japan community.": "今後のイベントに参加して、リクルーター、メンター、Passion Japan コミュニティと出会いましょう。",
     "Upcoming events at Passion Japan Indonesia": "Passion Japan Indonesia の今後のイベント",
@@ -189,20 +163,14 @@
     "When": "日時",
     "Where": "場所",
     "Register for this event": "このイベントに登録",
-
-    "Master Japanese language and work culture on your own schedule.": "自分のペースで日本語と日本の仕事文化をマスターしよう。",
     "Add a tag and press Enter": "タグを追加して Enter を押す",
-    "See all": "すべて見る",
-
     "Job Vacancy": "求人",
     "Smoke test": "スモークテスト",
-
     "Recruitment": "採用",
     "Companies": "企業",
     "Company": "企業",
     "Job Categories": "職種カテゴリ",
     "Visa Categories": "ビザカテゴリ",
-    "Job Vacancies": "求人",
     "Applications": "応募",
     "Applicants": "応募者",
     "Applicant": "応募者",
@@ -229,14 +197,12 @@
     "Filter": "フィルター",
     "Search…": "検索…",
     "e.g. Tokyo": "例：東京",
-
     "Full-time": "正社員",
     "Part-time": "パートタイム",
     "Contract": "契約",
     "Internship": "インターン",
     "Fulltime": "正社員",
     "Parttime": "パートタイム",
-
     "Find your job in Japan": "日本での求人を探す",
     "Browse verified opportunities from our partner companies. Filter by visa, role, or city.": "パートナー企業の認証済み求人を閲覧。ビザ、職種、都市で絞り込めます。",
     "Find your Japan job — Passion Japan Indonesia": "日本の求人を探す — Passion Japan Indonesia",
@@ -251,7 +217,6 @@
     "Go to dashboard": "ダッシュボードへ",
     "Want to apply?": "応募しますか？",
     "Create a free account to submit applications and track their status.": "無料アカウントを作成して、応募とステータス追跡を始めましょう。",
-    "Register": "登録",
     "Similar opportunities": "類似の求人",
     "Application submitted! We will reach out within a few days.": "応募が完了しました！数日以内にご連絡します。",
     "You have already applied for this position.": "このポジションには既に応募済みです。",
@@ -261,7 +226,6 @@
     "Job Category": "職種カテゴリ",
     "Visa Category": "ビザカテゴリ",
     "Heroicon name, e.g. heroicon-o-truck": "Heroicon 名、例：heroicon-o-truck",
-
     "application.status.submitted": "提出済み",
     "application.status.under_review": "審査中",
     "application.status.interview_scheduled": "面接予定",
@@ -269,7 +233,6 @@
     "application.status.accepted": "採用",
     "application.status.rejected": "不採用",
     "application.status.withdrawn": "辞退",
-
     "Filter & Search": "フィルター・検索",
     "Narrow results by visa, role, city, or keyword.": "ビザ、職種、都市、キーワードで絞り込み。",
     "Reset filter": "フィルターをリセット",
@@ -277,13 +240,11 @@
     "Keyword": "キーワード",
     "{1} :count active filter|[2,*] :count active filters": "{1} :count 件のフィルター|[2,*] :count 件のフィルター",
     "{1} :count vacancy found|[2,*] :count vacancies found": "{1} :count 件の求人|[2,*] :count 件の求人",
-
     "Admin view": "管理者ビュー",
     "You are signed in as :role. Only student accounts can apply for jobs.": ":role としてログインしています。応募できるのは生徒アカウントのみです。",
     "Manage in admin panel": "管理画面で操作",
     "Only student accounts can apply. You are signed in as an admin.": "応募できるのは生徒アカウントのみです。管理者としてログインしています。",
     "Already have an account? Login": "アカウントをお持ちですか？ ログイン",
-
     "Learning": "学習",
     "Courses": "コース",
     "Course": "コース",
@@ -302,18 +263,15 @@
     "Certificates": "修了証",
     "Certificate": "修了証",
     "Settings": "設定",
-
     "level.beginner": "初級",
     "level.elementary": "初等",
     "level.intermediate": "中級",
     "level.advanced": "上級",
-
     "enrollment.status.enrolled": "登録済み",
     "enrollment.status.in_progress": "受講中",
     "enrollment.status.completed": "完了",
     "enrollment.status.expired": "期限切れ",
     "enrollment.status.dropped": "中断",
-
     "Master Japanese on your own pace": "自分のペースで日本語をマスター",
     "Bite-sized lessons, instructor-led courses, and quizzes that prepare you for life and work in Japan.": "日本での生活と仕事に備える、短いレッスン、講師付きコース、クイズ。",
     "Learn Japanese & job skills — Passion Japan Indonesia": "日本語と仕事のスキルを学ぶ — Passion Japan Indonesia",
@@ -336,7 +294,7 @@
     "Your progress": "進捗",
     "Progress": "進捗",
     "Continue learning": "学習を続ける",
-    "Start course": "コース開始",
+    "Start course": "コースを開始",
     "Take final quiz": "最終クイズを受ける",
     "Final quiz": "最終クイズ",
     "Final Quiz": "最終クイズ",
@@ -346,7 +304,7 @@
     "Enroll now": "今すぐ登録",
     "Login or sign up to enroll.": "登録するにはログインまたはサインアップしてください。",
     "Only student accounts can enroll.": "登録できるのは生徒アカウントのみです。",
-    "Includes final quiz": "最終クイズを含む",
+    "Includes final quiz": "最終クイズつき",
     "Certificate of completion": "修了証",
     "Related courses": "関連コース",
     "Please enroll in this course to access this lesson.": "このレッスンにアクセスするにはコースに登録してください。",
@@ -361,7 +319,7 @@
     "All lessons done! Take the final quiz now.": "全レッスン完了！ 最終クイズへ進みましょう。",
     "Congratulations! You completed this course.": "おめでとうございます！ コースを修了しました。",
     "Pass score": "合格点",
-    "Pass %": "合格%",
+    "Pass %": "合格点 %",
     "Passing score": "合格点",
     "Time limit (minutes)": "制限時間（分）",
     "No limit": "制限なし",
@@ -397,7 +355,6 @@
     "Number": "番号",
     "Issued": "発行日",
     "Download": "ダウンロード",
-
     "Verified Certificate": "認証済み修了証",
     "Certificate of Completion": "修了証",
     "This is to certify that": "次の者が",
@@ -407,8 +364,6 @@
     "Certificate number": "証明書番号",
     "Download PDF": "PDFダウンロード",
     "Verify this certificate at": "認証先 URL",
-
-    "Students": "生徒",
     "Student Documents": "生徒書類",
     "Student Document": "生徒書類",
     "My Profile": "マイプロフィール",
@@ -423,7 +378,6 @@
     "Family": "家族",
     "Languages": "言語",
     "Health": "健康情報",
-
     "document.type.ktp": "ID（KTP）",
     "document.type.kk": "家族カード",
     "document.type.passport": "パスポート",
@@ -437,45 +391,35 @@
     "document.type.jlpt_certificate": "JLPT証書",
     "document.type.skill_certificate": "スキル証書",
     "document.type.other": "その他",
-
     "document.status.pending": "確認待ち",
     "document.status.verified": "確認済み",
     "document.status.rejected": "却下",
-
     "Slug": "スラッグ",
-    "Category": "カテゴリ",
     "Instructor": "講師",
     "Duration days": "受講期間（日）",
     "days": "日",
     "min": "分",
     "Status": "ステータス",
     "Pass": "合格",
-    "Pass %": "合格点 %",
-    "Number": "番号",
-    "Issued": "発行日",
     "Used by": "使用者",
     "Beginner": "初級",
     "Intermediate": "中級",
     "Advanced": "上級",
     "Edit": "編集",
     "Edit chapter": "章を編集",
-
     "Code": "コード",
     "Code (optional)": "コード（任意）",
     "Short admin-facing code, e.g. \"LSN401\" or \"N426QZ\".": "管理用の短いコード（例：「LSN401」「N426QZ」）",
     "Short admin-facing code, e.g. \"N42601_Kata Kerja\".": "管理用の短いコード（例：「N42601_Kata Kerja」）",
-
     "Subtitle": "サブタイトル",
     "Subtitle (optional)": "サブタイトル（任意）",
     "Small line below the title on the quiz intro page.": "クイズ紹介ページのタイトル下に表示される小さなテキスト。",
-
     "Pricing & status": "価格とステータス",
     "Media": "メディア",
     "Sort order": "並び順",
     "Position in chapter": "章内の位置",
     "Lower = earlier in the timeline.": "数字が小さいほど前に表示されます。",
     "One bullet per line.": "1行につき1項目。",
-
     "Type": "タイプ",
     "Lesson type": "レッスンタイプ",
     "Lesson access": "レッスンの公開方式",
@@ -487,7 +431,6 @@
     "Free — all open": "自由 — すべて開放",
     "Sequential — unlock next only after previous done": "順番制 — 前のレッスン完了後に次が開放",
     "Sequential — locked progression": "順番制 — 段階的に開放",
-
     "Text": "テキスト",
     "Text / Reading": "テキスト / 読み物",
     "Text content": "テキスト内容",
@@ -501,7 +444,6 @@
     "YouTube embed URL or any direct mp4 link.": "YouTubeの埋め込みURL、または直接のmp4リンク。",
     "YouTube or Vimeo embed URL.": "YouTubeまたはVimeoの埋め込みURL。",
     "Paste the embed URL from Genially, Canva, or any iframe-friendly source.": "Genially、Canvaなどから埋め込みURLを貼り付けてください。",
-
     "Image (optional)": "画像（任意）",
     "Audio (optional)": "音声（任意）",
     "Attach when the question references a visual (kanji, photo, diagram).": "問題に画像（漢字・写真・図）が関係する場合に添付。",
@@ -510,7 +452,6 @@
     "0 = unlimited (only matters if audio is attached).": "0 = 制限なし（音声を添付した場合のみ有効）。",
     "Must match one of the choice keys above.": "上の選択肢キーのいずれかと一致する必要があります。",
     "a, b, c, ...": "a, b, c, ...",
-
     "Quiz type": "クイズタイプ",
     "Chapter quiz": "章末クイズ",
     "Final exam": "最終試験",
@@ -521,14 +462,12 @@
     "Title (optional, for admin reference)": "タイトル（任意、管理用）",
     "Passage content": "長文の内容",
     "Translation / notes (optional, shown to student after submit)": "翻訳・注釈（任意、提出後に学生に表示）",
-
     "+ Tambah Bab": "+ 章を追加",
     "+ Tambah Materi": "+ レッスンを追加",
     "+ Tambah Quiz": "+ クイズを追加",
     "+ Buat Final Exam": "+ 最終試験を作成",
     "Kelola materi & quiz": "レッスン・クイズを管理",
     "Kelola soal": "問題を管理",
-
     "Bab": "章",
     "Bab / Chapter": "章",
     "Materi": "レッスン",
@@ -536,16 +475,11 @@
     "Items": "項目",
     "Duration": "所要時間",
     "Enrolled": "受講登録済み",
-
     "Start Quiz": "クイズを開始",
-    "Start course": "コースを開始",
-    "Continue learning": "学習を続ける",
     "Complete & Next": "完了して次へ",
     "Take final exam": "最終試験を受ける",
     "Includes final exam": "最終試験つき",
-    "Includes final quiz": "最終クイズつき",
     "Total questions": "問題数",
-    "Pass score": "合格点",
     "Time limit": "制限時間",
     "Time remaining": "残り時間",
     "items": "項目",
@@ -553,7 +487,6 @@
     "Finish the previous lesson before opening this one.": "前のレッスンを終えてからこのレッスンを開いてください。",
     "Finish the previous lesson before opening this quiz.": "前のレッスンを終えてからこのクイズを開いてください。",
     "Finish the previous lesson first": "前のレッスンを先に終えてください",
-
     "Passion Japan Indonesia is a career-and-education platform that prepares Indonesian workers and students for life and work in Japan — from language and culture training, to job placement and post-arrival support.": "Passion Japan Indonesiaは、日本での生活と仕事に備えるインドネシア人労働者・学生のためのキャリア＆教育プラットフォームです。言語・文化研修から、就職、渡日後のサポートまで一貫して支援します。",
     "We support every step — from the first Japanese lesson, through interview prep and visa paperwork, to the moment your student lands at Narita. Nobody walks alone.": "最初の日本語レッスンから、面接準備、ビザ手続き、成田到着まで、すべてのステップをサポートします。一人で歩く人はいません。",
     "We want Indonesia to be the most trusted source of skilled, culturally-fluent talent for Japanese companies — and Japan to be a first-class career destination for ambitious Indonesians.": "インドネシアを、日本企業にとって最も信頼できるスキル人材の供給源に。そして日本を、意欲あるインドネシア人にとって第一級のキャリア先にすることが私たちの目標です。",
@@ -572,7 +505,6 @@
     "SEO": "SEO",
     "Settings menu": "設定メニュー",
     "Settings menu items": "設定メニュー項目",
-
     "Personal information": "個人情報",
     "ID & Passport": "身分証 & パスポート",
     "Display name": "表示名",
@@ -631,7 +563,6 @@
     "Contact admin to change email": "メールアドレス変更は管理者へご連絡ください",
     "Save changes": "変更を保存",
     "Profile updated": "プロフィールを更新しました",
-
     "New entry": "新規追加",
     "Document type": "書類種別",
     "Custom label": "カスタムラベル",
@@ -658,7 +589,6 @@
     "You haven't enrolled in any courses yet": "まだコースに登録していません",
     "Browse the catalog to find a course.": "カタログからコースを探しましょう。",
     "Browse courses": "コースを見る",
-
     "Application status updated": "応募状況が更新されました",
     "Your application for \":title\" is now \":status\".": "「:title」への応募は現在「:status」です。",
     "a position": "ポジション",
@@ -666,7 +596,6 @@
     "Your application for \":title\" has been updated.": "「:title」への応募が更新されました。",
     "New status: :status": "新しいステータス: :status",
     "View application": "応募を表示",
-
     "Certificate earned!": "証明書を取得しました！",
     "You completed \":course\" — your certificate is ready.": "「:course」を修了しました。証明書が発行されました。",
     "a course": "コース",
@@ -676,12 +605,10 @@
     "View & download certificate": "証明書を表示・ダウンロード",
     "your course": "コース",
     "your application": "応募",
-
     "Document verified": "書類が承認されました",
     "Document needs attention": "書類の確認が必要です",
     "Your :type document has been verified.": ":type の書類が承認されました。",
     "Your :type document was rejected. :notes": ":type の書類が却下されました。:notes",
-
     "Courses enrolled": "登録コース数",
     "Documents": "書類",
     "None active": "アクティブなし",
@@ -691,7 +618,6 @@
     ":count active": ":count 件アクティブ",
     ":count in progress": ":count 件進行中",
     ":count pending verification": ":count 件確認待ち",
-
     "Required documents": "必須書類",
     "Documents students must upload when targeting this visa.": "このビザを目指す学生がアップロードすべき書類。",
     "Required docs": "必須書類",
@@ -726,7 +652,6 @@
     "Still missing:": "未提出:",
     "All required documents are verified!": "すべての必須書類が承認されました！",
     "uploaded": "アップロード済み",
-
     "Document Types": "書類種別",
     "Document Type": "書類種別",
     "Label": "ラベル",
@@ -743,7 +668,6 @@
     "Requirements updated": "要件を更新しました",
     "Required documents per visa have been saved.": "ビザごとの必須書類を保存しました。",
     "No document types yet. Add some under Students → Document Types.": "書類種別がまだありません。「学生 → 書類種別」から追加してください。",
-
     "Icon": "アイコン",
     "Visa Target": "目標ビザ",
     "Visa target": "目標ビザ",
@@ -800,7 +724,6 @@
     "Admin notes: :notes": "管理者メモ: :notes",
     "Choose a different visa": "別のビザを選択",
     "This request is awaiting your review. Use the buttons in the page header to confirm or reject.": "このリクエストは確認待ちです。ページヘッダーのボタンで承認・却下してください。",
-
     "Document requirements": "書類要件",
     "Required = must upload (counts toward progress). Optional = accepted but not blocking.": "必須＝アップロード必須（進捗に算入）。任意＝受理されるが必須ではない。",
     "Optional documents": "任意書類",
@@ -822,13 +745,11 @@
     "Showing only documents required or optional for your confirmed visa target.": "承認された目標ビザに必須または任意の書類のみ表示しています。",
     "Showing documents inferred from your job applications.": "応募内容から推定された書類を表示しています。",
     "Showing the default document set. Confirm a visa target for a tailored list.": "デフォルトの書類セットを表示しています。目標ビザを確定するとカスタマイズされたリストになります。",
-
     "Alur Bekerja": "就労フロー",
     "Ke Jepang": "渡日",
     "Pilih jalur visa untuk melihat alur lengkapnya.": "ビザの種類を選択すると、完全なフローが表示されます。",
     "Visa workflow tabs": "ビザフロータブ",
     "Catatan Penting": "重要事項",
-
     "Toggle dark / light mode": "ダーク／ライトモード切替",
     "Open in Google Maps": "Google Mapsで開く",
     "New office": "新規事業所",
@@ -839,7 +760,6 @@
     "Google Maps URL (optional)": "Google Maps URL（任意）",
     "Leave blank to auto-generate from address.": "空欄にすると住所から自動生成されます。",
     "Add office": "事業所を追加",
-
     "Job detail document": "求人詳細書類",
     "Upload the full job-spec PDF (or DOC/image). Candidates can download it from the public job-detail page.": "完全な求人仕様PDF（またはDOC/画像）をアップロード。候補者は公開求人詳細ページからダウンロードできます。",
     "Job detail file": "求人詳細ファイル",
@@ -850,7 +770,6 @@
     "Company Profile file (PDF / DOC / image)": "会社案内ファイル（PDF / DOC / 画像）",
     "Scroll down": "下にスクロール",
     "Scroll": "スクロール",
-
     "Hero slideshow": "ヒーロースライドショー",
     "Hero background slides": "ヒーロー背景スライド",
     "Upload up to 4 background images for the homepage hero. Empty slots fall back to default Japan photos.": "ホームページのヒーロー背景画像を最大4枚までアップロード。空のスロットはデフォルトの日本写真にフォールバックします。",
@@ -862,25 +781,18 @@
     "Upload an MP3/OGG file. Plays muted on the homepage; visitors can unmute via the floating speaker button.": "MP3/OGGファイルをアップロード。ホームページではミュートで再生されます。訪問者はフローティングスピーカーボタンでミュート解除できます。",
     "Theme song": "テーマソング",
     "Toggle background music": "背景音楽のオン／オフ",
-
     "Homepage Workflow": "ホームページ・ワークフロー",
     "Published at": "公開日時",
     "Thumbnail": "サムネイル",
     "Intro video URL": "紹介動画URL",
     "Price": "料金",
     "Currency": "通貨",
-    "Featured": "おすすめ",
-
     "Indonesia": "インドネシア語",
     "English": "英語",
     "日本語": "日本語",
-
-    "Required in :default. :other are optional.": ":default は必須です。:other は任意です。",
-
     "Program Passion": "プログラム",
     "Verified jobs from partner companies": "提携企業の認証済み求人",
     "Japanese & job-skill courses": "日本語と職業スキルのコース",
-
     "Gallery": "ギャラリー",
     "Gallery item": "ギャラリー項目",
     "Documentation": "ドキュメント",
@@ -888,7 +800,6 @@
     "Photos and videos from our trainings, events, and student journeys.": "研修・イベント・学生の歩みの写真と動画。",
     "No gallery items published yet.": "公開中のギャラリー項目はまだありません。",
     "Media type": "メディアタイプ",
-    "Photo": "写真",
     "Uploaded video (mp4)": "アップロード動画（mp4）",
     "YouTube link": "YouTubeリンク",
     "YouTube URL": "YouTube URL",
@@ -900,7 +811,6 @@
     "Taken at": "撮影日",
     "Caption": "キャプション",
     "YouTube": "YouTube",
-
     "Company Profile Video": "会社紹介動画",
     "Get to know us in 2 minutes": "2分で私たちを知る",
     "A quick look inside Passion Japan Indonesia — our team, our students, our mission.": "Passion Japan Indonesia の中身を簡単に — チーム・学生・ミッション。",
@@ -911,7 +821,6 @@
     "Use this instead of uploading if your video is hosted on YouTube.": "動画がYouTubeにある場合はアップロードの代わりにこちらを使用してください。",
     "Poster image (optional)": "ポスター画像（任意）",
     "Shown before the video plays. Recommended 1920×1080.": "動画再生前に表示されます。推奨1920×1080。",
-
     "Get to know": "もっと知ろう",
     "closer": "を",
     "Quality Interactive Training": "質の高いインタラクティブ研修",
@@ -920,13 +829,10 @@
     "Direct partnership with companies in Japan — students go straight to verified job offers, not theory.": "日本企業との直接提携 — 学生は理論ではなく、認証済みの求人へ直接つながります。",
     "Transparent Process, No Hidden Costs": "透明なプロセス、隠れた費用なし",
     "Every fee, every step, every promise — written, signed, and explained before you commit.": "あらゆる費用・手順・約束 — 契約前に文書化、署名、説明されます。",
-
     "Mensetsu Offline": "対面面接",
     "Mensetsu Online": "オンライン面接",
     "Sosialisasi Kampus": "大学訪問",
     "Umum": "一般",
-    "All": "すべて",
-
     "Album": "アルバム",
     "Albums": "アルバム",
     "Album info": "アルバム情報",
@@ -940,6 +846,19 @@
     "+ Tambah Foto / Video": "+ 写真 / 動画を追加",
     "Back to Gallery": "ギャラリーへ戻る",
     "No items in this album yet.": "このアルバムにはまだ項目がありません。",
-    "Item": "項目"
+    "Item": "項目",
+    "Academy website URL": "アカデミーのウェブサイトURL",
+    "The \"E-Learning\" menu opens this link in a new tab. Leave empty to hide the menu until the Academy is online.": "「E-Learning」メニューはこのリンクを新しいタブで開きます。アカデミーが公開されるまでは空欄にするとメニューが非表示になります。",
+    "Learn Japanese at Passion Japan Academy": "Passion Japan Academyで日本語を学ぶ",
+    "Open job postings": "公開中の求人",
+    "Interviews scheduled": "面接予定",
+    "Get ready for your mensetsu!": "面接の準備をしましょう！",
+    "None yet": "まだありません",
+    "Profile": "プロフィール",
+    "Complete it so companies can review you": "企業に見てもらえるよう入力を完了しましょう",
+    "Complete": "完了",
+    "Japanese level": "日本語レベル",
+    "From the language section of the profile": "プロフィールの語学欄より",
+    "Japan Career, Recruitment & Internship Platform": "日本でのキャリア・採用・インターンシップのプラットフォーム",
+    "Get in touch with our team for consultation or job opportunities in Japan.": "日本での仕事やご相談は、お気軽に当社チームまでお問い合わせください。"
 }
-

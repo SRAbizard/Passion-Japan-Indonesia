@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="description" content="@yield('meta_description', __('Integrated Japan Career, Recruitment, Internship & E-Learning Platform'))">
+    <meta name="description" content="@yield('meta_description', __('Japan Career, Recruitment & Internship Platform'))">
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     <link rel="canonical" href="{{ url()->current() }}">
 
@@ -33,7 +33,7 @@
     <meta property="og:site_name" content="Passion Japan Indonesia">
     <meta property="og:locale" content="{{ str_replace('-', '_', app()->getLocale()) }}">
     <meta property="og:title" content="@yield('og_title', __('Passion Japan Indonesia'))">
-    <meta property="og:description" content="@yield('og_description', __('Integrated Japan Career, Recruitment, Internship & E-Learning Platform'))">
+    <meta property="og:description" content="@yield('og_description', __('Japan Career, Recruitment & Internship Platform'))">
     <meta property="og:image" content="{{ asset('images/logo.png') }}">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta name="twitter:card" content="summary_large_image">
@@ -72,10 +72,11 @@
                  onerror="this.outerHTML='<span class=\'inline-flex h-9 w-9 items-center justify-center rounded-xl bg-brand-600 font-bold text-white\'>PJ</span><span class=\'ml-2 font-display font-semibold text-white\'>Passion Japan Indonesia</span>';">
         </a>
 
+        @php($academyUrl = \App\Support\SiteSettings::academyUrl())
         <div class="hidden lg:flex items-center gap-7 text-sm text-surface-200">
             <a href="{{ url('/') }}" wire:navigate class="hover:text-white transition">{{ __('Home') }}</a>
 
-            {{-- Program Passion dropdown — bundles the two service offerings --}}
+            {{-- Program Passion dropdown — job portal + (external) Passion Japan Academy --}}
             <div class="relative group">
                 <button type="button" class="inline-flex items-center gap-1 hover:text-white transition">
                     {{ __('Program Passion') }}
@@ -86,10 +87,15 @@
                         <span class="block font-semibold">{{ __('Job Vacancies') }}</span>
                         <span class="block text-xs text-surface-400">{{ __('Verified jobs from partner companies') }}</span>
                     </a>
-                    <a href="{{ route('elearning.index') }}" wire:navigate class="block px-3 py-2 rounded-lg hover:bg-surface-700/60 text-surface-100">
-                        <span class="block font-semibold">{{ __('E-Learning') }}</span>
-                        <span class="block text-xs text-surface-400">{{ __('Japanese & job-skill courses') }}</span>
-                    </a>
+                    @if($academyUrl)
+                        <a href="{{ $academyUrl }}" target="_blank" rel="noopener" class="block px-3 py-2 rounded-lg hover:bg-surface-700/60 text-surface-100">
+                            <span class="flex items-center gap-1.5 font-semibold">
+                                {{ __('E-Learning') }}
+                                <svg class="h-3 w-3 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                            </span>
+                            <span class="block text-xs text-surface-400">{{ __('Learn Japanese at Passion Japan Academy') }}</span>
+                        </a>
+                    @endif
                 </div>
             </div>
 
@@ -170,7 +176,9 @@
 
                     <p class="px-3 pt-3 pb-1 text-[10px] uppercase tracking-wider text-surface-500 font-semibold">{{ __('Program Passion') }}</p>
                     <a href="{{ route('job.index') }}" wire:navigate class="px-3 py-2 rounded-lg hover:bg-surface-700/60">{{ __('Job Vacancies') }}</a>
-                    <a href="{{ route('elearning.index') }}" wire:navigate class="px-3 py-2 rounded-lg hover:bg-surface-700/60">{{ __('E-Learning') }}</a>
+                    @if($academyUrl)
+                        <a href="{{ $academyUrl }}" target="_blank" rel="noopener" class="px-3 py-2 rounded-lg hover:bg-surface-700/60">{{ __('E-Learning') }} ↗</a>
+                    @endif
 
                     <a href="{{ route('event.index') }}" wire:navigate class="mt-2 px-3 py-2 rounded-lg hover:bg-surface-700/60">{{ __('Event') }}</a>
                     <a href="{{ route('blog.index') }}" wire:navigate class="px-3 py-2 rounded-lg hover:bg-surface-700/60">{{ __('Blog') }}</a>
@@ -236,7 +244,9 @@
             <ul class="space-y-2 text-sm text-surface-400">
                 <li><a href="{{ url('/') }}" wire:navigate class="hover:text-brand-400">{{ __('Home') }}</a></li>
                 <li><a href="{{ route('job.index') }}" wire:navigate class="hover:text-brand-400">{{ __('Job Vacancies') }}</a></li>
-                <li><a href="{{ route('elearning.index') }}" wire:navigate class="hover:text-brand-400">{{ __('E-Learning') }}</a></li>
+                @if($academyUrl)
+                    <li><a href="{{ $academyUrl }}" target="_blank" rel="noopener" class="hover:text-brand-400">{{ __('E-Learning') }} ↗</a></li>
+                @endif
                 <li><a href="{{ route('event.index') }}" wire:navigate class="hover:text-brand-400">{{ __('Event') }}</a></li>
                 <li><a href="{{ route('blog.index') }}" wire:navigate class="hover:text-brand-400">{{ __('Blog') }}</a></li>
                 <li><a href="{{ route('gallery.index') }}" wire:navigate class="hover:text-brand-400">{{ __('Gallery') }}</a></li>
@@ -252,7 +262,6 @@
                 <li><a href="{{ route('job.index', ['visa' => 'internship']) }}" class="hover:text-brand-400">Internship</a></li>
                 <li><a href="{{ route('job.index', ['visa' => 'engineering']) }}" class="hover:text-brand-400">Gijinkoku / Engineer</a></li>
                 <li><a href="{{ route('job.index', ['category' => 'driver']) }}" class="hover:text-brand-400">Driver Jepang</a></li>
-                <li><a href="{{ route('elearning.index', ['category' => 'jlpt']) }}" class="hover:text-brand-400">JLPT Class</a></li>
             </ul>
         </div>
 

@@ -35,6 +35,7 @@ class SiteSettings extends Page
         'contact' => ['contact.email', 'contact.phone', 'contact.whatsapp'],
         'social'  => ['social.instagram', 'social.facebook', 'social.tiktok'],
         'stats'   => ['stats.students', 'stats.workers', 'stats.companies'],
+        'academy' => ['academy.url'],
     ];
 
     public function mount(): void
@@ -96,6 +97,15 @@ class SiteSettings extends Page
                         TextInput::make('social__instagram')->url()->prefix('https://'),
                         TextInput::make('social__facebook')->url()->prefix('https://'),
                         TextInput::make('social__tiktok')->url()->prefix('https://'),
+                    ]),
+                ]),
+                Tab::make('Passion Japan Academy')->icon('heroicon-o-academic-cap')->schema([
+                    Section::make()->columns(1)->components([
+                        TextInput::make('academy__url')
+                            ->label(__('Academy website URL'))
+                            ->url()
+                            ->placeholder('https://academy.passionjapan.id')
+                            ->helperText(__('The "E-Learning" menu opens this link in a new tab. Leave empty to hide the menu until the Academy is online.')),
                     ]),
                 ]),
                 Tab::make(__('Stats'))->icon('heroicon-o-chart-bar')->schema([

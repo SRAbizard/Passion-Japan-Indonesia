@@ -75,27 +75,29 @@
                         </div>
                     </a>
 
-                    {{-- Active enrollments --}}
-                    <div class="flex items-center gap-4 rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-800/60 dark:ring-white/10">
-                        <div class="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-sky-50 text-sky-600 dark:bg-sky-500/15 dark:text-sky-400">
-                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
+                    {{-- Open job postings --}}
+                    <a href="{{ \App\Filament\Resources\JobVacancies\JobVacancyResource::getUrl('index') }}"
+                       class="group flex items-center gap-4 rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-950/5 hover:ring-primary-500/40 hover:shadow-md transition dark:bg-gray-800/60 dark:ring-white/10">
+                        <div class="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-sky-50 text-sky-600 dark:bg-sky-500/15 dark:text-sky-400 group-hover:scale-110 transition">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                         </div>
                         <div class="min-w-0 flex-1">
-                            <p class="text-xs uppercase tracking-wider font-semibold text-gray-500 dark:text-gray-400">{{ __('Active enrollments') }}</p>
-                            <p class="text-2xl font-bold text-gray-950 dark:text-white">{{ $activeEnrollments }}</p>
+                            <p class="text-xs uppercase tracking-wider font-semibold text-gray-500 dark:text-gray-400">{{ __('Open job postings') }}</p>
+                            <p class="text-2xl font-bold text-gray-950 dark:text-white">{{ $openJobs }}</p>
                         </div>
-                    </div>
+                    </a>
 
-                    {{-- Certificates issued --}}
-                    <div class="flex items-center gap-4 rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-800/60 dark:ring-white/10">
-                        <div class="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-yellow-50 text-yellow-600 dark:bg-yellow-500/15 dark:text-yellow-400">
-                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                    {{-- Interviews scheduled --}}
+                    <a href="{{ \App\Filament\Resources\Applications\ApplicationResource::getUrl('index') }}"
+                       class="group flex items-center gap-4 rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-950/5 hover:ring-primary-500/40 hover:shadow-md transition dark:bg-gray-800/60 dark:ring-white/10">
+                        <div class="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-yellow-50 text-yellow-600 dark:bg-yellow-500/15 dark:text-yellow-400 group-hover:scale-110 transition">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                         </div>
                         <div class="min-w-0 flex-1">
-                            <p class="text-xs uppercase tracking-wider font-semibold text-gray-500 dark:text-gray-400">{{ __('Certificates issued') }}</p>
-                            <p class="text-2xl font-bold text-gray-950 dark:text-white">{{ $certsIssued }}</p>
+                            <p class="text-xs uppercase tracking-wider font-semibold text-gray-500 dark:text-gray-400">{{ __('Interviews scheduled') }}</p>
+                            <p class="text-2xl font-bold text-gray-950 dark:text-white">{{ $interviews }}</p>
                         </div>
-                    </div>
+                    </a>
                 </div>
             </div>
         </div>

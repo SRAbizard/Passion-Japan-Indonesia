@@ -2,7 +2,6 @@
     "Passion Japan Indonesia": "Passion Japan Indonesia",
     "Integrated Japan Career, Recruitment, Internship & E-Learning Platform": "Integrated Japan Career, Recruitment, Internship & E-Learning Platform",
     "Japan Career Ecosystem Platform": "Japan Career Ecosystem Platform",
-
     "Home": "Home",
     "Job Portal": "Job Portal",
     "Job Vacancies": "Job Posting",
@@ -17,56 +16,43 @@
     "Admin Panel": "Admin Panel",
     "Student Dashboard": "Student Dashboard",
     "Language": "Language",
-
     "Step Toward a Successful Career in Japan": "Step Toward a Successful Career in Japan",
     "We accompany you from language training and work skills, to official job placement in Japan.": "We accompany you from language training and work skills, to official job placement in Japan.",
     "Search jobs": "Search jobs",
     "Start learning": "Start learning",
     "Join Now": "Join Now",
-
     "Trusted by": "Trusted by",
     "Thousands of Indonesian workers and dozens of partner companies in Japan.": "Thousands of Indonesian workers and dozens of partner companies in Japan.",
     "Trained Students": "Trained Students",
     "Workers": "Workers",
     "Partner Companies": "Partner Companies",
-
     "Why Us": "Why Us",
     "Why": "Why",
     "Three reasons thousands of students choose us.": "Three reasons thousands of students choose us.",
-
     "Programs": "Programs",
     "Popular Programs": "Popular Programs",
     "See all": "See all",
-
     "Careers": "Careers",
     "Portal": "Portal",
     "Explore Job Opportunities in Japan.": "Explore Job Opportunities in Japan.",
-
     "Learn": "Learn",
     "Master Japanese language and work culture on your own schedule.": "Master Japanese language and work culture on your own schedule.",
-
     "FAQ": "FAQ",
     "Frequently Asked Questions": "Frequently Asked Questions",
-
     "Testimonials": "Testimonials",
     "What people say about us": "What people say about us",
     "Students": "Students",
-
     "Process": "Process",
     "Workflow": "Workflow",
     "Ten clear steps from consultation to arrival in Japan.": "Ten clear steps from consultation to arrival in Japan.",
-
     "Ready to start your career in Japan?": "Ready to start your career in Japan?",
     "Free consultation. Talk to our team and get a clear path within 24 hours.": "Free consultation. Talk to our team and get a clear path within 24 hours.",
     "Talk to us on WhatsApp": "Talk to us on WhatsApp",
-
     "Quick Links": "Quick Links",
     "All rights reserved.": "All rights reserved.",
-
     "Current locale": "Current locale",
     "Phase 0 ready": "Phase 0 ready",
     "Foundation installed": "Foundation installed",
-
     "Logout": "Logout",
     "Student": "Student",
     "Welcome back, :name": "Welcome back, :name",
@@ -78,7 +64,6 @@
     "Please verify your email address.": "Please verify your email address.",
     "Edit profile": "Edit profile",
     "Back to website": "Back to website",
-
     "Our Mission": "Our Mission",
     "Our Vision": "Our Vision",
     "Our Values": "Our Values",
@@ -94,7 +79,6 @@
     "Have questions? Reach out.": "Have questions? Reach out.",
     "Drop us a message and our team will reply within 24 hours.": "Drop us a message and our team will reply within 24 hours.",
     "Contact us": "Contact us",
-
     "Name": "Name",
     "Phone": "Phone",
     "Subject": "Subject",
@@ -104,15 +88,12 @@
     "Reach us directly": "Reach us directly",
     "Offices": "Offices",
     "Please correct the errors below:": "Please correct the errors below:",
-
     "Page not found": "Page not found",
     "Back to home": "Back to home",
     "We'll be back soon": "We'll be back soon",
-
     "New contact message:": "New contact message:",
     "From": "From",
     "Open in admin": "Open in admin",
-
     "Title": "Title",
     "Excerpt": "Excerpt",
     "Body": "Body",
@@ -128,7 +109,6 @@
     "Basics": "Basics",
     "Media & meta": "Media & Meta",
     "Required in :default. :other are optional.": "Required in :default. :other are optional.",
-
     "CMS": "CMS",
     "Contact Messages": "Contact Messages",
     "Website Settings": "Website Settings",
@@ -137,7 +117,6 @@
     "Settings saved": "Settings saved",
     "Save": "Save",
     "Digits only, no spaces or plus sign.": "Digits only, no spaces or plus sign.",
-
     "Insights for your Japan journey": "Insights for your Japan journey",
     "Articles, tips, and alumni stories — refreshed regularly by the Passion Japan team.": "Articles, tips, and alumni stories — refreshed regularly by the Passion Japan team.",
     "All": "All",
@@ -145,7 +124,6 @@
     "No articles found.": "No articles found.",
     "Back to Blog": "Back to Blog",
     "Related articles": "Related articles",
-
     "Workshops, seminars, and job fairs": "Workshops, seminars, and job fairs",
     "Join our upcoming events to meet recruiters, mentors, and the Passion Japan community.": "Join our upcoming events to meet recruiters, mentors, and the Passion Japan community.",
     "Upcoming": "Upcoming",
@@ -155,15 +133,12 @@
     "When": "When",
     "Where": "Where",
     "Register for this event": "Register for this event",
-
     "Add a tag and press Enter": "Add a tag and press Enter",
-
     "Recruitment": "Recruitment",
     "Companies": "Companies",
     "Company": "Company",
     "Job Categories": "Job Categories",
     "Visa Categories": "Visa Categories",
-    "Job Vacancies": "Job Posting",
     "Job Vacancy": "Job Posting",
     "Applications": "Applications",
     "Applicants": "Applicants",
@@ -186,20 +161,17 @@
     "Salary": "Salary",
     "Positions": "Positions",
     "Publishing": "Publishing",
-    "Description": "Description",
     "Requirements": "Requirements",
     "Benefits": "Benefits",
     "Filter": "Filter",
     "Search…": "Search…",
     "e.g. Tokyo": "e.g. Tokyo",
-
     "Full-time": "Full-time",
     "Part-time": "Part-time",
     "Contract": "Contract",
     "Internship": "Internship",
     "Fulltime": "Full-time",
     "Parttime": "Part-time",
-
     "Find your job in Japan": "Find your job in Japan",
     "Browse verified opportunities from our partner companies. Filter by visa, role, or city.": "Browse verified opportunities from our partner companies. Filter by visa, role, or city.",
     "No vacancies match your filters.": "No vacancies match your filters.",
@@ -214,7 +186,6 @@
     "Applied": "Applied",
     "Job Category": "Job Category",
     "Visa Category": "Visa Category",
-
     "application.status.submitted": "Submitted",
     "application.status.under_review": "Under Review",
     "application.status.interview_scheduled": "Interview Scheduled",
@@ -222,7 +193,6 @@
     "application.status.accepted": "Accepted",
     "application.status.rejected": "Rejected",
     "application.status.withdrawn": "Withdrawn",
-
     "Filter & Search": "Filter & Search",
     "Narrow results by visa, role, city, or keyword.": "Narrow results by visa, role, city, or keyword.",
     "Reset filter": "Reset filter",
@@ -230,13 +200,11 @@
     "Keyword": "Keyword",
     "{1} :count active filter|[2,*] :count active filters": "{1} :count active filter|[2,*] :count active filters",
     "{1} :count vacancy found|[2,*] :count vacancies found": "{1} :count vacancy found|[2,*] :count vacancies found",
-
     "Admin view": "Admin view",
     "You are signed in as :role. Only student accounts can apply for jobs.": "You are signed in as :role. Only student accounts can apply for jobs.",
     "Manage in admin panel": "Manage in admin panel",
     "Only student accounts can apply. You are signed in as an admin.": "Only student accounts can apply. You are signed in as an admin.",
     "Already have an account? Login": "Already have an account? Login",
-
     "Learning": "Learning",
     "Courses": "Courses",
     "Course": "Course",
@@ -255,18 +223,15 @@
     "Certificates": "Certificates",
     "Certificate": "Certificate",
     "Settings": "Settings",
-
     "level.beginner": "Beginner",
     "level.elementary": "Elementary",
     "level.intermediate": "Intermediate",
     "level.advanced": "Advanced",
-
     "enrollment.status.enrolled": "Enrolled",
     "enrollment.status.in_progress": "In Progress",
     "enrollment.status.completed": "Completed",
     "enrollment.status.expired": "Expired",
     "enrollment.status.dropped": "Dropped",
-
     "Master Japanese on your own pace": "Master Japanese on your own pace",
     "Bite-sized lessons, instructor-led courses, and quizzes that prepare you for life and work in Japan.": "Bite-sized lessons, instructor-led courses, and quizzes that prepare you for life and work in Japan.",
     "Learn Japanese & job skills — Passion Japan Indonesia": "Learn Japanese & job skills — Passion Japan Indonesia",
@@ -350,7 +315,6 @@
     "Number": "Number",
     "Issued": "Issued",
     "Download": "Download",
-
     "Verified Certificate": "Verified Certificate",
     "Certificate of Completion": "Certificate of Completion",
     "This is to certify that": "This is to certify that",
@@ -360,15 +324,12 @@
     "Certificate number": "Certificate number",
     "Download PDF": "Download PDF",
     "Verify this certificate at": "Verify this certificate at",
-
-    "Students": "Students",
     "Student Documents": "Student Documents",
     "Student Document": "Student Document",
     "My Profile": "My Profile",
     "My Applications": "My Applications",
     "My Classes": "My Classes",
     "My Documents": "My Documents",
-
     "document.type.ktp": "ID Card (KTP)",
     "document.type.kk": "Family Card",
     "document.type.passport": "Passport",
@@ -382,11 +343,9 @@
     "document.type.jlpt_certificate": "JLPT Certificate",
     "document.type.skill_certificate": "Skill Certificate",
     "document.type.other": "Other",
-
     "document.status.pending": "Pending",
     "document.status.verified": "Verified",
     "document.status.rejected": "Rejected",
-
     "Slug": "Slug",
     "Duration days": "Duration (days)",
     "days": "days",
@@ -395,34 +354,28 @@
     "Status": "Status",
     "Sort order": "Sort order",
     "Edit chapter": "Edit chapter",
-
     "Code": "Code",
     "Code (optional)": "Code (optional)",
     "Subtitle": "Subtitle",
     "Subtitle (optional)": "Subtitle (optional)",
-
     "Lesson type": "Lesson type",
     "Lesson access": "Lesson access",
     "Sequential": "Sequential",
     "Sequential — locked progression": "Sequential — locked progression",
     "Free — all open": "Free — all open",
-
     "Embed": "Embed",
     "Embed URL": "Embed URL",
     "Embed (Genially / Canva / iframe)": "Embed (Genially / Canva / iframe)",
     "PDF file": "PDF file",
     "Text / Reading": "Text / Reading",
-
     "Image (optional)": "Image (optional)",
     "Audio (optional)": "Audio (optional)",
     "Max plays": "Max plays",
-
     "Chapter quiz": "Chapter quiz",
     "Final exam": "Final exam",
     "Final Exam": "Final Exam",
     "Final exam (course-wide)": "Final exam (course-wide)",
     "Time limit (min)": "Time limit (min)",
-
     "+ Tambah Bab": "+ Add Chapter",
     "+ Tambah Materi": "+ Add Lesson",
     "+ Tambah Quiz": "+ Add Quiz",
@@ -436,36 +389,27 @@
     "Items": "Items",
     "Duration": "Duration",
     "Enrolled": "Enrolled",
-
     "Start Quiz": "Start Quiz",
-    "Continue learning": "Continue learning",
-    "Start course": "Start course",
     "Complete & Next": "Complete & Next",
     "Take final exam": "Take final exam",
     "Includes final exam": "Includes final exam",
     "Total questions": "Total questions",
-    "Pass score": "Pass score",
     "Time limit": "Time limit",
     "Time remaining": "Time remaining",
     "items": "items",
     "Retake quiz": "Retake quiz",
-
     "Homepage Workflow": "Homepage Workflow",
     "Published at": "Published at",
     "Thumbnail": "Thumbnail",
     "Intro video URL": "Intro video URL",
     "Price": "Price",
     "Currency": "Currency",
-    "Featured": "Featured",
-
     "Indonesia": "Indonesian",
     "English": "English",
     "日本語": "Japanese",
-
     "Program Passion": "Programs",
     "Verified jobs from partner companies": "Verified jobs from partner companies",
     "Japanese & job-skill courses": "Japanese & job-skill courses",
-
     "Gallery": "Gallery",
     "Gallery item": "Gallery item",
     "Documentation": "Documentation",
@@ -482,25 +426,20 @@
     "Taken at": "Taken at",
     "Caption": "Caption",
     "YouTube": "YouTube",
-
     "Company Profile Video": "Company Profile Video",
     "Get to know us in 2 minutes": "Get to know us in 2 minutes",
     "Video file (mp4 / webm)": "Video file (mp4 / webm)",
     "YouTube URL (alternative)": "YouTube URL (alternative)",
     "Poster image (optional)": "Poster image (optional)",
-
     "Get to know": "Get to know",
     "closer": "closer",
     "Quality Interactive Training": "Quality Interactive Training",
     "Real Job Placement": "Real Job Placement",
     "Transparent Process, No Hidden Costs": "Transparent Process, No Hidden Costs",
-
     "Mensetsu Offline": "Offline Interview",
     "Mensetsu Online": "Online Interview",
     "Sosialisasi Kampus": "Campus Outreach",
     "Umum": "General",
-    "All": "All",
-
     "Album": "Album",
     "Albums": "Albums",
     "Album info": "Album info",
@@ -513,6 +452,19 @@
     "+ Tambah Foto / Video": "+ Add Photo / Video",
     "Back to Gallery": "Back to Gallery",
     "No items in this album yet.": "No items in this album yet.",
-    "Item": "Item"
+    "Item": "Item",
+    "Academy website URL": "Academy website URL",
+    "The \"E-Learning\" menu opens this link in a new tab. Leave empty to hide the menu until the Academy is online.": "The \"E-Learning\" menu opens this link in a new tab. Leave empty to hide the menu until the Academy is online.",
+    "Learn Japanese at Passion Japan Academy": "Learn Japanese at Passion Japan Academy",
+    "Open job postings": "Open job postings",
+    "Interviews scheduled": "Interviews scheduled",
+    "Get ready for your mensetsu!": "Get ready for your mensetsu!",
+    "None yet": "None yet",
+    "Profile": "Profile",
+    "Complete it so companies can review you": "Complete it so companies can review you",
+    "Complete": "Complete",
+    "Japanese level": "Japanese level",
+    "From the language section of the profile": "From the language section of the profile",
+    "Japan Career, Recruitment & Internship Platform": "Japan Career, Recruitment & Internship Platform",
+    "Get in touch with our team for consultation or job opportunities in Japan.": "Get in touch with our team for consultation or job opportunities in Japan."
 }
-

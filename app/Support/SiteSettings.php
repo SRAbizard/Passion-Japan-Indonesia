@@ -81,6 +81,16 @@ class SiteSettings
     }
 
     /**
+     * Passion Japan Academy URL (the separate learning platform), or null
+     * while it is not online yet — callers hide the E-Learning link then.
+     */
+    public static function academyUrl(): ?string
+    {
+        $url = Setting::get('academy.url', config('passion.academy.url'));
+        return filled($url) ? $url : null;
+    }
+
+    /**
      * Returns the company-profile video URL — either the uploaded mp4 or
      * the admin-pasted YouTube embed. Returns ['type' => 'file'|'youtube',
      * 'url' => string, 'poster' => ?string] for the blade to switch on,

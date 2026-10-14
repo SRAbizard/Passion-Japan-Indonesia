@@ -37,8 +37,6 @@ class ViewStudent extends Page
             'studentDocuments.verifier',
             'applications.vacancy.visaCategory',
             'applications.vacancy.company',
-            'enrollments.course',
-            'certificates.course',
         ])->findOrFail($id);
     }
 

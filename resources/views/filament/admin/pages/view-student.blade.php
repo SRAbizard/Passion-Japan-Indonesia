@@ -98,11 +98,10 @@
         </div>
 
         <div class="fi-section rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10 p-5">
-            <p class="text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400">{{ __('Courses') }}</p>
-            <p class="mt-1 text-2xl font-bold text-gray-950 dark:text-white">{{ $student->enrollments->count() }}</p>
-            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                {{ $student->certificates->count() }} {{ __('certificates earned') }}
-            </p>
+            @php($japanese = $student->languages->first(fn ($l) => preg_match('/jap|jepang|日本/iu', $l->language)))
+            <p class="text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400">{{ __('Japanese level') }}</p>
+            <p class="mt-1 text-2xl font-bold text-gray-950 dark:text-white">{{ $japanese?->proficiency ?: '—' }}</p>
+            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ __('From the language section of the profile') }}</p>
         </div>
     </div>
 
@@ -222,28 +221,6 @@
                         </div>
                         <div class="text-xs uppercase tracking-wider font-bold px-2 py-1 rounded-md bg-gray-100 dark:bg-gray-800">
                             {{ __('application.status.'.$app->status) }}
-                        </div>
-                    </li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
-    {{-- Enrollments --}}
-    @if($student->enrollments->isNotEmpty())
-        <div class="fi-section rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10 p-6">
-            <h3 class="font-semibold text-gray-950 dark:text-white mb-4">{{ __('Enrollments') }} ({{ $student->enrollments->count() }})</h3>
-            <ul class="divide-y divide-gray-100 dark:divide-white/5">
-                @foreach($student->enrollments as $enr)
-                    <li class="py-3 flex items-center justify-between gap-4">
-                        <div class="min-w-0">
-                            <p class="text-sm font-semibold text-gray-950 dark:text-white truncate">{{ $enr->course?->t('title') ?? '—' }}</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">
-                                {{ __('enrollment.status.'.$enr->status) }} · {{ $enr->progress_pct }}%
-                            </p>
-                        </div>
-                        <div class="w-32 h-2 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden">
-                            <div class="h-full bg-primary-500" style="width: {{ $enr->progress_pct }}%"></div>
                         </div>
                     </li>
                 @endforeach

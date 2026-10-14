@@ -2,7 +2,7 @@
 
 @section('title', __('Contact') . ' — Passion Japan Indonesia')
 @section('og_title', __('Contact Passion Japan Indonesia'))
-@section('og_description', __('Get in touch with our team for consultation, job opportunities, or course enrollment.'))
+@section('og_description', __('Get in touch with our team for consultation or job opportunities in Japan.'))
 
 @section('content')
 <x-jp.page-hero

@@ -58,4 +58,12 @@ return [
         'workers'   => '1,200+',
         'companies' => '100+',
     ],
+
+    /*
+    | Passion Japan Academy — the separate learning platform. Overridable
+    | under Admin → Website Settings → Passion Japan Academy.
+    */
+    'academy' => [
+        'url' => env('ACADEMY_URL'),
+    ],
 ];

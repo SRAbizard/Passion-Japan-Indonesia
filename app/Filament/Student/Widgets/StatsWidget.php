@@ -3,8 +3,6 @@
 namespace App\Filament\Student\Widgets;
 
 use App\Models\Application;
-use App\Models\Certificate;
-use App\Models\Enrollment;
 use App\Models\StudentDocument;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
@@ -21,13 +19,13 @@ class StatsWidget extends BaseWidget
         $appsActive = Application::where('user_id', $userId)
             ->whereNotIn('status', ['rejected', 'withdrawn'])->count();
 
-        $enrollments = Enrollment::where('user_id', $userId)->count();
-        $inProgress  = Enrollment::where('user_id', $userId)->whereIn('status', ['enrolled','in_progress'])->count();
+        $interviews = Application::where('user_id', $userId)
+            ->where('status', 'interview_scheduled')->count();
 
         $docsPending  = StudentDocument::where('user_id', $userId)->where('status', 'pending')->count();
         $docsVerified = StudentDocument::where('user_id', $userId)->where('status', 'verified')->count();
 
-        $certs = Certificate::where('user_id', $userId)->count();
+        $profilePct = auth()->user()->studentProfile?->completionPct() ?? 0;
 
         return [
             Stat::make(__('Applications'), $apps)
@@ -38,13 +36,11 @@ class StatsWidget extends BaseWidget
                 ->color($appsActive > 0 ? 'info' : 'gray')
                 ->url(\App\Filament\Student\Pages\MyApplications::getUrl()),
 
-            Stat::make(__('Courses enrolled'), $enrollments)
-                ->description($inProgress > 0
-                    ? __(':count in progress', ['count' => $inProgress])
-                    : __('None active'))
-                ->descriptionIcon('heroicon-m-book-open')
-                ->color($inProgress > 0 ? 'success' : 'gray')
-                ->url(\App\Filament\Student\Pages\MyClasses::getUrl()),
+            Stat::make(__('Interviews scheduled'), $interviews)
+                ->description($interviews > 0 ? __('Get ready for your mensetsu!') : __('None yet'))
+                ->descriptionIcon('heroicon-m-calendar-days')
+                ->color($interviews > 0 ? 'success' : 'gray')
+                ->url(\App\Filament\Student\Pages\MyApplications::getUrl()),
 
             Stat::make(__('Documents'), $docsVerified.' / '.($docsVerified + $docsPending))
                 ->description($docsPending > 0
@@ -54,10 +50,11 @@ class StatsWidget extends BaseWidget
                 ->color($docsPending > 0 ? 'warning' : 'success')
                 ->url(\App\Filament\Student\Resources\Documents\DocumentResource::getUrl('index')),
 
-            Stat::make(__('Certificates'), $certs)
-                ->description($certs > 0 ? __('Well done!') : __('Complete a course to earn one'))
-                ->descriptionIcon('heroicon-m-trophy')
-                ->color($certs > 0 ? 'success' : 'gray'),
+            Stat::make(__('Profile'), $profilePct.'%')
+                ->description($profilePct < 100 ? __('Complete it so companies can review you') : __('Complete'))
+                ->descriptionIcon('heroicon-m-user-circle')
+                ->color($profilePct < 100 ? 'warning' : 'success')
+                ->url(\App\Filament\Student\Pages\MyProfile::getUrl()),
         ];
     }
 }

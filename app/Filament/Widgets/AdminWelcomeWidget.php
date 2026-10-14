@@ -3,9 +3,8 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Application;
-use App\Models\Certificate;
 use App\Models\ContactMessage;
-use App\Models\Enrollment;
+use App\Models\JobVacancy;
 use App\Models\StudentDocument;
 use App\Models\User;
 use Filament\Widgets\Widget;
@@ -23,8 +22,8 @@ class AdminWelcomeWidget extends Widget
             'pendingApps'      => Application::whereIn('status', ['submitted','under_review'])->count(),
             'pendingDocs'      => StudentDocument::where('status', 'pending')->count(),
             'unreadMessages'   => ContactMessage::whereNull('read_at')->count(),
-            'activeEnrollments'=> Enrollment::whereIn('status', ['enrolled','in_progress'])->count(),
-            'certsIssued'      => Certificate::count(),
+            'openJobs'         => JobVacancy::published()->count(),
+            'interviews'       => Application::where('status', 'interview_scheduled')->count(),
         ];
     }
 }

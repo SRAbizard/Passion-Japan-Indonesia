@@ -54,7 +54,7 @@ class StudentResource extends Resource
         return parent::getEloquentQuery()
             ->whereHas('roles', fn ($q) => $q->where('name', 'student'))
             ->with('studentProfile.primaryVisa')
-            ->withCount(['applications', 'studentDocuments', 'enrollments']);
+            ->withCount(['applications', 'studentDocuments']);
     }
 
     public static function getNavigationBadge(): ?string
@@ -123,8 +123,6 @@ class StudentResource extends Resource
 
                 TextColumn::make('applications_count')->label(__('Applications'))
                     ->numeric()->alignCenter()->sortable(),
-                TextColumn::make('enrollments_count')->label(__('Courses'))
-                    ->numeric()->alignCenter()->sortable()->toggleable(),
                 TextColumn::make('student_documents_count')->label(__('Docs uploaded'))
                     ->numeric()->alignCenter()->sortable()->toggleable(),
 

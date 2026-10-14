@@ -120,54 +120,26 @@ final class HomepageDemoData
         ];
     }
 
-    public static function courses(): array
-    {
-        return [
-            [
-                'name' => 'Japan N5',
-                'duration' => ['id' => '365 hari', 'en' => '365 days', 'ja' => '365日'],
-                'chapters' => ['id' => '29 bab', 'en' => '29 chapters', 'ja' => '29章'],
-                'desc' => [
-                    'id' => 'Bahasa Jepang dasar untuk pemula — huruf hiragana, katakana, kosakata sehari-hari.',
-                    'en' => 'Beginner Japanese — hiragana, katakana, and everyday vocabulary.',
-                    'ja' => '初心者向け日本語 — ひらがな、カタカナ、日常語彙。',
-                ],
-                'color' => 'from-brand-700 to-brand-900',
-            ],
-            [
-                'name' => 'Japan N4',
-                'duration' => ['id' => '365 hari', 'en' => '365 days', 'ja' => '365日'],
-                'chapters' => ['id' => '11 bab', 'en' => '11 chapters', 'ja' => '11章'],
-                'desc' => [
-                    'id' => 'Kelas lanjutan menuju level menengah — tata bahasa dan percakapan sehari-hari.',
-                    'en' => 'Intermediate-track class — grammar and everyday conversation.',
-                    'ja' => '中級レベルへのステップアップクラス — 文法と日常会話。',
-                ],
-                'color' => 'from-surface-700 to-surface-900',
-            ],
-        ];
-    }
-
     public static function faqs(): array
     {
         return [
             ['q' => [
-                'id' => 'Apakah jadwal belajar bisa fleksibel?',
-                'en' => 'Are class schedules flexible?',
-                'ja' => '学習スケジュールは柔軟ですか？',
+                'id' => 'Apa saja syarat untuk melamar kerja ke Jepang?',
+                'en' => 'What do I need to apply for a job in Japan?',
+                'ja' => '日本での仕事に応募するには何が必要ですか？',
             ], 'a' => [
-                'id' => 'Ya, semua kelas e-learning bisa diakses kapan saja selama masa aktif kursus. Untuk kelas live, kami sediakan beberapa slot waktu setiap minggu.',
-                'en' => 'Yes. All e-learning classes can be accessed at any time during the active course period. For live classes, we offer multiple time slots each week.',
-                'ja' => 'はい。すべてのEラーニングはコース有効期間内にいつでも受講可能です。ライブクラスは毎週複数の時間帯をご用意しています。',
+                'id' => 'Umumnya paspor, ijazah terakhir, sertifikat bahasa Jepang (JLPT/JFT), dan sertifikat keahlian sesuai bidang. Syarat lengkap tercantum di setiap lowongan.',
+                'en' => 'Usually a passport, your latest diploma, a Japanese language certificate (JLPT/JFT), and a skill certificate for the field. Full requirements are listed on each job posting.',
+                'ja' => '一般的にパスポート、最終学歴の卒業証書、日本語能力証明（JLPT/JFT）、分野に応じた技能証明が必要です。詳しい条件は各求人に記載しています。',
             ]],
             ['q' => [
-                'id' => 'Apakah saya dapat sertifikat setelah menyelesaikan program?',
-                'en' => 'Do I get a certificate after completing the program?',
-                'ja' => 'プログラム修了後に修了証は発行されますか？',
+                'id' => 'Saya belum bisa bahasa Jepang, bagaimana?',
+                'en' => "I don't speak Japanese yet — what should I do?",
+                'ja' => 'まだ日本語が話せませんが、どうすればいいですか？',
             ], 'a' => [
-                'id' => 'Semua peserta yang menyelesaikan program kami menerima sertifikat resmi yang diakui oleh mitra perusahaan kami di Jepang.',
-                'en' => 'Every participant who completes our program receives an official certificate recognized by our Japanese partner companies.',
-                'ja' => '修了者全員に、日本のパートナー企業に認められた公式修了証を発行します。',
+                'id' => 'Anda bisa belajar dulu di Passion Japan Academy, lembaga pelatihan bahasa Jepang kami. Setelah siap, lamar lowongan yang sesuai di website ini.',
+                'en' => 'You can start learning at Passion Japan Academy, our Japanese language training institute. Once you are ready, apply for a matching job on this website.',
+                'ja' => 'まずは当社の日本語研修機関「Passion Japan Academy」で学ぶことができます。準備ができたら、このサイトで条件に合う求人に応募してください。',
             ]],
             ['q' => [
                 'id' => 'Bagaimana cara mengikuti ujian kompetensi?',
@@ -179,13 +151,13 @@ final class HomepageDemoData
                 'ja' => '技能試験は日本の公式機関が直接実施します。登録、研修、模擬試験までサポートいたします。',
             ]],
             ['q' => [
-                'id' => 'Berapa lama saya bisa mengakses materi?',
-                'en' => 'How long can I access the course materials?',
-                'ja' => '教材へのアクセス期間はどれくらいですか？',
+                'id' => 'Berapa lama proses dari melamar sampai berangkat?',
+                'en' => 'How long does it take from applying to departure?',
+                'ja' => '応募から出国までどれくらいかかりますか？',
             ], 'a' => [
-                'id' => 'Materi kursus dapat diakses selama 365 hari sejak tanggal pembelian, dengan opsi perpanjangan.',
-                'en' => 'Course materials are accessible for 365 days from the date of purchase, with extension options.',
-                'ja' => '教材はご購入日から365日間アクセス可能で、延長オプションもございます。',
+                'id' => 'Rata-rata 4–8 bulan, tergantung jenis visa, jadwal wawancara (mensetsu), dan kelengkapan dokumen. Progres lamaran bisa dipantau dari dashboard Anda.',
+                'en' => 'On average 4–8 months, depending on the visa type, interview (mensetsu) schedule, and document readiness. You can track your application from your dashboard.',
+                'ja' => 'ビザの種類、面接日程、書類の準備状況により、平均4〜8か月です。応募状況はダッシュボードで確認できます。',
             ]],
             ['q' => [
                 'id' => 'Bagaimana cara mendaftar ke program ini?',
