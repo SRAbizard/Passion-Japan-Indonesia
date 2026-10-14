@@ -6,6 +6,7 @@ use App\Models\Application;
 use App\Models\JobCategory;
 use App\Models\JobVacancy;
 use App\Models\VisaCategory;
+use App\Support\JapanRegions;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -23,6 +24,8 @@ class JobController extends Controller
                 fn ($q, $c) => $q->whereHas('jobCategory', fn ($q) => $q->where('slug', $request->string('category'))))
             ->when($request->string('city')->isNotEmpty(),
                 fn ($q, $c) => $q->where('location_city', 'like', '%'.$request->string('city').'%'))
+            ->when(JapanRegions::get($request->string('region')->toString()),
+                fn ($q) => JapanRegions::scope($q, $request->string('region')->toString()))
             ->when($request->string('q')->isNotEmpty(), function ($q) use ($request) {
                 $term = '%'.$request->string('q').'%';
                 $q->where(function ($q) use ($term) {
@@ -36,6 +39,7 @@ class JobController extends Controller
             'vacancies' => $q->orderByDesc('is_featured')->orderByDesc('published_at')->paginate(9)->withQueryString(),
             'visas'     => VisaCategory::orderBy('sort_order')->withCount('vacancies')->get(),
             'jobCats'   => JobCategory::orderBy('sort_order')->withCount('vacancies')->get(),
+            'regions'   => JapanRegions::all(),
         ]);
     }
 

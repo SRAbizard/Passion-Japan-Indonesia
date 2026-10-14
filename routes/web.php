@@ -3,12 +3,13 @@
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\SitemapController;
 use App\Support\SiteSettings;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', fn () => view('welcome'))->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('about',   fn () => view('pages.about'))->name('about');
 Route::get('contact', [ContactController::class, 'show'])->name('contact');

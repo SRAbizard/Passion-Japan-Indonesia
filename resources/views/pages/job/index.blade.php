@@ -3,7 +3,7 @@
 @section('og_title', __('Find your Japan job — Passion Japan Indonesia'))
 
 @php
-    $activeFilterCount = collect(['visa','category','city','q'])->filter(fn ($k) => filled(request($k)))->count();
+    $activeFilterCount = collect(['visa','category','region','city','q'])->filter(fn ($k) => filled(request($k)))->count();
 @endphp
 
 @section('content')
@@ -44,7 +44,7 @@
                 </div>
             </summary>
 
-            <div class="border-t border-surface-800/70 px-5 py-5 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <div class="border-t border-surface-800/70 px-5 py-5 grid gap-4 md:grid-cols-2 lg:grid-cols-5">
                 <label class="block">
                     <span class="text-xs text-surface-400">{{ __('Visa') }}</span>
                     <select name="visa" class="mt-1.5 w-full rounded-xl border border-surface-700 bg-surface-900/60 px-3 py-2 text-sm text-white focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500">
@@ -60,6 +60,15 @@
                         <option value="">{{ __('All') }}</option>
                         @foreach($jobCats as $c)
                             <option value="{{ $c->slug }}" @selected(request('category') === $c->slug)>{{ $c->t('name') }} ({{ $c->vacancies_count }})</option>
+                        @endforeach
+                    </select>
+                </label>
+                <label class="block">
+                    <span class="text-xs text-surface-400">{{ __('Region') }}</span>
+                    <select name="region" class="mt-1.5 w-full rounded-xl border border-surface-700 bg-surface-900/60 px-3 py-2 text-sm text-white focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500">
+                        <option value="">{{ __('All of Japan') }}</option>
+                        @foreach($regions as $key => $r)
+                            <option value="{{ $key }}" @selected(request('region') === $key)>{{ __($r['name']) }} · {{ $r['jp'] }}</option>
                         @endforeach
                     </select>
                 </label>

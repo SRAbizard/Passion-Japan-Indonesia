@@ -13,6 +13,15 @@ export default defineConfig({
             ],
             refresh: true,
             fonts: [
+                bunny('Plus Jakarta Sans', {
+                    weights: [400, 500, 600, 700, 800],
+                }),
+                bunny('Dela Gothic One', {
+                    weights: [400],
+                }),
+                bunny('Yomogi', {
+                    weights: [400],
+                }),
                 bunny('Instrument Sans', {
                     weights: [400, 500, 600],
                 }),

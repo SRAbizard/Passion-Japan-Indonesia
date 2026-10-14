@@ -3,235 +3,424 @@
 @section('title', __('Passion Japan Indonesia') . ' — ' . __('Step Toward a Successful Career in Japan'))
 
 @php
-    use App\Models\Faq;
-    use App\Models\JobVacancy;
-    use App\Models\Testimonial;
-    use App\Models\VisaCategory;
-    use App\Support\HomepageDemoData as Demo;
+    use Illuminate\Support\Str;
 
-    // Phase 3+4+5: FAQ, Testimonial, Jobs come from DB; fall back to Demo helper when empty.
-    // Benefits/Programs/Workflow still come from Demo until later phases.
-    $benefits = Demo::benefits();
-    $programs = Demo::programs();
-    $visaWorkflows = Demo::visaWorkflows();
+    $rate = (float) config('passion.jpy_to_idr', 105);
 
-    $dbFaqs = Faq::published()->get();
-    $faqs   = $dbFaqs->isNotEmpty()
-        ? $dbFaqs->map(fn ($f) => ['q' => $f->getTranslations('question'), 'a' => $f->getTranslations('answer')])->all()
-        : Demo::faqs();
+    // Visa slugs differ per install; resolve the three quiz routes by name.
+    $routeSlug = function (array $needles) use ($visas) {
+        return $visas->first(fn ($v) => Str::contains(Str::lower($v->slug.' '.$v->t('name', 'en')), $needles))?->slug;
+    };
+    $visaRoutes = [
+        'ssw'      => ['slug' => $routeSlug(['tokutei', 'ssw', 'specified']), 'name' => 'Tokutei Ginou (SSW)'],
+        'intern'   => ['slug' => $routeSlug(['intern', 'magang', 'jisshu', 'trainee']), 'name' => __('Internship (Ginou Jisshu)')],
+        'engineer' => ['slug' => $routeSlug(['engineer', 'gijinkoku']), 'name' => __('Engineer (Gijinkoku)')],
+    ];
 
-    $companyT = Testimonial::published()->companies()->get();
-    $studentT = Testimonial::published()->students()->get();
-    $testimonials = ($companyT->isNotEmpty() || $studentT->isNotEmpty())
-        ? [
-            'company' => $companyT->map(fn ($t) => ['name' => $t->name, 'role' => $t->getTranslations('role'), 'quote' => $t->getTranslations('quote')])->all(),
-            'student' => $studentT->map(fn ($t) => ['name' => $t->name, 'role' => $t->getTranslations('role'), 'quote' => $t->getTranslations('quote')])->all(),
-        ]
-        : Demo::testimonials();
+    // Most-used categories become the quick chips + marquee.
+    $catCounts = $jobs->countBy('category');
+    $topCats = $categories->sortByDesc(fn ($c) => $catCounts[$c->slug] ?? 0)->take(3);
 
-    // Phase 4: homepage Jobs preview from DB, grouped by visa category.
-    $dbJobsByVisa = JobVacancy::published()
-        ->with('company', 'jobCategory', 'visaCategory')
-        ->orderByDesc('is_featured')
-        ->orderByDesc('published_at')
-        ->get()
-        ->groupBy(fn ($v) => $v->visaCategory?->slug);
+    $fmtYen = fn (?int $n) => $n ? '¥'.number_format($n, 0, ',', '.') : null;
+    $fmtRp = fn (?int $n) => $n ? 'Rp'.rtrim(rtrim(number_format($n * $rate / 1e6, 1, ',', '.'), '0'), ',').' '.__('mil') : null;
+    $periodLabel = ['monthly' => __('/ month'), 'yearly' => __('/ year'), 'hourly' => __('/ hour')];
 
-    if ($dbJobsByVisa->isNotEmpty()) {
-        $jobs = VisaCategory::orderBy('sort_order')->get()
-            ->map(function ($visa) use ($dbJobsByVisa) {
-                $items = ($dbJobsByVisa->get($visa->slug) ?? collect())->take(3)
-                    ->map(fn ($v) => [
-                        'title'    => $v->getTranslations('title'),
-                        'company'  => $v->company->name,
-                        'location' => $v->location_display,
-                        'salary'   => $v->salary_range ?? '—',
-                        'visa'     => $v->visaCategory?->t('name') ?? '',
-                        'tag'      => ['id' => $v->jobCategory?->t('name', 'id') ?? '', 'en' => $v->jobCategory?->t('name', 'en') ?? '', 'ja' => $v->jobCategory?->t('name', 'ja') ?? ''],
-                        'slug'     => $v->slug,
-                    ])->all();
+    $featuredJobs = $jobs->take(6);
 
-                return ['category' => $visa->t('name'), 'items' => $items];
-            })
-            ->filter(fn ($section) => count($section['items']) > 0)
-            ->values()
-            ->all();
-    } else {
-        $jobs = Demo::jobs();
-    }
+    $payload = [
+        'jobs'      => $jobs,
+        'regions'   => $regions,
+        'rate'      => $rate,
+        'jobsUrl'   => route('job.index'),
+        'academy'   => $academyUrl,
+        'routes'    => $visaRoutes,
+        'i18n'      => [
+            'allFields'   => __('All fields'),
+            'jobsInRegion'=> __('jobs in this region'),
+            'noJobsRegion'=> __('No openings here yet. New jobs come in every week.'),
+            'seeRegion'   => __('See all in :region', ['region' => ':region']),
+            'question'    => __('QUESTION'),
+            'done'        => __('MISSION COMPLETE'),
+            'bestRoute'   => __('BEST ROUTE FOR YOU'),
+            'seeJobs'     => __('See these jobs'),
+            'again'       => __('Try again'),
+            'academyNote' => __('Raise your Japanese to N4 first at Passion Japan Academy, then come back here to apply.'),
+            'academyLink' => __('Open Passion Japan Academy'),
+            'noMatch'     => __('No matching openings right now. We will tell you as soon as one opens.'),
+            'whyEngineer' => __('Your engineering/IT education opens the Engineer visa route.'),
+            'whySsw'      => __('Your Japanese level already meets the Tokutei Ginou requirement.'),
+            'whyIntern'   => __('The internship route lets you start from the basics; you are trained before departure.'),
+            'whySswPrep'  => __('Get your Japanese to N4 so you can apply through Tokutei Ginou.'),
+            'perMonth'    => __('/ month'),
+            'estimate'    => __('estimated rate'),
+            'mil'         => __('mil'),
+        ],
+        'quiz' => [
+            ['q' => __('How old are you?'), 'k' => 'age', 'o' => [
+                [__('18–22 years'), __('Fresh graduate'), 0], [__('23–27 years'), '', 1], [__('28–32 years'), '', 2], [__('33 or older'), '', 3]]],
+            ['q' => __('What is your Japanese level?'), 'k' => 'lang', 'o' => [
+                [__('None yet'), __('Starting from zero'), 0], [__('N5 / beginner'), __('Hiragana & katakana'), 1], [__('N4 / JFT A2'), __('Basic conversation'), 2], [__('N3 or higher'), __('Fluent'), 3]]],
+            ['q' => __('Which field interests you?'), 'k' => 'field', 'o' => [
+                [__('Caregiving'), 'Kaigo', ['kaigo']],
+                [__('Factory'), __('Manufacturing, machining'), ['pabrik', 'kikai-kakou']],
+                [__('Restaurant & hotel'), __('Hospitality'), ['restoran', 'perhotelan']],
+                [__('Driver & logistics'), '', ['driver', 'logistics']],
+                [__('Engineering & IT'), __('Engineer, CAD, programmer'), ['engineer']],
+                [__('Other fields'), __('Cleaning, farming, livestock'), ['building-cleaning', 'peternakan']]]],
+            ['q' => __('Your highest education?'), 'k' => 'edu', 'o' => [
+                [__('High school / vocational'), 'SMA / SMK', 0], [__('Diploma (D3)'), '', 1], [__('Bachelor in engineering / IT'), '', 2], [__('Other bachelor'), '', 3]]],
+        ],
+    ];
 @endphp
 
-@push('head')
-<script>
-    // Enable section-by-section snap scrolling on the homepage only.
-    document.documentElement.classList.add('snap-sections');
-    document.addEventListener('DOMContentLoaded', function () {
-        document.body.classList.add('snap-sections');
-    });
-</script>
-@endpush
-
 @section('content')
+<div data-pj-home>
 
 {{-- ========== HERO ========== --}}
-<section class="relative overflow-hidden min-h-[calc(100vh-4rem)] lg:min-h-[calc(100vh-5rem)] flex items-center">
-    {{-- Slideshow background — admin-uploaded images, fall back to Japan defaults --}}
-    <div class="hero-slideshow" aria-hidden="true">
-        @foreach(\App\Support\SiteSettings::heroSlides() as $slide)
-            <div class="slide" style="background-color: {{ $slide['color'] }}; background-image: url('{{ $slide['image'] }}');"></div>
-        @endforeach
-    </div>
+<section class="pj-hero">
+    <canvas data-pj-petals aria-hidden="true"></canvas>
+    <div class="pj-wrap pj-hero-grid">
+        <div class="pj-hero-copy">
+            <span class="pj-sticker">日本へのミッション · {{ __('Mission to Japan') }}</span>
+            <h1>
+                <span class="l">{{ __('Your mission:') }}</span>
+                <span class="l">{{ __('work in') }}</span>
+                <span class="flag">{{ __('Japan.') }}</span>
+            </h1>
+            <p class="pj-lede">{{ __('Official job openings from partner companies in Japan. We guide you from applying and mensetsu to your first day at work.') }}</p>
 
-    <div class="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[40rem] w-[40rem] rounded-full bg-brand-700/25 blur-3xl z-[1]"></div>
-    <div class="pointer-events-none absolute -bottom-40 right-0 h-[28rem] w-[28rem] rounded-full bg-brand-900/40 blur-3xl z-[1]"></div>
-
-    {{-- Falling sakura petals across hero --}}
-    <x-jp.sakura-petals :count="14" />
-
-    <div class="relative z-10 w-full mx-auto max-w-7xl px-6 py-16 lg:py-24">
-        <div class="grid gap-12 lg:grid-cols-2 lg:items-center">
-            <div>
-                <div class="inline-flex items-center gap-2 rounded-full border border-brand-700/40 bg-brand-700/10 px-3 py-1 text-xs font-medium text-brand-300">
-                    <span class="h-1.5 w-1.5 rounded-full bg-brand-400 animate-pulse"></span>
-                    {{ __('Japan Career Ecosystem Platform') }}
-                </div>
-
-                <h1 class="mt-6 font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.05]">
-                    {{ __('Step Toward a Successful Career in Japan') }}
-                </h1>
-                <p class="mt-6 max-w-xl text-lg text-surface-300 leading-relaxed">
-                    {{ __('We accompany you from language training and work skills, to official job placement in Japan.') }}
-                </p>
-
-                <div class="mt-8 flex flex-wrap gap-3">
-                    <a href="/dashboard/register" class="btn-brand">
-                        {{ __('Get Started') }}
-                        <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
-                    </a>
-                    <a href="#jobs" class="btn-ghost">{{ __('Search jobs') }}</a>
-                </div>
-            </div>
-
-            <div class="relative">
-                <div class="glass-card p-8 lg:p-10">
-                    <p class="text-xs uppercase tracking-wider text-brand-400 font-semibold">{{ __('Trusted by') }}</p>
-                    <p class="mt-2 font-display text-2xl text-white">{{ __('Thousands of Indonesian workers and dozens of partner companies in Japan.') }}</p>
-                    <div class="mt-6 grid grid-cols-3 gap-4 text-center">
-                        <div class="rounded-2xl border border-surface-700/60 bg-surface-900/40 p-4">
-                            <p class="font-display text-2xl font-bold text-white">{{ \App\Support\SiteSettings::stat('students') }}</p>
-                            <p class="mt-1 text-xs text-surface-400 uppercase tracking-wider">{{ __('Trained Students') }}</p>
-                        </div>
-                        <div class="rounded-2xl border border-surface-700/60 bg-surface-900/40 p-4">
-                            <p class="font-display text-2xl font-bold text-white">{{ \App\Support\SiteSettings::stat('workers') }}</p>
-                            <p class="mt-1 text-xs text-surface-400 uppercase tracking-wider">{{ __('Workers') }}</p>
-                        </div>
-                        <div class="rounded-2xl border border-surface-700/60 bg-surface-900/40 p-4">
-                            <p class="font-display text-2xl font-bold text-white">{{ \App\Support\SiteSettings::stat('companies') }}</p>
-                            <p class="mt-1 text-xs text-surface-400 uppercase tracking-wider">{{ __('Partner Companies') }}</p>
-                        </div>
+            <form class="pj-finder pj-card" method="GET" action="{{ route('job.index') }}" data-pj-finder>
+                <div class="pj-finder-row">
+                    <div class="pj-field">
+                        <label for="pj-f-category">{{ __('Field') }}</label>
+                        <select id="pj-f-category" name="category">
+                            <option value="">{{ __('All fields') }}</option>
+                            @foreach($categories as $c)
+                                <option value="{{ $c->slug }}">{{ $c->t('name') }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="pj-field">
+                        <label for="pj-f-visa">{{ __('Visa route') }}</label>
+                        <select id="pj-f-visa" name="visa">
+                            <option value="">{{ __('All routes') }}</option>
+                            @foreach($visas as $v)
+                                <option value="{{ $v->slug }}">{{ $v->t('name') }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="pj-field">
+                        <label for="pj-f-region">{{ __('Region') }}</label>
+                        <select id="pj-f-region" name="region">
+                            <option value="">{{ __('All of Japan') }}</option>
+                            @foreach($regions as $r)
+                                <option value="{{ $r['key'] }}">{{ $r['name'] }} · {{ $r['jp'] }}</option>
+                            @endforeach
+                        </select>
                     </div>
                 </div>
+                <div class="pj-finder-foot">
+                    <div class="pj-chips" role="group" aria-label="{{ __('Popular fields') }}">
+                        @foreach($topCats as $c)
+                            <button type="button" class="pj-chip" data-pj-chip="{{ $c->slug }}" aria-pressed="false">{{ $c->t('name') }}</button>
+                        @endforeach
+                    </div>
+                    <button class="pj-btn is-red" type="submit">
+                        {!! __('Show :count jobs', ['count' => '<span class="pj-count" data-pj-count>'.$jobs->count().'</span>']) !!} →
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="pj-scene" data-pj-scene aria-hidden="true">
+            <div class="sun" data-depth="6"></div>
+            <svg class="crane" data-depth="22" viewBox="0 0 100 70"><path d="M5 40 L45 30 L60 5 L62 32 L95 26 L66 42 L70 62 L50 46 L20 52 Z" fill="var(--pj-kami)" stroke="var(--pj-line)" stroke-width="3" stroke-linejoin="round"/><path d="M45 30 L50 46 M62 32 L66 42" stroke="var(--pj-line)" stroke-width="2"/></svg>
+            <svg class="cloud c1" data-depth="16" viewBox="0 0 120 50"><path d="M15 42 Q2 42 4 31 Q6 21 18 23 Q20 8 38 10 Q48 0 62 9 Q78 4 82 19 Q100 15 104 29 Q118 31 114 42 Z" fill="var(--pj-kami)" stroke="var(--pj-line)" stroke-width="3" stroke-linejoin="round"/></svg>
+            <svg class="cloud c2" data-depth="10" viewBox="0 0 120 50"><path d="M15 42 Q2 42 4 31 Q6 21 18 23 Q20 8 38 10 Q48 0 62 9 Q78 4 82 19 Q100 15 104 29 Q118 31 114 42 Z" fill="var(--pj-kami)" stroke="var(--pj-line)" stroke-width="3" stroke-linejoin="round"/></svg>
+            <svg class="fuji" data-depth="4" viewBox="0 0 400 200"><path d="M0 200 L120 70 Q150 40 170 38 L230 38 Q250 40 280 70 L400 200 Z" fill="#2B4795" stroke="var(--pj-line)" stroke-width="3" stroke-linejoin="round"/><path d="M148 58 Q160 40 172 38 L228 38 Q240 40 252 58 L236 72 L222 60 L208 76 L196 60 L182 74 L166 62 Z" fill="#FFFAF2" stroke="var(--pj-line)" stroke-width="3" stroke-linejoin="round"/></svg>
+            @if(count($heroSlides))
+                <div class="photo" data-depth="18">
+                    <div class="frame" data-pj-slides>
+                        @foreach($heroSlides as $i => $slide)
+                            <img src="{{ $slide['image'] }}" alt="" loading="{{ $i ? 'lazy' : 'eager' }}" class="{{ $i === 0 ? 'is-on' : '' }}">
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+            <div class="pj-pass pj-card" data-depth="28" data-base-rotate="-4">
+                <div class="pj-pass-main">
+                    <div class="pj-pass-top"><span>搭乗券 · BOARDING PASS</span><span>PJ {{ date('Y') }}</span></div>
+                    <div class="pj-pass-route">
+                        <div><b>CGK</b><small>Jakarta</small></div>
+                        <div class="line"><svg viewBox="0 0 24 24"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z" fill="var(--pj-red)"/></svg></div>
+                        <div class="text-right"><b data-pj-bp-code>NRT</b><small data-pj-bp-city>Tokyo</small></div>
+                    </div>
+                    <div class="pj-pass-meta">
+                        <span>{{ __('Passenger') }}<b>{{ auth()->user()?->name ? Str::limit(auth()->user()->name, 12) : __('You') }}</b></span>
+                        <span>{{ __('Seat') }}<b data-pj-bp-seat>{{ __('All fields') }}</b></span>
+                        <span>Gate<b>Mensetsu</b></span>
+                    </div>
+                </div>
+                <div class="pj-pass-stub">出発</div>
             </div>
         </div>
     </div>
-
-    {{-- Scroll-down cue at the bottom of the hero --}}
-    <a href="#about" aria-label="{{ __('Scroll down') }}"
-       class="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 group inline-flex flex-col items-center gap-1 text-white/70 hover:text-white transition">
-        <span class="text-[10px] uppercase tracking-[0.3em] font-semibold">{{ __('Scroll') }}</span>
-        <span class="inline-flex h-9 w-6 items-center justify-center rounded-full border-2 border-white/40 group-hover:border-white/70 transition">
-            <span class="w-1 h-2 rounded-full bg-white/70 animate-bounce"></span>
-        </span>
-    </a>
 </section>
 
-{{-- ========== BENEFITS — "Mengapa Passion Japan?" ========== --}}
-<section id="about" class="reveal relative min-h-screen flex flex-col justify-center py-20 bg-surface-900/40">
-    <div class="mx-auto max-w-7xl px-6">
-        <div class="text-center max-w-2xl mx-auto">
-            <p class="text-xs uppercase tracking-wider text-brand-400 font-semibold">{{ __('Why Us') }}</p>
-            <h2 class="mt-2 font-display text-3xl sm:text-4xl font-bold text-white">
-                {{ __('Why') }} <span class="text-brand-500">Passion Japan?</span>
-            </h2>
-            <p class="mt-4 text-surface-400">{{ __('Three reasons thousands of students choose us.') }}</p>
-        </div>
+{{-- ========== MARQUEE ========== --}}
+<div class="pj-marquees" aria-hidden="true">
+    @php
+        $catNames = $categories->map(fn ($c) => trim(($c->t('name', 'ja') !== $c->t('name') ? $c->t('name', 'ja').' ' : '').$c->t('name')))->all();
+        $promises = [__('Official job openings'), __('Verified partner companies'), __('Online & offline mensetsu'), __('Guided until departure'), __('Transparent costs')];
+    @endphp
+    <div class="pj-band is-red"><div class="pj-track">@foreach([...$catNames, ...$catNames] as $t)<span>{{ $t }}</span>@endforeach</div></div>
+    <div class="pj-band is-ink"><div class="pj-track">@foreach([...$promises, ...$promises] as $t)<span>{{ $t }}</span>@endforeach</div></div>
+</div>
 
-        <div class="mt-12 grid gap-6 md:grid-cols-3">
-            @foreach($benefits as $benefit)
-                <div class="glass-card p-7 hover:border-brand-500/40 transition">
-                    <div class="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-brand-600/15 text-brand-400">
-                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $benefit['icon'] }}"/></svg>
-                    </div>
-                    <h3 class="mt-5 font-display text-lg font-semibold text-white">{{ Demo::pick($benefit['title']) }}</h3>
-                    <p class="mt-2 text-sm text-surface-400 leading-relaxed">{{ Demo::pick($benefit['desc']) }}</p>
-                </div>
+{{-- ========== STATEMENT ========== --}}
+<section class="pj-statement">
+    <div class="pj-wrap">
+        <p class="big" data-pj-statement>
+            <span data-words>{{ __('Hundreds of Indonesians have already departed with Passion Japan.') }}</span>
+            <span data-words data-hl>{{ __('The next mission is yours.') }}</span>
+        </p>
+        <div class="pj-stats">
+            @foreach($stats as $s)
+                <div class="pj-stat pj-card"><b data-pj-countup>{{ $s['value'] }}</b><span>{{ $s['label'] }}</span></div>
             @endforeach
         </div>
     </div>
 </section>
 
-{{-- ========== COMPANY PROFILE VIDEO ========== --}}
-@php $companyVideo = \App\Support\SiteSettings::companyVideo(); @endphp
-@if($companyVideo)
-<section class="reveal min-h-screen flex flex-col justify-center py-20">
-    <div class="mx-auto max-w-7xl px-6">
-        <div class="text-center max-w-2xl mx-auto">
-            <p class="text-xs uppercase tracking-wider text-brand-400 font-semibold">{{ __('Company Profile') }}</p>
-            <h2 class="mt-2 font-display text-3xl sm:text-4xl font-bold text-white">
-                {{ __('Get to know') }} <span class="text-brand-500">Passion Japan</span> {{ __('closer') }}
-            </h2>
+{{-- ========== MISSION ROUTE ========== --}}
+<section class="pj-route pj-section" id="rute">
+    <div class="pj-wrap">
+        <div class="pj-head">
+            <h2><span class="jp">ミッションルート</span>{{ __('Your mission route') }}</h2>
+            <p class="pj-lede">{{ __('Five checkpoints from Jakarta to Japan. Every checkpoint you pass gets a stamp.') }}</p>
+        </div>
+        <div data-pj-route-stage>
+            <svg class="pj-route-svg" viewBox="0 0 1000 150" aria-hidden="true">
+                <path data-pj-route-path class="pj-route-path" d="M20 110 C 140 20, 220 20, 300 80 S 470 140, 520 70 S 680 10, 740 80 S 900 130, 980 40"/>
+                <path data-pj-route-done class="pj-route-done" d="M20 110 C 140 20, 220 20, 300 80 S 470 140, 520 70 S 680 10, 740 80 S 900 130, 980 40" style="stroke-dasharray: 1400; stroke-dashoffset: 1400"/>
+                <g data-pj-route-plane transform="translate(20 110)"><circle r="22" fill="#F1AF2E" stroke="#F5EDE0" stroke-width="3"/><path d="M12 4v-2l-8-5V-8.5a1.5 1.5 0 0 0-3 0V-3l-8 5v2l8-2.5V7l-2 1.5V10l3.5-1 3.5 1V8.5L1 7V1.5z" fill="#1D1730" transform="rotate(90) translate(-2 -1)"/></g>
+            </svg>
+            <ol class="pj-steps">
+                @php
+                    $steps = [
+                        ['登録', __('Create your profile'), __('Fill in your biodata and education, and upload documents from your dashboard.')],
+                        ['学習', __('Learn the language'), __('Level up your JLPT/JFT at Passion Japan Academy.')],
+                        ['面接', 'Mensetsu', __('Online or offline interviews with Japanese companies.')],
+                        ['ビザ', __('Visa & COE'), __('We handle the paperwork until your Certificate of Eligibility is issued.')],
+                        ['出発', __('Depart!'), __('Fly to Japan and start your first day at work.')],
+                    ];
+                @endphp
+                @foreach($steps as $i => [$jp, $title, $desc])
+                    <li class="pj-step" data-pj-step>
+                        <div class="pj-stamp">{{ $jp }}<small>0{{ $i + 1 }}</small></div>
+                        <div>
+                            <span class="tag">{{ __('CHECKPOINT') }} 0{{ $i + 1 }}</span>
+                            <h3>{{ $title }}</h3>
+                            <p>
+                                {{ $desc }}
+                                @if($i === 1 && $academyUrl)
+                                    <a href="{{ $academyUrl }}" target="_blank" rel="noopener">{{ __('Open Academy') }} ↗</a>
+                                @endif
+                            </p>
+                        </div>
+                    </li>
+                @endforeach
+            </ol>
         </div>
 
-        {{-- 2-column: video left · feature highlights right --}}
-        <div class="mt-12 grid gap-10 lg:grid-cols-2 items-center">
-            {{-- Video — lite-embed pattern: show poster + custom play
-                 button, only attach the YouTube iframe (with autoplay=1)
-                 after user clicks. Bypasses the third-party-cookie
-                 loading-spinner hang that some browsers / networks hit
-                 on a vanilla YouTube embed. --}}
-            <div class="relative aspect-video rounded-3xl overflow-hidden glass-card shadow-2xl shadow-brand-900/40 ring-1 ring-brand-500/20">
-                @if($companyVideo['type'] === 'youtube')
-                    <div data-pj-lite-yt
-                         data-embed-url="{{ $companyVideo['url'] }}"
-                         class="group absolute inset-0 cursor-pointer">
-                        <img src="{{ $companyVideo['poster'] }}"
-                             alt="{{ __('Company Profile') }}"
-                             loading="lazy"
-                             class="absolute inset-0 h-full w-full object-cover">
-                        <div class="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/50 transition">
-                            <span class="inline-flex h-20 w-20 items-center justify-center rounded-full bg-brand-600 text-white shadow-2xl group-hover:scale-110 transition">
-                                <svg class="h-10 w-10 ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                            </span>
+        @if(count($workflows))
+            <div class="pj-route-detail" data-pj-tabs>
+                <h3 class="font-display text-2xl sm:text-3xl">{{ __('Step by step, per visa route') }}</h3>
+                <div class="pj-tabs" role="tablist" aria-label="{{ __('Visa workflow tabs') }}">
+                    @foreach($workflows as $i => $wf)
+                        <button type="button" class="pj-tab" role="tab" id="pj-tab-{{ $wf['slug'] }}" aria-controls="pj-panel-{{ $wf['slug'] }}"
+                                aria-selected="{{ $i === 0 ? 'true' : 'false' }}" data-pj-tab="{{ $wf['slug'] }}">{{ \App\Support\HomepageDemoData::pick($wf['name']) }}</button>
+                    @endforeach
+                </div>
+                @foreach($workflows as $i => $wf)
+                    <div role="tabpanel" id="pj-panel-{{ $wf['slug'] }}" aria-labelledby="pj-tab-{{ $wf['slug'] }}" data-pj-panel="{{ $wf['slug'] }}" @if($i) hidden @endif>
+                        @if($tagline = \App\Support\HomepageDemoData::pick($wf['tagline']))
+                            <p class="mb-4 text-[#d6ccbd] max-w-2xl">{{ $tagline }}</p>
+                        @endif
+                        <div class="pj-tickets">
+                            @foreach($wf['steps'] as $step)
+                                <div class="pj-ticket">
+                                    <span class="n">{{ str_pad($step['n'], 2, '0', STR_PAD_LEFT) }}</span>
+                                    <h4>{{ \App\Support\HomepageDemoData::pick($step['title']) }}</h4>
+                                    @if(! empty($step['badge']))
+                                        <span class="badge {{ $step['badge']['color'] }}">{{ \App\Support\HomepageDemoData::pick($step['badge']['label']) }}</span>
+                                    @endif
+                                </div>
+                            @endforeach
                         </div>
+                        @if(! empty($wf['notes']))
+                            <div class="pj-notes">
+                                <b class="text-[#F1AF2E] text-xs tracking-widest uppercase">{{ __('Catatan Penting') }}</b>
+                                @foreach($wf['notes'] as $note)
+                                    <p>• {{ \App\Support\HomepageDemoData::pick($note) }}</p>
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
+                @endforeach
+            </div>
+        @endif
+    </div>
+</section>
+
+{{-- ========== MATCH QUIZ ========== --}}
+<section class="pj-section" id="cek">
+    <div class="pj-wrap">
+        <div class="pj-head">
+            <span class="pj-sticker is-pink">{{ __('Mission 01 · 1 minute') }}</span>
+            <h2><span class="jp">相性チェック</span>{{ __('Check your match') }}</h2>
+            <p class="pj-lede">{{ __('Answer 4 questions. We will show the visa route that fits you best and matching jobs.') }}</p>
+        </div>
+        <div class="pj-quiz">
+            <div class="pj-game pj-card">
+                <div class="pj-game-bar"><span data-pj-q-label>{{ __('QUESTION') }} 1 / 4</span><div class="pj-xp" aria-hidden="true"><i data-pj-xp></i></div><span data-pj-q-xp>0 XP</span></div>
+                <div class="pj-game-body" data-pj-game aria-live="polite">
+                    <span class="pj-q-num">{{ __('QUESTION') }} 1</span>
+                    <p class="pj-q-title">{{ $payload['quiz'][0]['q'] }}</p>
+                    <div class="pj-opts">
+                        @foreach($payload['quiz'][0]['o'] as $o)
+                            <button type="button" class="pj-opt">{{ $o[0] }}@if($o[1])<small>{{ $o[1] }}</small>@endif</button>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+            <aside class="grid gap-4">
+                <div class="pj-side-card pj-card is-tilt">
+                    <h3>{{ __('Three routes to Japan') }}</h3>
+                    <ul>
+                        <li><b>Tokutei Ginou (SSW)</b>: {{ __('needs Japanese N4/JFT A2 and a skills test.') }}</li>
+                        <li><b>{{ __('Internship (Ginou Jisshu)') }}</b>: {{ __('suits beginners; you are trained from the start.') }}</li>
+                        <li><b>{{ __('Engineer (Gijinkoku)') }}</b>: {{ __('for D3/S1 graduates in engineering or IT.') }}</li>
+                    </ul>
+                </div>
+                <p class="pj-disclaimer">{{ __('This check is a simulation for initial guidance. The final decision follows each job’s requirements and a consultation with our team.') }}</p>
+            </aside>
+        </div>
+    </div>
+</section>
+
+{{-- ========== JOB MAP ========== --}}
+<section class="pj-section pt-0!" id="peta">
+    <div class="pj-wrap">
+        <div class="pj-head">
+            <h2><span class="jp">求人マップ</span>{{ __('Where in Japan do you want to work?') }}</h2>
+            <p class="pj-lede">{{ __('Tap a region on the map to see its openings.') }}</p>
+        </div>
+        <div class="pj-map">
+            <div class="pj-map-box pj-card">
+                <svg class="pj-japan" viewBox="0 0 400 440" role="group" aria-label="{{ __('Job map of Japan') }}">
+                    <path class="land" d="M292 34 Q318 18 344 26 Q372 30 384 54 Q378 80 356 92 Q338 108 314 104 Q294 96 286 74 Q282 50 292 34 Z"/>
+                    <path class="land" d="M284 120 Q300 126 310 146 Q314 176 304 204 Q296 232 280 252 Q262 272 236 284 Q206 296 176 310 Q146 324 116 334 Q96 340 84 334 Q78 324 92 316 Q118 304 146 292 Q178 278 206 264 Q232 250 248 228 Q262 204 266 174 Q268 144 284 120 Z"/>
+                    <path class="land" d="M132 344 Q158 336 184 336 Q198 342 192 356 Q172 366 146 366 Q130 360 132 344 Z"/>
+                    <path class="land" d="M58 342 Q78 340 92 350 Q100 370 92 392 Q80 412 64 410 Q48 402 44 382 Q42 358 58 342 Z"/>
+                    <path class="land" d="M14 424 q8 -6 14 0 q-6 8 -14 0 Z"/>
+                    @foreach($regions as $r)
+                        @php $left = $r['x'] < 120; @endphp
+                        <g class="pj-pin {{ $r['count'] ? '' : 'is-empty' }}" tabindex="0" role="button" data-pj-pin="{{ $r['key'] }}"
+                           aria-label="{{ $r['name'] }}: {{ $r['count'] }} {{ __('jobs in this region') }}">
+                            <circle class="pulse" cx="{{ $r['x'] }}" cy="{{ $r['y'] }}" r="9"/>
+                            <circle class="dot" cx="{{ $r['x'] }}" cy="{{ $r['y'] }}" r="8"/>
+                            <text x="{{ $left ? $r['x'] + 14 : $r['x'] - 14 }}" y="{{ $r['y'] + 4 }}" text-anchor="{{ $left ? 'start' : 'end' }}">{{ $r['name'] }}{{ $r['count'] ? ' · '.$r['count'] : '' }}</text>
+                        </g>
+                    @endforeach
+                </svg>
+            </div>
+            <div class="pj-city pj-card" data-pj-city aria-live="polite">
+                <p class="pj-lede">{{ __('Tap a region on the map to see its openings.') }}</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{{-- ========== FEATURED JOBS ========== --}}
+<section class="pj-section pt-0!" id="lowongan">
+    <div class="pj-wrap">
+        <div class="pj-head">
+            <h2><span class="jp">おすすめ求人</span>{{ __('Featured jobs') }}</h2>
+        </div>
+        <div class="pj-jobs-tools">
+            <a href="{{ route('job.index') }}" wire:navigate class="font-bold underline decoration-2 underline-offset-4">{{ __('See all :count jobs', ['count' => $jobs->count()]) }} →</a>
+            <div class="pj-toggle" role="group" aria-label="{{ __('Salary currency') }}">
+                <button type="button" data-pj-cur="jpy" aria-pressed="true">¥ Yen</button>
+                <button type="button" data-pj-cur="idr" aria-pressed="false">Rp Rupiah</button>
+            </div>
+        </div>
+        @if($featuredJobs->isEmpty())
+            <div class="pj-empty pj-card"><p class="pj-lede mx-auto">{{ __('New openings are being prepared. Check back soon or talk to us on WhatsApp.') }}</p></div>
+        @else
+            <div class="pj-jobs">
+                @foreach($featuredJobs as $j)
+                    @php $convertible = $j['currency'] === 'JPY' && $j['min']; @endphp
+                    <a href="{{ $j['url'] }}" wire:navigate class="pj-job pj-card" data-pj-tilt>
+                        <div class="pj-job-top">
+                            @if($j['featured'])<span class="pj-badge">★ {{ __('Featured') }}</span>
+                            @elseif($j['new'])<span class="pj-badge is-new">{{ __('New') }}</span>
+                            @else<span></span>@endif
+                            @if($j['categoryName'])<span class="pj-job-tags"><span>{{ $j['categoryName'] }}</span></span>@endif
+                        </div>
+                        <h3>{{ $j['title'] }}</h3>
+                        <p class="co">{{ $j['company'] }} · {{ $j['location'] }}</p>
+                        <div class="pj-job-tags">
+                            @if($j['visaName'])<span>{{ $j['visaName'] }}</span>@endif
+                        </div>
+                        <div class="pj-salary" @if($convertible) data-pj-salary data-min="{{ $j['min'] }}" data-max="{{ $j['max'] ?? $j['min'] }}" data-period="{{ $periodLabel[$j['period']] ?? '' }}" @endif>
+                            @if($convertible)
+                                <b>{{ $fmtYen($j['min']) }}@if($j['max'] && $j['max'] !== $j['min']) – {{ $fmtYen($j['max']) }}@endif</b>
+                                <small>≈ {{ $fmtRp($j['min']) }}@if($j['max'] && $j['max'] !== $j['min']) – {{ $fmtRp($j['max']) }}@endif {{ $periodLabel[$j['period']] ?? '' }}</small>
+                            @else
+                                <b>{{ $j['min'] ? number_format($j['min']).($j['max'] ? ' – '.number_format($j['max']) : '').' '.$j['currency'] : __('Salary on request') }}</b>
+                            @endif
+                        </div>
+                        <span class="pj-hanko" title="{{ __('Partner company') }}">認定</span>
+                    </a>
+                @endforeach
+            </div>
+        @endif
+    </div>
+</section>
+
+{{-- ========== COMPANY PROFILE VIDEO ========== --}}
+@if($companyVideo)
+<section class="pj-section pt-0!">
+    <div class="pj-wrap">
+        <div class="pj-head">
+            <h2><span class="jp">会社紹介</span>{{ __('Get to know Passion Japan') }}</h2>
+        </div>
+        <div class="pj-video">
+            <div class="pj-video-frame pj-card">
+                @if($companyVideo['type'] === 'youtube')
+                    <div data-pj-lite-yt data-embed-url="{{ $companyVideo['url'] }}" class="group absolute inset-0 cursor-pointer">
+                        <img src="{{ $companyVideo['poster'] }}" alt="{{ __('Company Profile') }}" loading="lazy">
+                        <span class="absolute inset-0 grid place-items-center">
+                            <span class="pj-btn is-red h-20 w-20 p-0! group-hover:scale-110 transition"><svg class="h-9 w-9 ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>
+                        </span>
                     </div>
                 @else
-                    <video src="{{ $companyVideo['url'] }}"
-                           @if($companyVideo['poster']) poster="{{ $companyVideo['poster'] }}" @endif
-                           controls
-                           preload="metadata"
-                           class="absolute inset-0 h-full w-full bg-black object-cover">
-                    </video>
+                    <video src="{{ $companyVideo['url'] }}" @if($companyVideo['poster']) poster="{{ $companyVideo['poster'] }}" @endif controls preload="metadata"></video>
                 @endif
             </div>
-
-            {{-- Feature highlights --}}
-            @php
-                $companyHighlights = [
-                    ['icon' => 'M9 17v-2a4 4 0 014-4h6m-3-3l3 3-3 3M9 7H6a4 4 0 00-4 4v6', 'title' => __('Quality Interactive Training'), 'desc' => __('Curriculum designed with native Japanese instructors and tailored to JLPT / SSW exam standards.')],
-                    ['icon' => 'M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z', 'title' => __('Real Job Placement'), 'desc' => __('Direct partnership with companies in Japan — students go straight to verified job offers, not theory.')],
-                    ['icon' => 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z', 'title' => __('Transparent Process, No Hidden Costs'), 'desc' => __('Every fee, every step, every promise — written, signed, and explained before you commit.')],
-                ];
-            @endphp
-            <div class="space-y-5">
-                @foreach($companyHighlights as $h)
-                    <div class="flex items-start gap-4 glass-card p-5 hover:border-brand-500/40 transition">
-                        <div class="shrink-0 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-brand-600/15 text-brand-400">
-                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $h['icon'] }}"/></svg>
-                        </div>
-                        <div>
-                            <h3 class="font-display font-semibold text-white">{{ $h['title'] }}</h3>
-                            <p class="mt-1 text-sm text-surface-400 leading-relaxed">{{ $h['desc'] }}</p>
-                        </div>
+            <div class="pj-points">
+                @php
+                    $points = [
+                        ['M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z', __('Real Job Placement'), __('Direct partnership with companies in Japan — students go straight to verified job offers, not theory.')],
+                        ['M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z', __('Transparent Process, No Hidden Costs'), __('Every fee, every step, every promise — written, signed, and explained before you commit.')],
+                        ['M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z', __('Guided from start to finish'), __('From documents and mensetsu to visa and departure, one team accompanies you.')],
+                    ];
+                @endphp
+                @foreach($points as [$icon, $title, $desc])
+                    <div class="pj-point pj-card">
+                        <span class="ico"><svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $icon }}"/></svg></span>
+                        <div><h3>{{ $title }}</h3><p>{{ $desc }}</p></div>
                     </div>
                 @endforeach
             </div>
@@ -240,429 +429,77 @@
 </section>
 @endif
 
-{{-- ========== JOB PORTAL ========== --}}
-<section id="jobs" class="reveal min-h-screen flex flex-col justify-center py-20 bg-surface-900/40">
-    <div class="mx-auto max-w-7xl px-6">
-        <div class="text-center max-w-2xl mx-auto">
-            <p class="text-xs uppercase tracking-wider text-brand-400 font-semibold">{{ __('Careers') }}</p>
-            <h2 class="mt-2 font-display text-3xl sm:text-4xl font-bold text-white">
-                <span class="text-brand-500">Job</span> {{ __('Portal') }}
-            </h2>
-            <p class="mt-3 text-surface-400">{{ __('Explore Job Opportunities in Japan.') }}</p>
+{{-- ========== GALLERY ========== --}}
+@if($albums->isNotEmpty())
+<section class="pj-section pj-gallery" id="galeri">
+    <div class="pj-scallop absolute top-0 inset-x-0" aria-hidden="true"></div>
+    <div class="pj-wrap">
+        <div class="pj-head">
+            <h2><span class="jp">ギャラリー</span>{{ __('From our albums') }}</h2>
+            <p class="pj-lede">{{ __('Real moments from our candidates, from the mensetsu room to campuses across Indonesia.') }}</p>
         </div>
-
-        @foreach($jobs as $section)
-            <div class="mt-12">
-                <div class="flex items-baseline justify-between flex-wrap gap-2">
-                    <h3 class="font-display text-xl font-semibold text-white">{{ $section['category'] }}</h3>
-                    <a href="{{ route('job.index') }}" class="text-sm text-brand-400 hover:text-brand-300">{{ __('See all') }} →</a>
-                </div>
-
-                <div class="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                    @foreach($section['items'] as $job)
-                        <a href="{{ isset($job['slug']) ? route('job.show', $job['slug']) : route('job.index') }}" class="glass-card p-5 block hover:border-brand-500/50 transition group">
-                            <div class="flex items-start gap-3">
-                                <div class="h-12 w-12 rounded-xl bg-gradient-to-br from-brand-600 to-brand-800 flex items-center justify-center font-display font-bold text-white text-sm shrink-0">
-                                    {{ \Illuminate\Support\Str::of($job['company'])->substr(0,1)->upper() }}
-                                </div>
-                                <div class="min-w-0 flex-1">
-                                    <h4 class="font-semibold text-white truncate group-hover:text-brand-400 transition">{{ Demo::pick($job['title']) }}</h4>
-                                    <p class="text-xs text-surface-400 truncate">{{ $job['company'] }}</p>
-                                </div>
-                            </div>
-                            <div class="mt-4 flex flex-wrap gap-1.5">
-                                <span class="text-[10px] uppercase tracking-wider font-semibold px-2 py-1 rounded-md bg-surface-800 text-surface-300">{{ Demo::pick($job['tag']) }}</span>
-                                <span class="text-[10px] uppercase tracking-wider font-semibold px-2 py-1 rounded-md bg-brand-600/15 text-brand-300">{{ $job['visa'] }}</span>
-                            </div>
-                            <div class="mt-4 grid grid-cols-2 gap-2 text-xs text-surface-400">
-                                <span class="flex items-center gap-1">
-                                    <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.828 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                                    {{ $job['location'] }}
-                                </span>
-                                <span class="flex items-center gap-1 text-emerald-400">
-                                    <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.66 0-3 .9-3 2s1.34 2 3 2 3 .9 3 2-1.34 2-3 2m0-8v1m0 14v1m0-16a8 8 0 100 16 8 8 0 000-16z"/></svg>
-                                    {{ $job['salary'] }}
-                                </span>
-                            </div>
-                        </a>
-                    @endforeach
-                </div>
-            </div>
-        @endforeach
+        <div class="pj-polaroids">
+            @foreach($albums as $album)
+                <a href="{{ route('gallery.show', $album->slug) }}" wire:navigate class="pj-polaroid">
+                    <div class="ph">
+                        <span class="cnt">{{ trans_choice('{1} :count item|[2,*] :count items', $album->items_count, ['count' => $album->items_count]) }}</span>
+                        @if($album->cover_url)
+                            <img src="{{ $album->cover_url }}" alt="" loading="lazy">
+                        @endif
+                    </div>
+                    <p class="cap">{{ $album->t('title') }}@if($album->t('caption'))<small>{{ Str::limit($album->t('caption'), 70) }}</small>@endif</p>
+                </a>
+            @endforeach
+        </div>
+        <a href="{{ route('gallery.index') }}" wire:navigate class="pj-btn">{{ __('See all') }} →</a>
     </div>
 </section>
+@endif
+
+{{-- ========== TESTIMONIALS ========== --}}
+@if($testimonials->isNotEmpty())
+<section class="pj-section">
+    <div class="pj-wrap">
+        <div class="pj-head">
+            <h2><span class="jp">みんなの声</span>{{ __('What people say about us') }}</h2>
+        </div>
+        <div class="pj-notes-grid">
+            @foreach($testimonials as $t)
+                <figure class="pj-quote pj-card">
+                    <span class="kind">{{ $t->kind === 'company' ? __('Partner Companies') : __('Students') }}</span>
+                    <blockquote>“{{ $t->t('quote') }}”</blockquote>
+                    <figcaption class="who">
+                        <span class="av">{{ Str::of($t->name)->substr(0, 1)->upper() }}</span>
+                        <span><b>{{ $t->name }}</b><span>{{ $t->t('role') }}</span></span>
+                    </figcaption>
+                </figure>
+            @endforeach
+        </div>
+    </div>
+</section>
+@endif
 
 {{-- ========== FAQ ========== --}}
-<section class="reveal min-h-screen flex flex-col justify-center py-20 bg-surface-900/40">
-    <div class="mx-auto max-w-3xl px-6">
-        <div class="text-center">
-            <p class="text-xs uppercase tracking-wider text-brand-400 font-semibold">{{ __('FAQ') }}</p>
-            <h2 class="mt-2 font-display text-3xl sm:text-4xl font-bold text-white">
-                <span class="text-brand-500">FAQ</span> ({{ __('Frequently Asked Questions') }})
-            </h2>
+<section class="pj-section pt-0!">
+    <div class="pj-wrap">
+        <div class="pj-head">
+            <h2><span class="jp">よくある質問</span>{{ __('Frequently Asked Questions') }}</h2>
         </div>
-
-        <div class="mt-10 space-y-3">
+        <div class="pj-faq">
             @foreach($faqs as $faq)
-                <details class="group glass-card p-5 transition">
-                    <summary class="flex items-center justify-between cursor-pointer list-none">
-                        <span class="font-semibold text-white">{{ Demo::pick($faq['q']) }}</span>
-                        <svg class="h-5 w-5 text-brand-400 transition group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                    </summary>
-                    <p class="mt-3 text-sm text-surface-400 leading-relaxed">{{ Demo::pick($faq['a']) }}</p>
+                <details class="pj-card">
+                    <summary>{{ $faq['q'] }}</summary>
+                    <p>{{ $faq['a'] }}</p>
                 </details>
             @endforeach
         </div>
     </div>
 </section>
 
-{{-- ========== GALLERY PREVIEW (album cards) ========== --}}
+</div>
+
 @php
-    $galleryAlbums = \App\Models\Gallery::published()
-        ->withCount(['publishedItems as items_count'])
-        ->having('items_count', '>', 0)
-        ->orderBy('sort_order')->orderByDesc('id')
-        ->limit(6)->get();
+    $homeJson = json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP);
 @endphp
-@if($galleryAlbums->isNotEmpty())
-<section class="reveal min-h-screen py-20 bg-surface-900/40">
-    <div class="mx-auto max-w-7xl px-6">
-        <div class="text-center max-w-2xl mx-auto">
-            <p class="text-xs uppercase tracking-wider text-brand-400 font-semibold">{{ __('Documentation') }}</p>
-            <h2 class="mt-2 font-display text-3xl sm:text-4xl font-bold text-white">{{ __('Gallery') }}</h2>
-            <p class="mt-3 text-surface-400">{{ __('Photos and videos from our trainings, events, and student journeys.') }}</p>
-        </div>
-
-        <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            @foreach($galleryAlbums as $album)
-                <a href="{{ route('gallery.show', $album->slug) }}" wire:navigate
-                   class="group glass-card overflow-hidden block hover:border-brand-500/50 transition">
-                    <div class="relative aspect-video bg-surface-900 overflow-hidden">
-                        @if($album->cover_url)
-                            <img src="{{ $album->cover_url }}" alt="{{ $album->t('title') ?? '' }}" loading="lazy"
-                                 class="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition duration-500">
-                        @else
-                            <div class="absolute inset-0 flex items-center justify-center text-surface-600">
-                                <svg class="h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                            </div>
-                        @endif
-                        <span class="absolute top-3 right-3 inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full bg-black/60 text-white backdrop-blur">
-                            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                            {{ $album->items_count }}
-                        </span>
-                    </div>
-                    <div class="p-5">
-                        <h3 class="font-display font-bold text-white group-hover:text-brand-400 transition">{{ $album->t('title') }}</h3>
-                        @if($album->t('caption'))
-                            <p class="mt-2 text-sm text-surface-400 line-clamp-2">{{ $album->t('caption') }}</p>
-                        @endif
-                    </div>
-                </a>
-            @endforeach
-        </div>
-
-        <div class="mt-10 text-center">
-            <a href="{{ route('gallery.index') }}" wire:navigate
-               class="btn-brand inline-flex items-center gap-2">
-                {{ __('See all') }}
-                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-            </a>
-        </div>
-    </div>
-</section>
-@endif
-
-{{-- ========== TESTIMONIALS ========== --}}
-<section class="reveal min-h-screen flex flex-col justify-center py-20">
-    <div class="mx-auto max-w-7xl px-6">
-        <div class="text-center max-w-2xl mx-auto">
-            <p class="text-xs uppercase tracking-wider text-brand-400 font-semibold">{{ __('Testimonials') }}</p>
-            <h2 class="mt-2 font-display text-3xl sm:text-4xl font-bold text-white">{{ __('What people say about us') }}</h2>
-        </div>
-
-        <div class="mt-12 grid gap-10 lg:grid-cols-2">
-            <div>
-                <h3 class="font-display text-xl font-semibold text-white mb-5">{{ __('Partner Companies') }}</h3>
-                <div class="space-y-4">
-                    @foreach($testimonials['company'] as $t)
-                        <div class="glass-card p-6">
-                            <p class="text-sm text-surface-200 leading-relaxed">&ldquo;{{ Demo::pick($t['quote']) }}&rdquo;</p>
-                            <div class="mt-4 flex items-center gap-3">
-                                <div class="h-10 w-10 rounded-full bg-gradient-to-br from-brand-600 to-brand-800 flex items-center justify-center font-bold text-white">{{ \Illuminate\Support\Str::of($t['name'])->substr(0,1)->upper() }}</div>
-                                <div>
-                                    <p class="text-sm font-semibold text-white">{{ $t['name'] }}</p>
-                                    <p class="text-xs text-surface-400">{{ Demo::pick($t['role']) }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-
-            <div>
-                <h3 class="font-display text-xl font-semibold text-white mb-5">{{ __('Students') }}</h3>
-                <div class="space-y-4">
-                    @foreach($testimonials['student'] as $t)
-                        <div class="glass-card p-6">
-                            <p class="text-sm text-surface-200 leading-relaxed">&ldquo;{{ Demo::pick($t['quote']) }}&rdquo;</p>
-                            <div class="mt-4 flex items-center gap-3">
-                                <div class="h-10 w-10 rounded-full bg-gradient-to-br from-brand-600 to-brand-800 flex items-center justify-center font-bold text-white">{{ \Illuminate\Support\Str::of($t['name'])->substr(0,1)->upper() }}</div>
-                                <div>
-                                    <p class="text-sm font-semibold text-white">{{ $t['name'] }}</p>
-                                    <p class="text-xs text-surface-400">{{ Demo::pick($t['role']) }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-{{-- ========== ALUR KERJA — per-visa slides ========== --}}
-@php
-    $badgeColors = [
-        'brand'   => ['bg' => 'bg-brand-600/15', 'text' => 'text-brand-300', 'border' => 'border-brand-500/30'],
-        'warning' => ['bg' => 'bg-amber-500/15', 'text' => 'text-amber-300', 'border' => 'border-amber-500/30'],
-        'info'    => ['bg' => 'bg-sky-500/15',   'text' => 'text-sky-300',   'border' => 'border-sky-500/30'],
-        'success' => ['bg' => 'bg-emerald-500/15','text'=> 'text-emerald-300','border'=> 'border-emerald-500/30'],
-    ];
-@endphp
-<section id="workflow" class="reveal min-h-screen flex flex-col justify-center py-20 bg-surface-900/40">
-    <div class="mx-auto max-w-7xl px-6">
-        <div class="text-center max-w-2xl mx-auto">
-            <p class="text-xs uppercase tracking-wider text-brand-400 font-semibold">{{ __('Process') }}</p>
-            <h2 class="mt-2 font-display text-3xl sm:text-4xl font-bold text-white">
-                {{ __('Alur Bekerja') }} <span class="text-brand-500">{{ __('Ke Jepang') }}</span>
-            </h2>
-            <p class="mt-3 text-surface-400">{{ __('Pilih jalur visa untuk melihat alur lengkapnya.') }}</p>
-        </div>
-
-        {{-- Tab nav --}}
-        <div class="mt-10 flex flex-wrap items-center justify-center gap-2" role="tablist" aria-label="{{ __('Visa workflow tabs') }}">
-            @foreach($visaWorkflows as $i => $vw)
-                <button type="button"
-                        data-workflow-tab="{{ $vw['slug'] }}"
-                        class="workflow-tab-btn px-5 py-2.5 rounded-xl border text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-brand-500/40
-                            {{ $i === 0
-                                ? 'bg-brand-600 border-brand-600 text-white shadow-lg shadow-brand-600/30'
-                                : 'border-surface-700 text-surface-300 hover:border-brand-500/50 hover:text-white' }}"
-                        role="tab"
-                        aria-selected="{{ $i === 0 ? 'true' : 'false' }}">
-                    {{ Demo::pick($vw['name']) }}
-                </button>
-            @endforeach
-        </div>
-
-        {{-- Slides --}}
-        <div class="mt-10">
-            @foreach($visaWorkflows as $i => $vw)
-                <div data-workflow-panel="{{ $vw['slug'] }}"
-                     role="tabpanel"
-                     class="workflow-panel {{ $i === 0 ? '' : 'hidden' }}">
-
-                    <p class="text-center text-surface-400 text-sm max-w-xl mx-auto mb-8">{{ Demo::pick($vw['tagline']) }}</p>
-
-                    <div class="grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-                        @foreach($vw['steps'] as $step)
-                            <div class="relative glass-card p-5 pt-8 hover:border-brand-500/40 transition group flex flex-col items-center text-center">
-                                {{-- Step number badge top-left --}}
-                                <div class="absolute -top-3 -left-3 h-9 w-9 rounded-xl bg-brand-600 flex items-center justify-center font-display font-bold text-white text-sm shadow-lg shadow-brand-600/40 group-hover:scale-110 transition">
-                                    {{ $step['n'] }}
-                                </div>
-
-                                {{-- Illustration: uploaded image > heroicon > generic placeholder --}}
-                                <div class="h-20 w-20 rounded-full overflow-hidden bg-gradient-to-br from-brand-600/20 to-surface-700/40 ring-2 ring-brand-500/20 flex items-center justify-center mb-4 group-hover:ring-brand-500/50 transition">
-                                    @if(! empty($step['icon_url']))
-                                        <img src="{{ $step['icon_url'] }}" alt="" class="h-full w-full object-cover">
-                                    @elseif(! empty($step['icon']))
-                                        @svg($step['icon'], 'h-10 w-10 text-brand-400')
-                                    @else
-                                        <svg class="h-10 w-10 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke-width="2"/></svg>
-                                    @endif
-                                </div>
-
-                                <h3 class="font-semibold text-white text-sm leading-snug min-h-[2.5rem]">{{ Demo::pick($step['title']) }}</h3>
-
-                                @if(! empty($step['badge']))
-                                    @php $c = $badgeColors[$step['badge']['color']] ?? $badgeColors['brand']; @endphp
-                                    <span class="mt-3 inline-block text-[10px] uppercase tracking-wider font-bold px-2 py-1 rounded-md border {{ $c['bg'] }} {{ $c['text'] }} {{ $c['border'] }}">
-                                        {{ Demo::pick($step['badge']['label']) }}
-                                    </span>
-                                @endif
-                            </div>
-                        @endforeach
-                    </div>
-
-                    @if(! empty($vw['notes']))
-                        <div class="mt-8 max-w-3xl mx-auto glass-card p-5 border-amber-500/30 bg-amber-500/[0.04]">
-                            <p class="text-xs uppercase tracking-wider text-amber-300 font-bold mb-3 flex items-center gap-2">
-                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                {{ __('Catatan Penting') }}
-                            </p>
-                            <ul class="space-y-2">
-                                @foreach($vw['notes'] as $note)
-                                    <li class="flex items-start gap-2 text-sm text-surface-200">
-                                        <span class="text-amber-400 mt-1">•</span>
-                                        <span>{{ Demo::pick($note) }}</span>
-                                    </li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-                </div>
-            @endforeach
-        </div>
-    </div>
-</section>
-
-@push('head')
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const tabs   = document.querySelectorAll('.workflow-tab-btn');
-    const panels = document.querySelectorAll('.workflow-panel');
-    const ACTIVE_CLASSES   = ['bg-brand-600','border-brand-600','text-white','shadow-lg','shadow-brand-600/30'];
-    const INACTIVE_CLASSES = ['border-surface-700','text-surface-300','hover:border-brand-500/50','hover:text-white'];
-
-    tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            const slug = tab.dataset.workflowTab;
-
-            tabs.forEach(t => {
-                const isActive = t === tab;
-                t.setAttribute('aria-selected', isActive ? 'true' : 'false');
-                ACTIVE_CLASSES.forEach(c => t.classList.toggle(c, isActive));
-                INACTIVE_CLASSES.forEach(c => t.classList.toggle(c, ! isActive));
-            });
-
-            panels.forEach(p => {
-                p.classList.toggle('hidden', p.dataset.workflowPanel !== slug);
-            });
-
-            // Smooth-scroll the section into view on small screens after switching
-            if (window.innerWidth < 768) {
-                document.getElementById('workflow')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        });
-    });
-});
-</script>
-@endpush
-
-{{-- CTA card lives in the global footer now (layouts/app.blade.php) so
-     scrolling past the workflow lands directly in the footer-with-CTA
-     view. The Workflow section above is the last snap target. --}}
-
-{{-- Audio player now lives in layouts/app.blade.php so every public page has it. --}}
-@if(false)
-    <audio id="pj-theme-audio" src="" loop preload="auto" aria-hidden="true"></audio>
-
-    {{-- Prominent floating speaker — pulses while muted to advertise the music --}}
-    <div class="fixed bottom-6 left-6 z-50 inline-flex items-center gap-3" id="pj-audio-wrap">
-        <button id="pj-audio-toggle"
-                type="button"
-                title="{{ __('Toggle background music') }}"
-                aria-label="{{ __('Toggle background music') }}"
-                class="relative inline-flex h-14 w-14 items-center justify-center rounded-full bg-brand-600 shadow-xl shadow-brand-600/40 hover:bg-brand-700 hover:shadow-brand-500/60 transition">
-            <svg class="audio-icon-on h-6 w-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
-            <svg class="audio-icon-off h-6 w-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15zM17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"/></svg>
-            <span class="audio-pulse absolute inset-0 rounded-full ring-2 ring-brand-500/70"></span>
-            <span class="audio-pulse audio-pulse-2 absolute inset-0 rounded-full ring-2 ring-brand-500/70"></span>
-        </button>
-        <span id="pj-audio-hint"
-              class="hidden md:inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-semibold text-white bg-surface-900/90 backdrop-blur border border-brand-500/40 shadow-lg whitespace-nowrap">
-            🎵 {{ __('Tap to enable music') }}
-        </span>
-    </div>
-
-    <style>
-        #pj-audio-toggle .audio-icon-on, #pj-audio-toggle .audio-icon-off { display: none; }
-        #pj-audio-toggle.is-playing .audio-icon-on  { display: block; }
-        #pj-audio-toggle:not(.is-playing) .audio-icon-off { display: block; }
-        /* Muted state: button breathes to draw attention */
-        #pj-audio-toggle:not(.is-playing) {
-            animation: pj-audio-breathe 1.6s ease-in-out infinite;
-        }
-        @keyframes pj-audio-breathe {
-            0%, 100% { transform: scale(1); }
-            50%      { transform: scale(1.1); }
-        }
-        /* Playing state: ripples emanate */
-        #pj-audio-toggle.is-playing .audio-pulse {
-            animation: pj-audio-ripple 1.8s ease-out infinite;
-        }
-        #pj-audio-toggle.is-playing .audio-pulse-2 { animation-delay: 0.6s; }
-        #pj-audio-toggle:not(.is-playing) .audio-pulse { display: none; }
-        @keyframes pj-audio-ripple {
-            0%   { transform: scale(1);    opacity: 0.7; }
-            100% { transform: scale(1.7);  opacity: 0; }
-        }
-        #pj-audio-hint {
-            opacity: 0;
-            transform: translateX(-8px);
-            transition: opacity 0.3s ease, transform 0.3s ease;
-            pointer-events: none;
-        }
-        #pj-audio-hint.is-visible { opacity: 1; transform: none; }
-    </style>
-
-    <script>
-        (function () {
-            var audio  = document.getElementById('pj-theme-audio');
-            var toggle = document.getElementById('pj-audio-toggle');
-            var hint   = document.getElementById('pj-audio-hint');
-            if (! audio || ! toggle) return;
-
-            // Saved preference: '1' = user wants muted, '0' = user wants playing.
-            var saved = null;
-            try { saved = localStorage.getItem('pj-audio-muted'); } catch (e) {}
-
-            // Try autoplay WITH SOUND first (works if user has prior site interaction).
-            // If browser blocks, fall back to muted autoplay + breathing button + hint.
-            audio.muted = saved === '1';
-            audio.play().catch(function () {
-                // Blocked → mute and try again
-                audio.muted = true;
-                audio.play().catch(function () {});
-                if (saved !== '1') showHint();
-            }).finally(updateUI);
-
-            // First user gesture: try to unmute (unless user has explicitly muted)
-            var unmuteOnce = function () {
-                if (saved !== '1' && audio.muted) {
-                    audio.muted = false;
-                    audio.play().then(updateUI).catch(function () {});
-                }
-                hideHint();
-                ['click','keydown','touchstart','wheel'].forEach(function (e) {
-                    window.removeEventListener(e, unmuteOnce);
-                });
-            };
-            ['click','keydown','touchstart','wheel'].forEach(function (e) {
-                window.addEventListener(e, unmuteOnce, { passive: true });
-            });
-
-            // Manual toggle button
-            toggle.addEventListener('click', function (ev) {
-                ev.stopPropagation();
-                audio.muted = ! audio.muted;
-                if (! audio.muted) audio.play().catch(function () {});
-                try { localStorage.setItem('pj-audio-muted', audio.muted ? '1' : '0'); } catch (e) {}
-                updateUI();
-                hideHint();
-            });
-
-            audio.addEventListener('play',  updateUI);
-            audio.addEventListener('pause', updateUI);
-
-            function updateUI () {
-                toggle.classList.toggle('is-playing', ! audio.muted && ! audio.paused);
-            }
-            function showHint () { if (hint) { hint.classList.add('is-visible'); setTimeout(hideHint, 6000); } }
-            function hideHint () { if (hint) hint.classList.remove('is-visible'); }
-        })();
-    </script>
-@endif
-
+<script type="application/json" id="pj-home-data">{!! $homeJson !!}</script>
 @endsection

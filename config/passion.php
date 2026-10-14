@@ -60,6 +60,38 @@ return [
     ],
 
     /*
+    | Japan's eight regions, used by the homepage job map / finder and the
+    | ?region= filter on /jobs. A vacancy's location_prefecture (or, when
+    | empty, location_city) is matched against these lists. `x`/`y` place
+    | the pin on the homepage map's 400×440 SVG; `airport` feeds the
+    | hero boarding pass.
+    */
+    'regions' => [
+        'hokkaido' => ['name' => 'Hokkaido', 'jp' => '北海道', 'x' => 330, 'y' => 64,  'airport' => ['CTS', 'Sapporo'],
+            'prefectures' => ['Hokkaido'], 'cities' => ['Sapporo', 'Asahikawa', 'Hakodate']],
+        'tohoku'   => ['name' => 'Tohoku',   'jp' => '東北',   'x' => 298, 'y' => 158, 'airport' => ['SDJ', 'Sendai'],
+            'prefectures' => ['Aomori', 'Iwate', 'Miyagi', 'Akita', 'Yamagata', 'Fukushima'], 'cities' => ['Sendai']],
+        'kanto'    => ['name' => 'Kanto',    'jp' => '関東',   'x' => 278, 'y' => 230, 'airport' => ['NRT', 'Tokyo'],
+            'prefectures' => ['Ibaraki', 'Tochigi', 'Gunma', 'Saitama', 'Chiba', 'Tokyo', 'Kanagawa'], 'cities' => ['Yokohama', 'Kawasaki', 'Chiba', 'Saitama']],
+        'chubu'    => ['name' => 'Chubu',    'jp' => '中部',   'x' => 234, 'y' => 258, 'airport' => ['NGO', 'Nagoya'],
+            'prefectures' => ['Niigata', 'Toyama', 'Ishikawa', 'Fukui', 'Yamanashi', 'Nagano', 'Gifu', 'Shizuoka', 'Aichi'], 'cities' => ['Nagoya', 'Hamamatsu', 'Toyota', 'Kanazawa']],
+        'kansai'   => ['name' => 'Kansai',   'jp' => '関西',   'x' => 190, 'y' => 290, 'airport' => ['KIX', 'Osaka'],
+            'prefectures' => ['Mie', 'Shiga', 'Kyoto', 'Osaka', 'Hyogo', 'Nara', 'Wakayama'], 'cities' => ['Kobe', 'Sakai', 'Himeji']],
+        'chugoku'  => ['name' => 'Chugoku',  'jp' => '中国',   'x' => 128, 'y' => 316, 'airport' => ['HIJ', 'Hiroshima'],
+            'prefectures' => ['Tottori', 'Shimane', 'Okayama', 'Hiroshima', 'Yamaguchi'], 'cities' => ['Kurashiki', 'Fukuyama']],
+        'shikoku'  => ['name' => 'Shikoku',  'jp' => '四国',   'x' => 164, 'y' => 352, 'airport' => ['TAK', 'Takamatsu'],
+            'prefectures' => ['Tokushima', 'Kagawa', 'Ehime', 'Kochi'], 'cities' => ['Takamatsu', 'Matsuyama']],
+        'kyushu'   => ['name' => 'Kyushu & Okinawa', 'jp' => '九州・沖縄', 'x' => 70, 'y' => 374, 'airport' => ['FUK', 'Fukuoka'],
+            'prefectures' => ['Fukuoka', 'Saga', 'Nagasaki', 'Kumamoto', 'Oita', 'Miyazaki', 'Kagoshima', 'Okinawa'], 'cities' => ['Kitakyushu', 'Naha']],
+    ],
+
+    /*
+    | Rough JPY→IDR rate for the "show salary in Rupiah" toggle. It is only
+    | an estimate and the UI labels it as such.
+    */
+    'jpy_to_idr' => (float) env('PASSION_JPY_TO_IDR', 105),
+
+    /*
     | Passion Japan Academy — the separate learning platform. Overridable
     | under Admin → Website Settings → Passion Japan Academy.
     */
