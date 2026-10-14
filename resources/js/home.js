@@ -322,6 +322,8 @@ function boot() {
     };
 }
 
-document.addEventListener('DOMContentLoaded', boot);
+// The module may run after DOMContentLoaded has already fired.
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+else boot();
 document.addEventListener('livewire:navigated', boot);
 document.addEventListener('livewire:navigating', () => { teardown?.(); teardown = null; });
