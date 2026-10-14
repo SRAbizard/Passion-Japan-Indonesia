@@ -478,6 +478,11 @@ body:has(.pj-auth) .fi-simple-main .fi-link { color: var(--pj-red) !important; f
     background-size: 100% 25%; transition: opacity .2s;
 }
 .pjm-bars.is-loading { opacity: .4; }
+.pjm-bars { position: relative; }
+.pjm-empty {
+    position: absolute; inset: 0; display: grid; place-items: center; text-align: center; padding: 1rem;
+    font-size: .85rem; font-weight: 600; opacity: .6; pointer-events: none;
+}
 .pjm-col { position: relative; height: 100%; display: flex; align-items: flex-end; justify-content: center; gap: 1px; cursor: default; }
 .pjm-col:hover { background: color-mix(in srgb, var(--pj-sakura) 45%, transparent); border-radius: 4px 4px 0 0; }
 .pjm-col i { display: block; width: 45%; max-width: 12px; height: max(var(--h), 2px); border-radius: 3px 3px 0 0; animation: pjm-rise .7s cubic-bezier(.2, .8, .2, 1) both; }

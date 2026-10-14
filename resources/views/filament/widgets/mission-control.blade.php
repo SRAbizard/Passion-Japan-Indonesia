@@ -130,6 +130,9 @@
                 <span><i class="regs"></i>{{ __('New candidates') }} · <b>{{ $chartTotals['regs'] }}</b></span>
             </div>
             <div class="pjm-bars" style="--n: {{ $chart->count() }}" wire:loading.class="is-loading">
+                @if(! $chartTotals['apps'] && ! $chartTotals['regs'])
+                    <p class="pjm-empty">{{ __('No applications or new candidates in this period. Try a longer range.') }}</p>
+                @endif
                 @foreach($chart as $i => $d)
                     <div class="pjm-col" @mouseenter="hover = {{ $i }}" @mouseleave="hover = null">
                         <i class="apps" style="--h: {{ $d['apps'] / $chartMax * 100 }}%"></i>
