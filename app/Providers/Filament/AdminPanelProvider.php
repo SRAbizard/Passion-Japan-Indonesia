@@ -47,16 +47,18 @@ class AdminPanelProvider extends PanelProvider
             // didn't match our translated nav-group labels reliably, and a
             // string-based navigationGroups() call would have to call __()
             // at panel-boot time (before the locale middleware runs).
-            ->userMenuItems(array_merge(
-                [
-                    MenuItem::make()
-                        ->label(__('Back to website'))
-                        ->url(fn () => url('/'))
-                        ->icon('heroicon-o-globe-alt')
-                        ->openUrlInNewTab(false),
-                ],
-                self::buildLocaleMenuItems()
-            ))
+            ->userMenuItems([
+                MenuItem::make()
+                    ->label(__('Back to website'))
+                    ->url(fn () => url('/'))
+                    ->icon('heroicon-o-globe-alt')
+                    ->openUrlInNewTab(false),
+            ])
+            // Language dropdown right after the global search.
+            ->renderHook(
+                PanelsRenderHook::GLOBAL_SEARCH_AFTER,
+                fn (): string => view('filament.partials.locale-switcher')->render(),
+            )
             ->databaseNotifications()
             ->databaseNotificationsPolling('60s')
             ->viteTheme('resources/css/filament/passion-theme.css')

@@ -40,15 +40,17 @@ class StudentPanelProvider extends PanelProvider
             ])
             ->defaultThemeMode(ThemeMode::Light)
             ->sidebarCollapsibleOnDesktop()
-            ->userMenuItems(array_merge(
-                [
-                    \Filament\Navigation\MenuItem::make()
-                        ->label(__('Back to website'))
-                        ->url(fn () => url('/'))
-                        ->icon('heroicon-o-globe-alt'),
-                ],
-                AdminPanelProvider::buildLocaleMenuItems()
-            ))
+            ->userMenuItems([
+                \Filament\Navigation\MenuItem::make()
+                    ->label(__('Back to website'))
+                    ->url(fn () => url('/'))
+                    ->icon('heroicon-o-globe-alt'),
+            ])
+            // Language dropdown right after the global search.
+            ->renderHook(
+                PanelsRenderHook::GLOBAL_SEARCH_AFTER,
+                fn (): string => view('filament.partials.locale-switcher')->render(),
+            )
             ->login()
             ->registration()
             ->passwordReset()
