@@ -98,7 +98,9 @@
         </div>
 
         <div class="fi-section rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10 p-5">
-            @php($japanese = $student->languages->first(fn ($l) => preg_match('/jap|jepang|日本/iu', $l->language)))
+            @php
+                $japanese = $student->languages->first(fn ($l) => preg_match('/jap|jepang|日本/iu', $l->language));
+            @endphp
             <p class="text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400">{{ __('Japanese level') }}</p>
             <p class="mt-1 text-2xl font-bold text-gray-950 dark:text-white">{{ $japanese?->proficiency ?: '—' }}</p>
             <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ __('From the language section of the profile') }}</p>
