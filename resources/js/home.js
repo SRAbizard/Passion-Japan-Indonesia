@@ -77,13 +77,14 @@ function boot() {
     on(window, 'pageshow', () => [fCat, fVisa, fRegion].forEach((s) => { if (s) s.disabled = false; }));
 
     /* ---------- hero slides (admin "Hero background slides") ---------- */
-    const slides = $$('[data-pj-slides] img');
-    if (slides.length > 1 && !reduce) {
-        let i = 0;
+    // Re-queried each tick: images that fail to load remove themselves.
+    if ($('[data-pj-slides]') && !reduce) {
         const id = setInterval(() => {
-            slides[i].classList.remove('is-on');
-            i = (i + 1) % slides.length;
-            slides[i].classList.add('is-on');
+            const imgs = $$('[data-pj-slides] img');
+            if (!imgs.length) return;
+            const cur = imgs.findIndex((img) => img.classList.contains('is-on'));
+            imgs[cur]?.classList.remove('is-on');
+            imgs[(cur + 1) % imgs.length].classList.add('is-on');
         }, 4500);
         cleanups.push(() => clearInterval(id));
     }

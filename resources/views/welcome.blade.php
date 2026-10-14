@@ -142,7 +142,7 @@
                 <div class="photo" data-depth="18">
                     <div class="frame" data-pj-slides>
                         @foreach($heroSlides as $i => $slide)
-                            <img src="{{ $slide['image'] }}" alt="" loading="{{ $i ? 'lazy' : 'eager' }}" class="{{ $i === 0 ? 'is-on' : '' }}">
+                            <img src="{{ $slide['image'] }}" alt="" loading="{{ $i ? 'lazy' : 'eager' }}" class="{{ $i === 0 ? 'is-on' : '' }}" onerror="this.remove()">
                         @endforeach
                     </div>
                 </div>
@@ -444,7 +444,7 @@
                     <div class="ph">
                         <span class="cnt">{{ trans_choice('{1} :count item|[2,*] :count items', $album->items_count, ['count' => $album->items_count]) }}</span>
                         @if($album->cover_url)
-                            <img src="{{ $album->cover_url }}" alt="" loading="lazy">
+                            <img src="{{ $album->cover_url }}" alt="" loading="lazy" onerror="this.remove()">
                         @endif
                     </div>
                     <p class="cap">{{ $album->t('title') }}@if($album->t('caption'))<small>{{ Str::limit($album->t('caption'), 70) }}</small>@endif</p>
@@ -463,7 +463,7 @@
         <div class="pj-head">
             <h2><span class="jp">みんなの声</span>{{ __('What people say about us') }}</h2>
         </div>
-        <div class="pj-notes-grid">
+        <div class="pj-notes-grid" style="--cols: {{ in_array($testimonials->count(), [2, 4]) ? 2 : 3 }}">
             @foreach($testimonials as $t)
                 <figure class="pj-quote pj-card">
                     <span class="kind">{{ $t->kind === 'company' ? __('Partner Companies') : __('Students') }}</span>

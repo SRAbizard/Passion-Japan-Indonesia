@@ -22,6 +22,9 @@ export default defineConfig({
                 bunny('Yomogi', {
                     weights: [400],
                 }),
+                bunny('Caveat', {
+                    weights: [500, 600],
+                }),
                 bunny('Instrument Sans', {
                     weights: [400, 500, 600],
                 }),

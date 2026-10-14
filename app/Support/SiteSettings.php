@@ -168,13 +168,14 @@ class SiteSettings
             return $defaults;
         }
 
-        // Fill up to 4 slots, falling back to defaults for empty slots.
+        // Fill up to 4 slots, falling back to defaults for empty slots
+        // (or for an uploaded file that is no longer on the disk).
         $out = [];
         for ($i = 0; $i < 4; $i++) {
             $slide     = $stored[$i] ?? null;
             $imagePath = $slide['image_path'] ?? null;
             $out[] = [
-                'image' => $imagePath
+                'image' => $imagePath && \Illuminate\Support\Facades\Storage::disk('public')->exists($imagePath)
                     ? asset('storage/'.$imagePath)
                     : $defaults[$i]['image'],
                 'color' => $defaults[$i]['color'],

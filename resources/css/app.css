@@ -11,7 +11,7 @@
     --font-sans: 'Plus Jakarta Sans', 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
     /* Chunky display face with Japanese glyphs — the "Misi ke Jepang" voice */
     --font-display: 'Dela Gothic One', 'Arial Black', 'Noto Sans JP', ui-sans-serif, sans-serif;
-    --font-hand: 'Yomogi', 'Comic Sans MS', cursive;
+    --font-hand: 'Caveat', 'Yomogi', 'Comic Sans MS', cursive;
 
     /* Passion Japan Indonesia — red ramp derived from #b32510 */
     --color-brand-50:  #fdf3f2;
@@ -541,16 +541,16 @@ html.light .pj-footer .text-white { color: #F5EDE0 !important; }
 .pj-polaroid .ph { position: relative; aspect-ratio: 4 / 3.4; max-width: 100%; border: 2px solid var(--pj-line); border-radius: 3px; overflow: hidden; background: linear-gradient(160deg, var(--pj-kin), var(--pj-red)); display: grid; place-items: center; }
 .pj-polaroid .ph img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .pj-polaroid .ph .cnt { position: absolute; right: 8px; top: 8px; font-size: .7rem; font-weight: 800; background: var(--pj-kami); color: var(--pj-ink); border: 2px solid var(--pj-line); border-radius: 999px; padding: .3rem .5rem; z-index: 1; }
-.pj-polaroid .cap { font-family: var(--font-hand); font-size: 1.35rem; line-height: 1.15; text-align: center; }
+.pj-polaroid .cap { font-family: var(--font-hand); font-size: 1.7rem; font-weight: 600; line-height: 1.1; text-align: center; }
 .pj-polaroid .cap small { display: block; font-family: var(--font-sans); font-size: .75rem; font-weight: 600; color: var(--pj-ink-soft); margin-top: .25rem; }
 
 /* testimonials as notes */
-.pj-notes-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.4rem; }
+.pj-notes-grid { display: grid; grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr)); gap: 1.4rem; }
 .pj-quote { padding: 1.25rem; display: grid; gap: .9rem; align-content: space-between; }
 .pj-quote:nth-child(3n+1) { transform: rotate(-1.2deg); }
 .pj-quote:nth-child(3n+2) { transform: rotate(.9deg); background: color-mix(in srgb, var(--pj-kin) 30%, var(--pj-kami)); }
 .pj-quote:nth-child(3n) { transform: rotate(-.5deg); background: color-mix(in srgb, var(--pj-sakura) 60%, var(--pj-kami)); }
-.pj-quote blockquote { margin: 0; font-family: var(--font-hand); font-size: 1.2rem; line-height: 1.45; }
+.pj-quote blockquote { margin: 0; font-family: var(--font-hand); font-size: 1.5rem; font-weight: 500; line-height: 1.3; }
 .pj-quote .who { display: flex; align-items: center; gap: .6rem; }
 .pj-quote .av { width: 40px; height: 40px; border-radius: 50%; border: 2.5px solid var(--pj-line); background: var(--pj-red); color: var(--pj-on-red); display: grid; place-items: center; font-family: var(--font-display); }
 .pj-quote .who b { display: block; font-size: .9rem; }
