@@ -37,7 +37,8 @@ class SampleMediaSeeder extends Seeder
     {
         $disk = Storage::disk('public');
         $this->latinFont = $this->firstExisting(['C:/Windows/Fonts/seguibl.ttf', 'C:/Windows/Fonts/arialbd.ttf', '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf']);
-        $this->jpFont = $this->firstExisting(['C:/Windows/Fonts/YuGothB.ttc', 'C:/Windows/Fonts/meiryob.ttc', 'C:/Windows/Fonts/msgothic.ttc']);
+        // GD renders Yu Gothic / MS Gothic .ttc files as tofu; these work.
+        $this->jpFont = $this->firstExisting(['C:/Windows/Fonts/BIZ-UDGothicB.ttc', 'C:/Windows/Fonts/NotoSansJP-VF.ttf', '/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc']);
 
         // 1. Remove every previous upload (keep the disk's .gitignore).
         foreach ($disk->directories() as $dir) {
@@ -129,7 +130,8 @@ class SampleMediaSeeder extends Seeder
         imagefill($img, 0, 0, $c[$bgKey]);
 
         // Faint grid.
-        $grid = imagecolorallocatealpha($img, 29, 23, 48, 118);
+        [$br, $bg, $bb] = self::PALETTE[$bgKey];
+        $grid = imagecolorallocate($img, (int) ($br * .92), (int) ($bg * .92), (int) ($bb * .92));
         for ($x = 0; $x < $w; $x += 48) imageline($img, $x, 0, $x, $h, $grid);
         for ($y = 0; $y < $h; $y += 48) imageline($img, 0, $y, $w, $y, $grid);
 
@@ -226,8 +228,11 @@ class SampleMediaSeeder extends Seeder
         $fs = max(18, (int) (54 * $s));
         $tagFs = max(10, (int) (20 * $s));
         $pad = (int) (28 * $s);
+        $tag = 'CONTOH · SAMPLE';
         $tw = $this->latinFont ? abs(imagettfbbox($fs, 0, $this->latinFont, $title)[2]) : strlen($title) * 9;
-        $boxW = max($tw, (int) (360 * $s)) + $pad * 2;
+        $tagW = $this->latinFont ? abs(imagettfbbox($tagFs, 0, $this->latinFont, $tag)[2]) : strlen($tag) * 9;
+        $jw = $this->jpFont ? abs(imagettfbbox($tagFs, 0, $this->jpFont, $jp)[2]) : 0;
+        $boxW = max($tw, $tagW + $jw + $pad) + $pad * 2;
         $boxH = $fs + $tagFs + $pad * 3;
         $off = (int) max(6, 12 * $s);
         $border = (int) max(3, 6 * $s);
@@ -235,7 +240,6 @@ class SampleMediaSeeder extends Seeder
         imagefilledrectangle($img, $x, $y, $x + $boxW, $y + $boxH, $c['ink']);
         imagefilledrectangle($img, $x + $border, $y + $border, $x + $boxW - $border, $y + $boxH - $border, $c['kami']);
 
-        $tag = 'CONTOH · SAMPLE';
         if ($this->latinFont) {
             imagettftext($img, $tagFs, 0, $x + $pad, $y + $pad + $tagFs, $c['red'], $this->latinFont, $tag);
             imagettftext($img, $fs, 0, $x + $pad, $y + $pad * 2 + $tagFs + $fs, $c['ink'], $this->latinFont, $title);
@@ -244,7 +248,7 @@ class SampleMediaSeeder extends Seeder
             imagestring($img, 5, $x + $pad, $y + $pad * 2 + 16, $title, $c['ink']);
         }
         if ($this->jpFont) {
-            imagettftext($img, $tagFs, 0, $x + $boxW - $pad - (int) (strlen($jp) / 3 * $tagFs * 1.1), $y + $pad + $tagFs, $c['ink'], $this->jpFont, $jp);
+            imagettftext($img, $tagFs, 0, $x + $boxW - $pad - $jw, $y + $pad + $tagFs, $c['ink'], $this->jpFont, $jp);
         }
     }
 
