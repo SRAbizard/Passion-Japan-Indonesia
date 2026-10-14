@@ -128,31 +128,4 @@ class AdminPanelProvider extends PanelProvider
                 Authenticate::class,
             ]);
     }
-
-    /**
-     * One MenuItem per supported locale. Clicking switches the locale in the
-     * session and redirects back to the admin page the user was on (LocaleController
-     * uses redirect()->back()). The currently active locale is marked.
-     *
-     * NOTE: url() and label() use Closures so that `route()` and `app()->getLocale()`
-     * are evaluated on render — at panel-boot time the route registry isn't built yet.
-     */
-    public static function buildLocaleMenuItems(): array
-    {
-        return collect(config('passion.locales', []))
-            ->map(function ($meta, $code) {
-                return MenuItem::make()
-                    ->label(function () use ($meta, $code) {
-                        $isActive = app()->getLocale() === $code;
-                        return ($meta['flag'] ?? '').' '
-                             .($meta['native'] ?? strtoupper($code))
-                             .($isActive ? '  ✓' : '');
-                    })
-                    ->icon(fn () => app()->getLocale() === $code ? 'heroicon-o-language' : null)
-                    ->color(fn () => app()->getLocale() === $code ? 'primary' : 'gray')
-                    ->url(fn () => route('locale.switch', $code));
-            })
-            ->values()
-            ->all();
-    }
 }
