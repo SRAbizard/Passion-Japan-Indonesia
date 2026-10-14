@@ -241,7 +241,7 @@ html.pj-intro::before {
     text-shadow: 5px 5px 0 var(--pj-beni); white-space: nowrap;
 }
 .pj-intro-name {
-    position: absolute; top: calc(100% + 1.4rem); display: flex; gap: .05em;
+    position: absolute; top: calc(100% + 1.4rem); left: 50%; translate: -50% 0; display: flex; gap: .05em;
     font-family: var(--font-display); font-size: min(7vmin, 44px); color: var(--pj-ink); white-space: nowrap;
 }
 .pj-intro-name span { display: inline-block; }
