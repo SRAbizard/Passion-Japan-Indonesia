@@ -16,7 +16,7 @@ class GalleryController extends Controller
         $albums = Gallery::published()
             ->withCount(['publishedItems as items_count'])
             ->with(['publishedItems' => fn ($q) => $q->limit(1)])  // for cover fallback
-            ->having('items_count', '>', 0)                         // hide empty albums
+            ->whereHas('publishedItems')                             // hide empty albums
             ->orderBy('sort_order')
             ->orderByDesc('taken_at')
             ->orderByDesc('id')

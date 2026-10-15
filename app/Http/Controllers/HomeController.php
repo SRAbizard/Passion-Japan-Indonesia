@@ -72,7 +72,7 @@ class HomeController extends Controller
             'testimonials'  => $testimonials,
             'albums'        => Gallery::published()
                 ->withCount(['publishedItems as items_count'])
-                ->having('items_count', '>', 0)
+                ->whereHas('publishedItems')
                 ->orderBy('sort_order')->orderByDesc('id')
                 ->limit(8)->get(),
             'heroSlides'    => SiteSettings::heroSlides(),
