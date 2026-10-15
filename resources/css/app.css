@@ -337,6 +337,17 @@ html.light .pj-footer .text-white { color: #F5EDE0 !important; }
 
 /* hero */
 .pj-hero { padding-block: clamp(24px, 4vw, 56px) clamp(48px, 7vw, 90px); position: relative; }
+/* Hero entrance: hidden from first paint so it never shows, vanishes and
+   re-animates. home.js adds html.pj-entered and animates it in; the
+   keyframe fallback reveals it anyway if JS never runs. */
+@media (prefers-reduced-motion: no-preference) {
+    html.pj-js:not(.pj-entered) .pj-hero :is(.pj-sticker, h1 .l, h1 .flag, .pj-lede, .pj-finder),
+    html.pj-js:not(.pj-entered) .pj-scene > * {
+        opacity: 0;
+        animation: pj-unhide 0s linear 4s forwards;
+    }
+}
+@keyframes pj-unhide { to { opacity: 1; } }
 .pj-hero canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
 .pj-hero-grid { position: relative; z-index: 1; display: grid; grid-template-columns: 1.15fr .85fr; gap: clamp(28px, 4vw, 56px); align-items: center; }
 .pj-hero-copy { min-width: 0; display: grid; gap: 1.4rem; justify-items: start; }

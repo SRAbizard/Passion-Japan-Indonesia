@@ -316,26 +316,39 @@ function boot() {
     updateFinder(false);
 
     /* ---------- hero entrance (every homepage visit) ---------- */
-    if (!reduce) {
-        const enter = () => ctx.add(() => {
-            const tl = gsap.timeline({ defaults: { ease: 'back.out(1.7)' } });
-            tl.from('.pj-hero .pj-sticker', { y: -40, rotate: -18, opacity: 0, duration: 0.5 })
-                .from('.pj-hero h1 .l', { yPercent: 80, opacity: 0, duration: 0.55, stagger: 0.1, ease: 'power3.out' }, '-=0.25')
-                .from('.pj-hero h1 .flag', { scale: 1.8, rotate: -14, opacity: 0, duration: 0.4, ease: 'power4.in' }, '-=0.15')
-                .from('.pj-hero .pj-lede', { y: 16, opacity: 0, duration: 0.4, ease: 'power2.out' }, '-=0.1')
-                .from('.pj-hero .pj-finder', { y: 50, opacity: 0, duration: 0.6 }, '-=0.25')
-                .from('.pj-scene .sun', { scale: 0, duration: 0.7 }, 0.15)
-                .from('.pj-scene .fuji', { yPercent: 40, opacity: 0, duration: 0.6, ease: 'power3.out' }, 0.35)
-                .from('.pj-scene .cloud.c1', { x: 120, opacity: 0, duration: 0.8, ease: 'power2.out' }, 0.5)
-                .from('.pj-scene .cloud.c2', { x: -120, opacity: 0, duration: 0.8, ease: 'power2.out' }, 0.55)
-                .from('.pj-scene .crane', { x: -160, y: 80, rotate: -25, opacity: 0, duration: 0.9, ease: 'power2.out' }, 0.6)
-                .from('.pj-scene .photo', { y: -120, rotate: 30, opacity: 0, duration: 0.7 }, 0.7)
-                .from('.pj-pass', { x: 220, rotate: 14, opacity: 0, duration: 0.7 }, 0.8);
-            // Hand the inline transforms back to the stylesheet afterwards.
-            tl.eventCallback('onComplete', () => gsap.set('.pj-hero .pj-sticker, .pj-hero h1 .l, .pj-hero h1 .flag, .pj-hero .pj-finder, .pj-scene > *', { clearProps: 'transform,opacity' }));
-        });
-        const html = document.documentElement;
+    const html = document.documentElement;
+    if (reduce) {
+        html.classList.add('pj-entered');
+    } else {
+        let entered = false;
+        const enter = () => {
+            if (entered) return;
+            entered = true;
+            ctx.add(() => {
+                // The CSS keeps the hero hidden until .pj-entered; adding it in
+                // the same task as the from() tweens means no frame shows the
+                // hero before the tweens take over.
+                html.classList.add('pj-entered');
+                const tl = gsap.timeline({ defaults: { ease: 'back.out(1.7)' } });
+                tl.from('.pj-hero .pj-sticker', { y: -30, rotate: -18, opacity: 0, duration: 0.35 }, 0)
+                    .from('.pj-hero h1 .l', { yPercent: 70, opacity: 0, duration: 0.45, stagger: 0.07, ease: 'power3.out' }, 0.05)
+                    .from('.pj-hero h1 .flag', { scale: 1.7, rotate: -14, opacity: 0, duration: 0.3, ease: 'power4.in' }, 0.3)
+                    .from('.pj-hero .pj-lede', { y: 14, opacity: 0, duration: 0.3, ease: 'power2.out' }, 0.45)
+                    .from('.pj-hero .pj-finder', { y: 40, opacity: 0, duration: 0.45 }, 0.5)
+                    .from('.pj-scene .sun', { scale: 0, duration: 0.55 }, 0.05)
+                    .from('.pj-scene .fuji', { yPercent: 35, opacity: 0, duration: 0.45, ease: 'power3.out' }, 0.2)
+                    .from('.pj-scene .cloud.c1', { x: 100, opacity: 0, duration: 0.6, ease: 'power2.out' }, 0.3)
+                    .from('.pj-scene .cloud.c2', { x: -100, opacity: 0, duration: 0.6, ease: 'power2.out' }, 0.32)
+                    .from('.pj-scene .crane', { x: -140, y: 70, rotate: -25, opacity: 0, duration: 0.7, ease: 'power2.out' }, 0.35)
+                    .from('.pj-scene .photo', { y: -100, rotate: 30, opacity: 0, duration: 0.55 }, 0.4)
+                    .from('.pj-pass', { x: 200, rotate: 14, opacity: 0, duration: 0.55 }, 0.45);
+                // Hand the inline transforms back to the stylesheet afterwards.
+                tl.eventCallback('onComplete', () => gsap.set('.pj-hero .pj-sticker, .pj-hero h1 .l, .pj-hero h1 .flag, .pj-hero .pj-lede, .pj-hero .pj-finder, .pj-scene > *', { clearProps: 'transform,opacity' }));
+            });
+        };
         if (html.dataset.pjIntro === 'running' || html.classList.contains('pj-intro')) {
+            // Start as the intro sheet begins to lift, not after it is gone.
+            on(document, 'pj:intro-exit', enter, { once: true });
             on(document, 'pj:intro-done', enter, { once: true });
         } else {
             enter();

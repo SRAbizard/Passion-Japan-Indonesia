@@ -44,11 +44,13 @@ export function runIntro() {
         .from('.pj-intro-name span', { y: 30, opacity: 0, duration: 0.35, stagger: 0.03, ease: 'back.out(2)' }, '-=0.1')
         .from('.pj-intro-hanko', { scale: 2.2, opacity: 0, rotate: 30, duration: 0.3, ease: 'power4.in' }, '-=0.2')
         .to('.pj-intro-hanko', { rotate: -14, duration: 0.15 })
-        .to(layer, { yPercent: -110, duration: 0.75, ease: 'power4.inOut' }, '+=0.35');
+        .add(() => document.dispatchEvent(new CustomEvent('pj:intro-exit')), '+=0.35')
+        .to(layer, { yPercent: -110, duration: 0.75, ease: 'power4.inOut' }, '<');
 
     // Skip: jump to the exit.
     layer.addEventListener('click', () => {
-        if (tl.progress() < 0.8) tl.seek(tl.duration() - 0.75);
+        // suppressEvents=false so the pj:intro-exit callback still fires.
+        if (tl.progress() < 0.8) tl.seek(tl.duration() - 0.75, false);
     }, { once: true });
 
     // If animation frames are throttled (background tab), don't block the page.
