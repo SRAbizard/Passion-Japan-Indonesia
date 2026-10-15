@@ -14,8 +14,17 @@
         (function () {
             var html = document.documentElement;
             html.classList.add('pj-js');
+            // One theme for the website and both Filament panels: Filament
+            // stores light|dark|system under "theme"; "pj-theme" is the
+            // site's older key, used only when "theme" was never set.
+            window.pjIsDark = function () {
+                var t = null;
+                try { t = localStorage.getItem('theme') || localStorage.getItem('pj-theme'); } catch (e) {}
+                if (t === 'system') return matchMedia('(prefers-color-scheme: dark)').matches;
+                return t === 'dark';
+            };
             try {
-                if (localStorage.getItem('pj-theme') === 'dark') { html.classList.remove('light'); html.classList.add('dark'); }
+                if (window.pjIsDark()) { html.classList.remove('light'); html.classList.add('dark'); }
                 // First visit this session → washi cover until resources/js/intro.js takes over.
                 if (! sessionStorage.getItem('pj-intro-seen') && ! matchMedia('(prefers-reduced-motion: reduce)').matches) html.classList.add('pj-intro');
             } catch (e) {}
@@ -310,8 +319,7 @@
         // from the server), so re-apply the saved theme right after the
         // swap — before paint — and again once navigation finishes.
         function pjApplyTheme () {
-            var html = document.documentElement, dark = false;
-            try { dark = localStorage.getItem('pj-theme') === 'dark'; } catch (err) {}
+            var html = document.documentElement, dark = window.pjIsDark ? window.pjIsDark() : false;
             html.classList.toggle('dark', dark);
             html.classList.toggle('light', ! dark);
             html.classList.add('pj-js');
@@ -329,7 +337,11 @@
             var goingDark = ! html.classList.contains('dark');
             html.classList.toggle('dark', goingDark);
             html.classList.toggle('light', ! goingDark);
-            try { localStorage.setItem('pj-theme', goingDark ? 'dark' : 'light'); } catch (err) {}
+            // Write both keys so the admin/student dashboards follow too.
+            try {
+                localStorage.setItem('theme', goingDark ? 'dark' : 'light');
+                localStorage.setItem('pj-theme', goingDark ? 'dark' : 'light');
+            } catch (err) {}
         });
 
         // ─── Reveal-on-scroll (IntersectionObserver) ─────────────────
