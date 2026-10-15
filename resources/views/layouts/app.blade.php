@@ -300,8 +300,27 @@
 
 @livewireScripts
 
-<script>
+{{-- data-navigate-once: wire:navigate re-runs body scripts on every page
+     swap, which would stack a second click listener (one click → two
+     toggles → no change). Everything below re-binds itself on navigation. --}}
+<script data-navigate-once>
     (function () {
+        // ─── Theme persistence across wire:navigate ──────────────────
+        // Livewire copies the new page's <html> attributes (class="light"
+        // from the server), so re-apply the saved theme right after the
+        // swap — before paint — and again once navigation finishes.
+        function pjApplyTheme () {
+            var html = document.documentElement, dark = false;
+            try { dark = localStorage.getItem('pj-theme') === 'dark'; } catch (err) {}
+            html.classList.toggle('dark', dark);
+            html.classList.toggle('light', ! dark);
+            html.classList.add('pj-js');
+        }
+        document.addEventListener('livewire:navigating', function (e) {
+            if (e.detail && typeof e.detail.onSwap === 'function') e.detail.onSwap(pjApplyTheme);
+        });
+        document.addEventListener('livewire:navigated', pjApplyTheme);
+
         // ─── Theme toggle ────────────────────────────────────────────
         // Bound by delegation so it keeps working after wire:navigate swaps.
         document.addEventListener('click', function (e) {
