@@ -13,8 +13,8 @@
     'description' => $post->t('excerpt'),
     'datePublished' => optional($post->published_at)->toAtomString(),
     'author' => ['@type' => 'Person', 'name' => $post->author?->name ?? 'Passion Japan'],
-    'image' => $post->thumbnail_url ?: asset('images/logo.png'),
-    'publisher' => ['@type' => 'Organization', 'name' => 'Passion Japan Indonesia', 'logo' => ['@type' => 'ImageObject', 'url' => asset('images/logo.png')]],
+    'image' => $post->thumbnail_url ?: asset('images/logo-full.png'),
+    'publisher' => ['@type' => 'Organization', 'name' => 'Passion Japan Indonesia', 'logo' => ['@type' => 'ImageObject', 'url' => asset('images/logo-full.png')]],
 ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
 </script>
 @endpush

@@ -28,9 +28,9 @@ class StudentPanelProvider extends PanelProvider
             ->id('student')
             ->path('dashboard')
             ->brandName('Passion Japan Indonesia')
-            ->brandLogo(fn () => file_exists(public_path('images/logo.png')) ? asset('images/logo.png') : null)
+            ->brandLogo(fn () => view('filament.partials.brand-logo'))
             ->brandLogoHeight('2rem')
-            ->favicon(asset('images/logo.png'))
+            ->favicon(asset('images/favicon-32.png'))
             ->colors([
                 'primary' => Color::hex('#b32510'),
                 'danger'  => Color::Rose,

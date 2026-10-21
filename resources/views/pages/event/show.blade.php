@@ -15,7 +15,7 @@
     'endDate' => optional($event->ends_at)->toAtomString(),
     'location' => ['@type' => 'Place', 'name' => $event->t('location')],
     'organizer' => ['@type' => 'Organization', 'name' => $event->t('organizer')],
-    'image' => $event->image_url ?: asset('images/logo.png'),
+    'image' => $event->image_url ?: asset('images/logo-full.png'),
 ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
 </script>
 @endpush

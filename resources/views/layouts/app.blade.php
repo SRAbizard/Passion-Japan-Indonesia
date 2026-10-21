@@ -5,7 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="description" content="@yield('meta_description', __('Japan Career, Recruitment & Internship Platform'))">
-    <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
+    {{-- Tab icon: the PJi mark without the white outline. --}}
+    <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/favicon-32.png') }}">
+    <link rel="icon" type="image/png" sizes="192x192" href="{{ asset('images/favicon-192.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/apple-touch-icon.png') }}">
     <link rel="canonical" href="{{ url()->current() }}">
 
     {{-- Theme: washi (light) is the default; apply a saved "dark" choice
@@ -45,7 +49,7 @@
     <meta property="og:locale" content="{{ str_replace('-', '_', app()->getLocale()) }}">
     <meta property="og:title" content="@yield('og_title', __('Passion Japan Indonesia'))">
     <meta property="og:description" content="@yield('og_description', __('Japan Career, Recruitment & Internship Platform'))">
-    <meta property="og:image" content="{{ asset('images/logo.png') }}">
+    <meta property="og:image" content="{{ asset('images/logo-full.png') }}">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta name="twitter:card" content="summary_large_image">
 
@@ -73,7 +77,7 @@
     <div class="mx-auto max-w-7xl px-4 sm:px-6">
         <nav class="pj-navbar" aria-label="{{ __('Main') }}">
             <a href="{{ url('/') }}" wire:navigate class="flex items-center shrink-0">
-                <img src="{{ asset('images/logo.png') }}" alt="Passion Japan Indonesia" class="h-8 sm:h-9 w-auto"
+                <img src="{{ asset('images/logo-mark.png') }}" alt="Passion Japan Indonesia" class="h-10 sm:h-11 w-auto select-none" draggable="false"
                      onerror="this.outerHTML='<span class=\'font-display text-lg text-brand-600\'>Passion Japan</span>';">
             </a>
 
@@ -235,9 +239,7 @@
     <div class="pj-footer">
         <div class="mx-auto max-w-7xl px-6 py-14 grid gap-10 md:grid-cols-2 lg:grid-cols-4">
             <div>
-                <div class="inline-block rounded-xl bg-[#FFFAF2] px-3 py-2 mb-4">
-                    <img src="{{ asset('images/logo.png') }}" alt="Passion Japan Indonesia" class="h-8 w-auto">
-                </div>
+                <img src="{{ asset('images/logo-full.png') }}" alt="Passion Japan Indonesia" class="h-32 w-auto mb-4 -ml-2 select-none" draggable="false">
                 <p class="text-sm leading-relaxed opacity-80">{{ __('Official job matching for Indonesian workers in Japan, from your application to your first day at work.') }}</p>
                 <div class="mt-5 flex items-center gap-3">
                     <a href="{{ \App\Support\SiteSettings::social('instagram') }}" target="_blank" rel="noopener" aria-label="Instagram" class="opacity-80 hover:opacity-100 transition">
