@@ -53,6 +53,8 @@ In order to ensure that the Laravel community is welcoming to all, please review
 
 If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
 
-## License
+## Hak Cipta
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+© 2026 PT. Passion Japan Indonesia. Seluruh hak cipta dilindungi.
+Kode sumber dan konten website ini milik PT. Passion Japan Indonesia dan tidak boleh disalin, disebarkan, atau digunakan tanpa izin tertulis.
+Website ini dibangun dengan framework Laravel (lisensi MIT).

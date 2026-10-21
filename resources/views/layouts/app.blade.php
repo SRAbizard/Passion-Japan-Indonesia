@@ -297,7 +297,7 @@
         </div>
         <div class="border-t border-white/10">
             <div class="mx-auto max-w-7xl px-6 py-5 text-xs opacity-70">
-                <p>&copy; {{ date('Y') }} Passion Japan Indonesia. {{ __('All rights reserved.') }}</p>
+                <p>&copy; {{ date('Y') }} PT. Passion Japan Indonesia. {{ __('All rights reserved.') }}</p>
             </div>
         </div>
     </div>
