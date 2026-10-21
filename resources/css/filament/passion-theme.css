@@ -361,6 +361,9 @@ body:has(.pj-auth) .fi-simple-main .fi-link { color: var(--pj-red) !important; f
    lockup on auth pages. */
 .pj-brand-mark { height: 2.6rem; width: auto; max-width: none; user-select: none; }
 .pj-brand-full { height: 7.5rem; width: auto; max-width: 100%; margin-inline: auto; user-select: none; }
+/* Filament pins the logo box to brandLogoHeight (2rem); let the full
+   lockup set its own height on the auth pages. */
+.fi-logo:has(> .pj-brand-full) { height: auto !important; margin-bottom: .5rem; }
 
 /* Topbar language dropdown (partials/locale-switcher) */
 .pj-locale-trigger {

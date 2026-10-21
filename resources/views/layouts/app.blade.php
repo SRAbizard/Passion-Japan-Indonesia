@@ -239,7 +239,7 @@
     <div class="pj-footer">
         <div class="mx-auto max-w-7xl px-6 py-14 grid gap-10 md:grid-cols-2 lg:grid-cols-4">
             <div>
-                <img src="{{ asset('images/logo-full.png') }}" alt="Passion Japan Indonesia" class="h-32 w-auto mb-4 -ml-2 select-none" draggable="false">
+                <img src="{{ asset('images/logo-full.png') }}" alt="Passion Japan Indonesia" class="h-36 w-auto mb-4 -ml-2 select-none" draggable="false">
                 <p class="text-sm leading-relaxed opacity-80">{{ __('Official job matching for Indonesian workers in Japan, from your application to your first day at work.') }}</p>
                 <div class="mt-5 flex items-center gap-3">
                     <a href="{{ \App\Support\SiteSettings::social('instagram') }}" target="_blank" rel="noopener" aria-label="Instagram" class="opacity-80 hover:opacity-100 transition">
