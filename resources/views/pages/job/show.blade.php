@@ -108,7 +108,8 @@
 
         {{-- Apply card --}}
         <aside class="lg:col-span-1">
-            <div class="glass-card p-6 sticky top-24">
+            <div class="sticky top-24 grid gap-5">
+            <div class="glass-card p-6">
                 @auth
                     @php($currentUser = auth()->user())
                     @if($currentUser->hasRole('student'))
@@ -149,6 +150,8 @@
                         <a href="/dashboard/login" class="btn-ghost text-sm w-full text-center">{{ __('Already have an account? Login') }}</a>
                     </div>
                 @endauth
+            </div>
+            <x-fraud-notice compact />
             </div>
         </aside>
     </div>

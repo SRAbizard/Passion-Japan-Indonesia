@@ -263,6 +263,7 @@
                     <li><a href="{{ route('job.index') }}" wire:navigate>{{ __('Job Vacancies') }}</a></li>
                     <li><a href="{{ route('services') }}" wire:navigate>{{ __('Services') }}</a></li>
                     <li><a href="{{ route('employers') }}" wire:navigate>{{ __('For Employers') }}</a></li>
+                    <li><a href="{{ route('fees') }}" wire:navigate>{{ __('Programme Fees') }}</a></li>
                     @if($academyUrl)
                         <li><a href="{{ $academyUrl }}" target="_blank" rel="noopener">{{ __('E-Learning') }} ↗</a></li>
                     @endif
@@ -301,7 +302,14 @@
         </div>
         <div class="border-t border-white/10">
             <div class="mx-auto max-w-7xl px-6 py-5 text-xs opacity-70">
-                <p>&copy; {{ date('Y') }} PT. Passion Japan Indonesia. {{ __('All rights reserved.') }}</p>
+                <div class="flex flex-wrap items-center justify-between gap-x-6 gap-y-2">
+                    <p>&copy; {{ date('Y') }} PT. Passion Japan Indonesia. {{ __('All rights reserved.') }}</p>
+                    <nav class="flex flex-wrap gap-x-4 gap-y-1" aria-label="{{ __('Legal') }}">
+                        <a href="{{ route('legal.privacy') }}" wire:navigate>{{ __('Privacy Policy') }}</a>
+                        <a href="{{ route('legal.terms') }}" wire:navigate>{{ __('Terms & Conditions') }}</a>
+                        <a href="{{ route('fees') }}#waspada" wire:navigate>{{ __('Beware of fraud') }}</a>
+                    </nav>
+                </div>
                 @if($songCredit = \App\Support\SiteSettings::themeAudioCredit())
                     <p class="mt-1 opacity-70">{{ __('Music') }}: {{ $songCredit }}</p>
                 @endif

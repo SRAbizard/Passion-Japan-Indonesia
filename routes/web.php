@@ -34,6 +34,10 @@ Route::post('for-employers', [\App\Http\Controllers\EmployerController::class, '
     ->middleware('throttle:5,1')
     ->name('employers.store');
 
+Route::get('privacy-policy', [\App\Http\Controllers\LegalController::class, 'privacy'])->name('legal.privacy');
+Route::get('terms',          [\App\Http\Controllers\LegalController::class, 'terms'])->name('legal.terms');
+Route::get('fees',           [\App\Http\Controllers\LegalController::class, 'fees'])->name('fees');
+
 Route::get('gallery',         [\App\Http\Controllers\GalleryController::class, 'index'])->name('gallery.index');
 Route::get('gallery/{slug}',  [\App\Http\Controllers\GalleryController::class, 'show'])->name('gallery.show');
 

@@ -78,7 +78,7 @@
                 </label>
 
                 <div class="flex items-center justify-between flex-wrap gap-3">
-                    <p class="text-xs text-surface-500">{{ __('By submitting, you agree to our Privacy Policy.') }}</p>
+                    <p class="text-xs text-surface-500">{!! __('By submitting, you agree to our :link.', ['link' => '<a href="'.e(route('legal.privacy')).'" class="underline">'.e(__('Privacy Policy')).'</a>']) !!}</p>
                     <button type="submit" class="btn-brand">
                         {{ __('Send message') }}
                         <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>

@@ -52,7 +52,7 @@ class StudentPanelProvider extends PanelProvider
                 fn (): string => view('filament.partials.locale-switcher')->render(),
             )
             ->login()
-            ->registration()
+            ->registration(\App\Filament\Auth\Register::class)
             ->passwordReset()
             ->emailVerification()
             ->profile(isSimple: false)

@@ -752,3 +752,34 @@ html.dark .pj-gallery { --pj-seigaiha: url("data:image/svg+xml,%3Csvg xmlns='htt
 .prose blockquote { border-left: 4px solid var(--pj-red); padding: .2em 0 .2em 1em; font-style: italic; }
 .prose img { display: block; width: 100%; height: auto; border: 2.5px solid var(--pj-line); border-radius: 14px; box-shadow: 4px 4px 0 var(--pj-shadow-c); }
 .prose hr { border: 0; border-top: 2px dashed color-mix(in srgb, var(--pj-ink) 25%, transparent); margin-block: 2em; }
+
+/* Anti-fraud notice (x-fraud-notice) */
+.pj-fraud {
+    display: grid; gap: 1rem; padding: clamp(18px, 3vw, 28px);
+    background: color-mix(in srgb, var(--pj-kin) 22%, var(--pj-kami)); color: var(--pj-ink);
+    border: 3px solid var(--pj-line); border-radius: 18px; box-shadow: 6px 6px 0 var(--pj-shadow-c);
+    scroll-margin-top: 7rem;
+}
+.pj-fraud-head { display: flex; gap: .9rem; align-items: center; }
+.pj-fraud-icon { flex: none; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--pj-red); color: var(--pj-on-red); border: 2.5px solid var(--pj-line); }
+.pj-fraud-icon svg { width: 26px; height: 26px; }
+.pj-fraud-title { font-family: var(--font-display); font-size: 1.35rem; line-height: 1.1; }
+.pj-fraud-title .jp { font-family: var(--font-sans); font-size: .75rem; font-weight: 800; color: var(--pj-red); margin-left: .35rem; }
+.pj-fraud-sub { font-size: .9rem; opacity: .8; margin-top: .2rem; }
+.pj-fraud-list { display: grid; gap: .5rem; padding-left: 0; list-style: none; }
+.pj-fraud-list li { position: relative; padding-left: 1.6rem; font-size: .95rem; line-height: 1.5; }
+.pj-fraud-list li::before { content: "!"; position: absolute; left: 0; top: .1rem; width: 1.15rem; height: 1.15rem; border-radius: 50%; background: var(--pj-red); color: var(--pj-on-red); font-size: .72rem; font-weight: 900; display: grid; place-items: center; }
+.pj-fraud-channels { display: flex; flex-wrap: wrap; gap: .4rem .5rem; align-items: center; font-size: .82rem; padding-top: .8rem; border-top: 2px dashed color-mix(in srgb, var(--pj-ink) 25%, transparent); }
+.pj-fraud-channels a { padding: .25rem .6rem; border: 2px solid var(--pj-line); border-radius: 999px; background: var(--pj-kami); }
+.pj-fraud-channels a:hover { background: var(--pj-sakura); }
+.pj-fraud-more { font-weight: 800; font-size: .88rem; color: var(--pj-red); }
+.pj-fraud.is-compact { gap: .75rem; padding: 16px; box-shadow: 4px 4px 0 var(--pj-shadow-c); }
+.pj-fraud.is-compact .pj-fraud-title { font-size: 1.1rem; }
+.pj-fraud.is-compact .pj-fraud-list li { font-size: .84rem; }
+
+/* Programme fee table */
+.pj-fee-table { overflow-x: auto; }
+.pj-fee-table table { width: 100%; border-collapse: collapse; min-width: 520px; }
+.pj-fee-table th { text-align: left; font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; padding: .9rem 1rem; background: var(--pj-red); color: var(--pj-on-red); }
+.pj-fee-table td { padding: .9rem 1rem; border-top: 2px dashed color-mix(in srgb, var(--pj-ink) 18%, transparent); vertical-align: top; }
+.pj-fee-table tr:first-child td { border-top: 0; }
