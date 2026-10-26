@@ -287,7 +287,11 @@ html.light .pj-footer .text-white { color: #F5EDE0 !important; }
 /* Page hero (inner pages) */
 .pj-page-hero { position: relative; overflow: hidden; isolation: isolate; }
 .pj-page-hero h1 { text-shadow: 4px 4px 0 var(--pj-sakura); }
-.pj-page-hero .pj-hero-art { position: absolute; z-index: -1; right: 0; bottom: 0; width: min(640px, 58vw); height: auto; max-height: 100%; }
+.pj-page-hero .pj-hero-art {
+    position: absolute; z-index: -1; right: 0; bottom: 0; width: min(640px, 58vw); height: auto; max-height: 100%;
+    /* soften the left edge where the hills are cut off */
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 20%); mask-image: linear-gradient(90deg, transparent, #000 20%);
+}
 @media (max-width: 760px) { .pj-page-hero .pj-hero-art { width: 92vw; opacity: .3; } }
 
 /* ────────────────────────────────────────────────────────────────────
