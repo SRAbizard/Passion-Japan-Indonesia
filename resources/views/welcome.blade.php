@@ -70,7 +70,7 @@
                         <select id="pj-f-region" name="region">
                             <option value="">{{ __('All of Japan') }}</option>
                             @foreach($regions as $r)
-                                <option value="{{ $r['key'] }}">{{ $r['name'] }} · {{ $r['jp'] }}</option>
+                                <option value="{{ $r['key'] }}">{{ $r['name'] }}</option>
                             @endforeach
                         </select>
                     </div>

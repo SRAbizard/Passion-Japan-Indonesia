@@ -8,16 +8,12 @@
 
 {{--
     Reusable hero band for internal pages, in the "Misi ke Jepang" style:
-    washi paper, a hinomaru sun with a hard ink shadow, a Fuji line
-    drawing, falling sakura, and a chunky title. Pass eyebrow / title /
+    washi paper, a Japan scene (sun, Fuji, clouds, pagoda, sakura branch),
+    falling sakura, and a chunky title. Pass eyebrow / title /
     subtitle as attributes; anything in the slot renders under the title.
 --}}
 <section {{ $attributes->class(['pj-page-hero', $minH]) }}>
-    <div class="pj-sun" aria-hidden="true"></div>
-    <svg class="pj-fuji" viewBox="0 0 560 170" aria-hidden="true">
-        <path d="M0 170 L190 52 Q214 34 232 33 L296 33 Q316 34 340 52 L560 170 Z" fill="#2B4795" stroke="var(--pj-line)" stroke-width="3" stroke-linejoin="round"/>
-        <path d="M206 46 Q220 34 234 33 L294 33 Q308 34 322 46 L306 58 L292 47 L278 61 L265 47 L251 60 L236 48 Z" fill="#FFFAF2" stroke="var(--pj-line)" stroke-width="3" stroke-linejoin="round"/>
-    </svg>
+    <x-jp.hero-art />
 
     <x-jp.sakura-petals :count="$petals" />
 

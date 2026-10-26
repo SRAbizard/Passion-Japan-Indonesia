@@ -68,7 +68,7 @@
                     <select name="region" class="mt-1.5 w-full rounded-xl border border-surface-700 bg-surface-900/60 px-3 py-2 text-sm text-white focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500">
                         <option value="">{{ __('All of Japan') }}</option>
                         @foreach($regions as $key => $r)
-                            <option value="{{ $key }}" @selected(request('region') === $key)>{{ __($r['name']) }} · {{ $r['jp'] }}</option>
+                            <option value="{{ $key }}" @selected(request('region') === $key)>{{ __($r['name']) }}</option>
                         @endforeach
                     </select>
                 </label>
