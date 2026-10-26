@@ -1135,5 +1135,6 @@
     "Country": "国",
     "Thank you! Our team will contact you within 1–2 business days.": "ありがとうございます。1〜2営業日以内に担当者よりご連絡いたします。",
     "Worker request": "人材依頼",
-    "{0} See jobs|{1} See :count job|[2,*] See :count jobs": "{0} 求人を見る|{1} :count件の求人を見る|[2,*] :count件の求人を見る"
+    "{0} See jobs|{1} See :count job|[2,*] See :count jobs": "{0} 求人を見る|{1} :count件の求人を見る|[2,*] :count件の求人を見る",
+    "Music": "音楽"
 }

@@ -379,7 +379,7 @@
                     <span class="kind">{{ $t->kind === 'company' ? __('Partner Companies') : __('Students') }}</span>
                     <blockquote>“{{ $t->t('quote') }}”</blockquote>
                     <figcaption class="who">
-                        <span class="av">{{ Str::of($t->name)->substr(0, 1)->upper() }}</span>
+                        <span class="av">@if($t->avatar_url)<img src="{{ $t->avatar_url }}" alt="" loading="lazy">@else{{ Str::of($t->name)->substr(0, 1)->upper() }}@endif</span>
                         <span><b>{{ $t->name }}</b><span>{{ $t->t('role') }}</span></span>
                     </figcaption>
                 </figure>

@@ -53,7 +53,8 @@ class SampleMediaSeeder extends Seeder
         // 2. Website settings.
         // No hero uploads: the homepage falls back to the bundled Japan photos.
         Setting::set('hero.slides', [], 'hero');
-        Setting::set('login.background_path', $this->scene('login/sample.jpg', 1600, 1000, 'Selamat Datang', 'ようこそ', 7), 'login');
+        // No login upload: the login page falls back to the bundled Japan photo.
+        Setting::set('login.background_path', null, 'login');
         Setting::set('company.profile_pdf_path', $this->pdf('company/company-profile-sample.pdf', [
             'Company Profile (CONTOH)',
             'Passion Japan Indonesia',

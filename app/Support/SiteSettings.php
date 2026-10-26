@@ -144,13 +144,32 @@ class SiteSettings
     }
 
     /**
-     * Public URL for the uploaded background theme song, or null if
-     * none uploaded. Plays as muted-autoplay on the homepage.
+     * Public URL for the background theme song. Falls back to the
+     * bundled "Ishikari Lore" (koto & flute) when none is uploaded.
+     * Plays as muted-autoplay until the visitor turns it on.
      */
-    public static function themeAudioUrl(): ?string
+    public static function themeAudioUrl(): string
     {
         $path = Setting::get('audio.theme_path');
-        return $path ? asset('storage/'.$path) : null;
+        return self::uploaded($path) ? asset('storage/'.$path) : asset('audio/ishikari-lore.mp3');
+    }
+
+    /**
+     * Credit line for the bundled theme song (its CC BY 4.0 licence
+     * requires attribution), or null when the admin uploaded their own.
+     */
+    public static function themeAudioCredit(): ?string
+    {
+        return self::uploaded(Setting::get('audio.theme_path'))
+            ? null
+            : '“Ishikari Lore” — Kevin MacLeod (incompetech.com), CC BY 4.0';
+    }
+
+    /** True when $path is a file that still exists on the public disk. */
+    private static function uploaded(mixed $path): bool
+    {
+        return is_string($path) && $path !== ''
+            && \Illuminate\Support\Facades\Storage::disk('public')->exists($path);
     }
 
     /**
@@ -162,11 +181,11 @@ class SiteSettings
     public static function loginBackgroundUrl(): string
     {
         $path = Setting::get('login.background_path');
-        if ($path) {
+        if (self::uploaded($path)) {
             return asset('storage/'.$path);
         }
-        // Default: Mt Fuji at sunset framed by sakura
-        return 'https://images.unsplash.com/photo-1480796927426-f609979314bd?auto=format&fit=crop&w=1920&q=70';
+        // Default: Mt Fuji framed by sakura (Unsplash, free to use)
+        return asset('images/login/japan.jpg');
     }
 
     /**

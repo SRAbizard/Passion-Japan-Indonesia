@@ -673,7 +673,8 @@ html.light .pj-footer .text-white { color: #F5EDE0 !important; }
 .pj-quote:nth-child(3n) { transform: rotate(-.5deg); background: color-mix(in srgb, var(--pj-sakura) 60%, var(--pj-kami)); }
 .pj-quote blockquote { margin: 0; font-family: var(--font-hand); font-size: 1.5rem; font-weight: 500; line-height: 1.3; }
 .pj-quote .who { display: flex; align-items: center; gap: .6rem; }
-.pj-quote .av { width: 40px; height: 40px; border-radius: 50%; border: 2.5px solid var(--pj-line); background: var(--pj-red); color: var(--pj-on-red); display: grid; place-items: center; font-family: var(--font-display); }
+.pj-quote .av { flex: none; width: 46px; height: 46px; border-radius: 50%; border: 2.5px solid var(--pj-line); background: var(--pj-red); color: var(--pj-on-red); display: grid; place-items: center; font-family: var(--font-display); overflow: hidden; }
+.pj-quote .av img { width: 100%; height: 100%; object-fit: cover; background: var(--pj-washi); }
 .pj-quote .who b { display: block; font-size: .9rem; }
 .pj-quote .who span { font-size: .78rem; color: var(--pj-ink-soft); }
 .pj-quote .kind { font-size: .66rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--pj-red); }
