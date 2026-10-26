@@ -81,7 +81,7 @@ class SiteSettings
     }
 
     /**
-     * Passion Japan Academy URL (the separate learning platform), or null
+     * PJI Learning URL (the separate learning platform), or null
      * while it is not online yet — callers hide the E-Learning link then.
      */
     public static function academyUrl(): ?string

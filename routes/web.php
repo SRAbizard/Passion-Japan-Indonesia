@@ -31,8 +31,8 @@ Route::post('jobs/{slug}/apply',  [\App\Http\Controllers\JobController::class, '
 Route::get('gallery',         [\App\Http\Controllers\GalleryController::class, 'index'])->name('gallery.index');
 Route::get('gallery/{slug}',  [\App\Http\Controllers\GalleryController::class, 'show'])->name('gallery.show');
 
-// Learning lives in Passion Japan Academy. Old /elearning links forward
-// there — or home, until the Academy URL is set in Website Settings.
+// The learning platform is PJI Learning. Old /elearning links forward
+// there — or home, until the PJI Learning URL is set in Website Settings.
 Route::get('elearning/{any?}', fn () => redirect()->away(SiteSettings::academyUrl() ?? url('/')))
     ->where('any', '.*');
 

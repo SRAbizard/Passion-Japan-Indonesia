@@ -99,13 +99,13 @@ class SiteSettings extends Page
                         TextInput::make('social__tiktok')->url()->prefix('https://'),
                     ]),
                 ]),
-                Tab::make('Passion Japan Academy')->icon('heroicon-o-academic-cap')->schema([
+                Tab::make('PJI Learning')->icon('heroicon-o-academic-cap')->schema([
                     Section::make()->columns(1)->components([
                         TextInput::make('academy__url')
-                            ->label(__('Academy website URL'))
+                            ->label(__('PJI Learning website URL'))
                             ->url()
                             ->placeholder('https://academy.passionjapan.id')
-                            ->helperText(__('The "E-Learning" menu opens this link in a new tab. Leave empty to hide the menu until the Academy is online.')),
+                            ->helperText(__('The "E-Learning" menu opens this link in a new tab. Leave empty to hide the menu until PJI Learning is online.')),
                     ]),
                 ]),
                 Tab::make(__('Stats'))->icon('heroicon-o-chart-bar')->schema([

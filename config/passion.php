@@ -92,8 +92,8 @@ return [
     'jpy_to_idr' => (float) env('PASSION_JPY_TO_IDR', 105),
 
     /*
-    | Passion Japan Academy — the separate learning platform. Overridable
-    | under Admin → Website Settings → Passion Japan Academy.
+    | PJI Learning — the separate learning platform. Overridable
+    | under Admin → Website Settings → PJI Learning.
     */
     'academy' => [
         'url' => env('ACADEMY_URL'),

@@ -44,8 +44,8 @@
             'bestRoute'   => __('BEST ROUTE FOR YOU'),
             'seeJobs'     => __('See these jobs'),
             'again'       => __('Try again'),
-            'academyNote' => __('Raise your Japanese to N4 first at Passion Japan Academy, then come back here to apply.'),
-            'academyLink' => __('Open Passion Japan Academy'),
+            'academyNote' => __('Raise your Japanese to N4 first at PJI Learning, then come back here to apply.'),
+            'academyLink' => __('Open PJI Learning'),
             'noMatch'     => __('No matching openings right now. We will tell you as soon as one opens.'),
             'whyEngineer' => __('Your engineering/IT education opens the Engineer visa route.'),
             'whySsw'      => __('Your Japanese level already meets the Tokutei Ginou requirement.'),
@@ -209,7 +209,7 @@
                 @php
                     $steps = [
                         ['登録', __('Create your profile'), __('Fill in your biodata and education, and upload documents from your dashboard.')],
-                        ['学習', __('Learn the language'), __('Level up your JLPT/JFT at Passion Japan Academy.')],
+                        ['学習', __('Learn the language'), __('Level up your JLPT/JFT at PJI Learning.')],
                         ['面接', 'Mensetsu', __('Online or offline interviews with Japanese companies.')],
                         ['ビザ', __('Visa & COE'), __('We handle the paperwork until your Certificate of Eligibility is issued.')],
                         ['出発', __('Depart!'), __('Fly to Japan and start your first day at work.')],
@@ -224,7 +224,7 @@
                             <p>
                                 {{ $desc }}
                                 @if($i === 1 && $academyUrl)
-                                    <a href="{{ $academyUrl }}" target="_blank" rel="noopener">{{ __('Open Academy') }} ↗</a>
+                                    <a href="{{ $academyUrl }}" target="_blank" rel="noopener">{{ __('Open PJI Learning') }} ↗</a>
                                 @endif
                             </p>
                         </div>

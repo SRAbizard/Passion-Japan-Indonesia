@@ -137,9 +137,9 @@ final class HomepageDemoData
                 'en' => "I don't speak Japanese yet — what should I do?",
                 'ja' => 'まだ日本語が話せませんが、どうすればいいですか？',
             ], 'a' => [
-                'id' => 'Anda bisa belajar dulu di Passion Japan Academy, lembaga pelatihan bahasa Jepang kami. Setelah siap, lamar lowongan yang sesuai di website ini.',
-                'en' => 'You can start learning at Passion Japan Academy, our Japanese language training institute. Once you are ready, apply for a matching job on this website.',
-                'ja' => 'まずは当社の日本語研修機関「Passion Japan Academy」で学ぶことができます。準備ができたら、このサイトで条件に合う求人に応募してください。',
+                'id' => 'Anda bisa belajar dulu di PJI Learning, lembaga pelatihan bahasa Jepang kami. Setelah siap, lamar lowongan yang sesuai di website ini.',
+                'en' => 'You can start learning at PJI Learning, our Japanese language training institute. Once you are ready, apply for a matching job on this website.',
+                'ja' => 'まずは当社の日本語研修機関「PJI Learning」で学ぶことができます。準備ができたら、このサイトで条件に合う求人に応募してください。',
             ]],
             ['q' => [
                 'id' => 'Bagaimana cara mengikuti ujian kompetensi?',

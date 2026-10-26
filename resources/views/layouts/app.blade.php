@@ -84,7 +84,7 @@
             <div class="hidden lg:flex items-center gap-1">
                 <a href="{{ url('/') }}" wire:navigate class="pj-navlink {{ request()->routeIs('home') ? 'is-active' : '' }}">{{ __('Home') }}</a>
 
-                {{-- Program Passion dropdown — job portal + (external) Passion Japan Academy --}}
+                {{-- Program Passion dropdown — job portal + (external) PJI Learning --}}
                 <div class="relative group">
                     <button type="button" class="pj-navlink inline-flex items-center gap-1 {{ request()->routeIs('job.*') ? 'is-active' : '' }}">
                         {{ __('Program Passion') }}
@@ -102,7 +102,7 @@
                                         {{ __('E-Learning') }}
                                         <svg class="h-3 w-3 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                                     </span>
-                                    <span class="block text-xs opacity-70">{{ __('Learn Japanese at Passion Japan Academy') }}</span>
+                                    <span class="block text-xs opacity-70">{{ __('Learn Japanese at PJI Learning') }}</span>
                                 </a>
                             @endif
                         </div>
