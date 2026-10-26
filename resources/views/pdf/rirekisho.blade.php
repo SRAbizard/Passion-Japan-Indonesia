@@ -143,7 +143,7 @@
     <tr class="band"><td colspan="5">学歴</td></tr>
     @foreach($cv['education'] as $row)
         <tr style="height: 8.4mm;">
-            <td class="c">{{ $row['from_y'] ?? '' }}</td><td class="c">{{ $row['from_m'] ?? '' }}</td>
+            <td class="c" style="height: 8.4mm;">{{ $row['from_y'] ?? '' }}</td><td class="c">{{ $row['from_m'] ?? '' }}</td>
             <td class="c">{{ $row['to_y'] ?? '' }}</td><td class="c">{{ $row['to_m'] ?? '' }}</td>
             <td>{{ $row['text'] ?? '' }}</td>
         </tr>
@@ -151,7 +151,7 @@
     <tr class="band"><td colspan="5">職歴</td></tr>
     @foreach($cv['work'] as $row)
         <tr style="height: 8.4mm;">
-            <td class="c">{{ $row['from_y'] ?? '' }}</td><td class="c">{{ $row['from_m'] ?? '' }}</td>
+            <td class="c" style="height: 8.4mm;">{{ $row['from_y'] ?? '' }}</td><td class="c">{{ $row['from_m'] ?? '' }}</td>
             <td class="c">{{ $row['to_y'] ?? '' }}</td><td class="c">{{ $row['to_m'] ?? '' }}</td>
             <td>{{ $row['text'] ?? '' }}</td>
         </tr>
@@ -167,7 +167,7 @@
     <tr class="hd"><td width="11%">取得年</td><td width="8%">月</td><td>免許・資格</td></tr>
     @foreach($cv['licenses'] as $row)
         <tr style="height: 8.4mm;">
-            <td class="c">{{ $row['y'] ?? '' }}</td><td class="c">{{ $row['m'] ?? '' }}</td><td>{{ $row['text'] ?? '' }}</td>
+            <td class="c" style="height: 8.4mm;">{{ $row['y'] ?? '' }}</td><td class="c">{{ $row['m'] ?? '' }}</td><td>{{ $row['text'] ?? '' }}</td>
         </tr>
     @endforeach
 </table>
