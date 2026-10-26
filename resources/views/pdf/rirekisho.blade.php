@@ -5,30 +5,33 @@
 @php
     [$ty, $tm, $td] = \App\Support\Rirekisho::dateParts($cv['today']);
     $v = fn ($value) => filled($value) ? e($value) : '';
+    foreach (\App\Support\Rirekisho::ROWS as $key => $rows) {
+        $cv[$key] = array_pad($cv[$key], max($rows, count($cv[$key])), null);
+    }
 @endphp
 <html>
 <head>
 <style>
-    body { font-family: bizud; font-size: 9pt; color: #222; }
+    body { font-family: bizmincho; font-size: 11pt; color: #222; }
     .head td { vertical-align: bottom; padding: 0; }
-    .title { font-size: 22pt; font-weight: bold; letter-spacing: 6pt; }
-    .title-en { font-size: 8.5pt; font-weight: bold; color: #666; }
-    .brand { font-size: 12.5pt; font-weight: bold; color: #9F1B32; text-align: right; }
-    .asof { font-size: 9pt; color: #444; text-align: right; }
-    .rule { border-bottom: 2pt solid #9F1B32; height: 1pt; margin: 4pt 0 9pt; }
+    .title { font-size: 20pt; font-weight: bold; letter-spacing: 6pt; }
+    .title-en { font-size: 8pt; font-weight: bold; color: #666; }
+    .brand { font-size: 11pt; font-weight: bold; color: #9E1B32; text-align: right; }
+    .asof { font-size: 8.5pt; color: #444; text-align: right; }
+    .rule { border-bottom: 2pt solid #9E1B32; height: 1pt; margin: 4pt 0 9pt; }
 
-    .sec { border-left: 4pt solid #9F1B32; padding: 1pt 0 1pt 5pt; margin: 6pt 0 0; font-size: 11pt; font-weight: bold; color: #9F1B32; }
+    .sec { border-left: 4pt solid #9E1B32; padding: 1pt 0 1pt 5pt; margin: 6pt 0 0; font-size: 10.5pt; font-weight: bold; color: #9E1B32; }
     .sec span { font-size: 7pt; font-weight: normal; color: #888; }
 
-    table.grid { width: 100%; border-collapse: collapse; border: 0.9pt solid #9F1B32; }
+    table.grid { width: 100%; border-collapse: collapse; border: 0.9pt solid #9E1B32; }
     table.grid td { border: 0.5pt solid #d9d9d9; padding: 3pt 5pt; vertical-align: middle; }
-    table.grid td.l { background: #F6E8EA; color: #9F1B32; font-weight: bold; text-align: center; font-size: 8.5pt; }
+    table.grid td.l { background: #F6E8EA; color: #9E1B32; font-weight: bold; text-align: center; font-size: 8.5pt; }
     table.grid td.c { text-align: center; }
     table.grid td.small { font-size: 7pt; color: #777; text-align: center; }
     table.grid td.unit { font-size: 8pt; color: #888; text-align: center; }
-    table.grid tr.hd td { background: #9F1B32; color: #fff; font-weight: bold; text-align: center; border-color: #b8475a; font-size: 8.5pt; }
-    table.grid tr.band td { background: #F6E8EA; color: #9F1B32; font-weight: bold; text-align: center; letter-spacing: 8pt; }
-    .name { font-size: 15pt; font-weight: bold; }
+    table.grid tr.hd td { background: #9E1B32; color: #fff; font-weight: bold; text-align: center; border-color: #b8475a; font-size: 8.5pt; }
+    table.grid tr.band td { background: #F6E8EA; color: #9E1B32; font-weight: bold; text-align: center; letter-spacing: 8pt; }
+    .name { font-size: 14pt; }
     .note { font-size: 7pt; color: #777; margin-top: 3pt; }
 </style>
 </head>

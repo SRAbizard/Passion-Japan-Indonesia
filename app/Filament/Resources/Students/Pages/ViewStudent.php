@@ -47,6 +47,8 @@ class ViewStudent extends Page
 
         return [
             \Filament\Actions\ActionGroup::make([
+                Action::make('wordCv')->label(__('Download Word (.docx)'))->icon('heroicon-o-document-arrow-down')
+                    ->url(fn () => route('admin.student-cv-docx', $this->record)),
                 Action::make('viewCv')->label(__('View PDF'))->icon('heroicon-o-eye')
                     ->url(fn () => route('admin.student-cv', $this->record))->openUrlInNewTab(),
                 Action::make('downloadCv')->label(__('Download PDF'))->icon('heroicon-o-arrow-down-tray')

@@ -36,6 +36,12 @@ return [
     | Public-facing contact / company info — used in footer, WhatsApp float,
     | meta tags. Migrate to Setting model in Phase 3 (Website Settings CMS).
     */
+    // Path to LibreOffice (soffice). When set — or found in a standard
+    // install path — the 履歴書 PDF is converted from the filled Word file,
+    // so it matches the .docx exactly. Needs the BIZ UDMincho font installed
+    // on the server (copy resources/fonts/BIZUDMincho-*.ttf to its fonts).
+    'libreoffice' => env('LIBREOFFICE_BIN'),
+
     'contact' => [
         'whatsapp'  => '62882007885021',
         'phone'     => '+62 882-0078-85021',

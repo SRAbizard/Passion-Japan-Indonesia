@@ -58,7 +58,7 @@ class MyProfile extends Page implements HasForms
                 'name_kana', 'nationality', 'desired_job', 'address_kana', 'line_id',
                 'japan_visits_study', 'japan_visits_work', 'japan_visits_other', 'licenses', 'self_pr', 'cv_other',
             ]) ?? [],
-            'educations'      => $user->educations->map->only(['level','institution','major','start_year','end_year','gpa','is_current'])->all(),
+            'educations'      => $user->educations->map->only(['level','institution','major','start_year','start_month','end_year','end_month','gpa','is_current'])->all(),
             'workExperiences' => $user->workExperiences->map->only(['company','position','start_date','end_date','is_current','description'])->all(),
             'familyMembers'   => $user->familyMembers->map->only(['relation','name','occupation','phone','address'])->all(),
             'languages'       => $user->languages->map->only(['language','proficiency','certificate_number','taken_at','certificate_path'])->all(),
@@ -138,7 +138,9 @@ class MyProfile extends Page implements HasForms
                                 TextInput::make('major')->label(__('Major / Field'))->maxLength(120),
                                 TextInput::make('gpa')->label(__('GPA'))->maxLength(16),
                                 TextInput::make('start_year')->label(__('Start year'))->numeric()->minValue(1950)->maxValue(2100),
+                                Select::make('start_month')->label(__('Start month'))->options(array_combine(range(1, 12), range(1, 12)))->native(false),
                                 TextInput::make('end_year')->label(__('End year'))->numeric()->minValue(1950)->maxValue(2100),
+                                Select::make('end_month')->label(__('End month'))->options(array_combine(range(1, 12), range(1, 12)))->native(false),
                                 Toggle::make('is_current')->label(__('Currently studying'))->inline(false),
                             ])
                             ->defaultItems(0),
@@ -259,6 +261,8 @@ class MyProfile extends Page implements HasForms
     {
         return [
             \Filament\Actions\ActionGroup::make([
+                Action::make('wordCv')->label(__('Download Word (.docx)'))->icon('heroicon-o-document-arrow-down')
+                    ->url(fn () => route('cv.mine-docx')),
                 Action::make('viewCv')->label(__('View PDF'))->icon('heroicon-o-eye')
                     ->url(fn () => route('cv.mine'))->openUrlInNewTab(),
                 Action::make('downloadCv')->label(__('Download PDF'))->icon('heroicon-o-arrow-down-tray')

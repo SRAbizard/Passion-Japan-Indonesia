@@ -8,7 +8,7 @@ use Mpdf\Mpdf;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * mPDF with the bundled BIZ UDPGothic font (resources/fonts, SIL OFL) so
+ * mPDF with the bundled BIZ UD fonts (resources/fonts, SIL OFL) so
  * Japanese text renders in every generated document. Pages that use a
  * Latin font fall back to it for Japanese characters.
  */
@@ -31,6 +31,8 @@ class Pdf
             'fontDir'           => [...$fontDirs, resource_path('fonts')],
             'fontdata'          => $fontData + [
                 'bizud' => ['R' => 'BIZUDPGothic-Regular.ttf', 'B' => 'BIZUDPGothic-Bold.ttf'],
+                // The 履歴書 Word template's font (Google Fonts' BIZ UDMincho = Windows' "BIZ UDMincho Medium").
+                'bizmincho' => ['R' => 'BIZUDMincho-Regular.ttf', 'B' => 'BIZUDMincho-Bold.ttf'],
             ],
             'default_font'      => 'bizud',
             'useSubstitutions'  => true,

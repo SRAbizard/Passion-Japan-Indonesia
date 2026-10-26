@@ -28,7 +28,9 @@ Route::get('jobs/{slug}/job-order.pdf', [\App\Http\Controllers\JobOrderPdfContro
 Route::get('admin/job-vacancies/{vacancy}/job-order.pdf', [\App\Http\Controllers\JobOrderPdfController::class, 'admin'])
     ->name('admin.job-order-pdf');
 Route::get('cv/rirekisho.pdf', [\App\Http\Controllers\CvPdfController::class, 'mine'])->name('cv.mine');
+Route::get('cv/rirekisho.docx', [\App\Http\Controllers\CvPdfController::class, 'mine'])->defaults('format', 'docx')->name('cv.mine-docx');
 Route::get('admin/students/{user}/rirekisho.pdf', [\App\Http\Controllers\CvPdfController::class, 'admin'])->name('admin.student-cv');
+Route::get('admin/students/{user}/rirekisho.docx', [\App\Http\Controllers\CvPdfController::class, 'admin'])->defaults('format', 'docx')->name('admin.student-cv-docx');
 Route::post('jobs/{slug}/apply',  [\App\Http\Controllers\JobController::class, 'apply'])
     ->middleware('throttle:10,1')
     ->name('job.apply');
