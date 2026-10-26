@@ -12,7 +12,7 @@
 <html>
 <head>
 <style>
-    body { font-family: bizmincho; font-size: 11pt; color: #222; }
+    body { font-family: bizmincho; font-size: 10pt; color: #222; }
     .head td { vertical-align: bottom; padding: 0; }
     .title { font-size: 20pt; font-weight: bold; letter-spacing: 6pt; }
     .title-en { font-size: 8pt; font-weight: bold; color: #666; }
@@ -51,7 +51,7 @@
 {{-- 基本情報 --}}
 <div class="sec">基本情報 <span>Personal Information</span></div>
 <table class="grid">
-    <tr style="height: 8mm;">
+    <tr style="height: 7.5mm;">
         <td class="l" width="12.2%">フリガナ</td>
         <td colspan="2" width="45.5%">{!! $v($cv['name_kana']) !!}</td>
         <td class="l" width="10%">性別</td>
@@ -64,37 +64,37 @@
             @endif
         </td>
     </tr>
-    <tr style="height: 15mm;">
+    <tr style="height: 13mm;">
         <td class="l">氏　名</td>
         <td colspan="2" class="name">{!! $v($cv['name']) !!}</td>
         <td class="c" style="font-size: 12pt; font-weight: bold;">{!! $v($cv['gender']) !!}</td>
         <td class="c">{!! $v($cv['nationality']) !!}</td>
     </tr>
-    <tr style="height: 11mm;">
+    <tr style="height: 7.5mm;">
         <td class="l">生年月日</td>
         <td colspan="2">
             西暦&nbsp; {{ $cv['birth']?->year }} 年&nbsp; {{ $cv['birth']?->month }} 月&nbsp; {{ $cv['birth']?->day }} 日生&nbsp;&nbsp;（満 {{ $cv['age'] }} 歳）
         </td>
         <td colspan="2" class="small">※二重国籍の場合は両方記載</td>
     </tr>
-    <tr style="height: 11mm;">
+    <tr style="height: 7.5mm;">
         <td class="l">応募職種</td>
         <td colspan="4">{!! $v($cv['desired_job']) !!}</td>
     </tr>
-    <tr style="height: 8mm;">
+    <tr style="height: 7.5mm;">
         <td class="l">フリガナ</td>
         <td colspan="3">{!! $v($cv['address_kana']) !!}</td>
         <td colspan="2">TEL：{!! $v($cv['phone']) !!}</td>
     </tr>
-    <tr style="height: 9mm;">
+    <tr style="height: 7.5mm;">
         <td class="l" rowspan="2">現住所</td>
-        <td colspan="3" rowspan="2" style="vertical-align: top;">〒{!! $v($cv['postal']) !!}<br>{!! $v($cv['address']) !!}</td>
+        <td colspan="3" rowspan="2">{!! $v($cv['address']) !!}</td>
         <td colspan="2">E-mail：{!! $v($cv['email']) !!}</td>
     </tr>
-    <tr style="height: 9mm;">
+    <tr style="height: 7.5mm;">
         <td colspan="2">LINE：{!! $v($cv['line']) !!}</td>
     </tr>
-    <tr style="height: 9mm;">
+    <tr style="height: 7.5mm;">
         <td class="l">来日歴</td>
         <td colspan="5">
             留学：&nbsp;{{ $cv['visits'][0] }} 回&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -102,13 +102,13 @@
             その他（旅行等）：&nbsp;{{ $cv['visits'][2] }} 回
         </td>
     </tr>
-    <tr style="height: 9mm;">
+    <tr style="height: 7.5mm;">
         <td class="l">日本語力</td>
         <td colspan="2">{!! $v($cv['japanese']) !!}</td>
         <td colspan="2" class="l">その他語学力</td>
         <td>{!! $v($cv['other_lang']) !!}</td>
     </tr>
-    <tr style="height: 9mm;">
+    <tr style="height: 7.5mm;">
         <td class="l">健康状態</td>
         <td colspan="5">
             {{ $cv['healthy'] ? '■' : '□' }} 良好&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -117,7 +117,7 @@
     </tr>
 </table>
 <table class="grid" style="border-top: 0;">
-    <tr style="height: 9mm;">
+    <tr style="height: 7.5mm;">
         <td class="l" width="12.2%">身　長</td>
         <td class="c" width="8.6%">{!! $v($cv['height']) !!}</td>
         <td class="unit" width="5%">cm</td>
@@ -145,16 +145,16 @@
     </tr>
     <tr class="band"><td colspan="5">学歴</td></tr>
     @foreach($cv['education'] as $row)
-        <tr style="height: 8.4mm;">
-            <td class="c" style="height: 8.4mm;">{{ $row['from_y'] ?? '' }}</td><td class="c">{{ $row['from_m'] ?? '' }}</td>
+        <tr style="height: 7.3mm;">
+            <td class="c" style="height: 7.3mm;">{{ $row['from_y'] ?? '' }}</td><td class="c">{{ $row['from_m'] ?? '' }}</td>
             <td class="c">{{ $row['to_y'] ?? '' }}</td><td class="c">{{ $row['to_m'] ?? '' }}</td>
             <td>{{ $row['text'] ?? '' }}</td>
         </tr>
     @endforeach
     <tr class="band"><td colspan="5">職歴</td></tr>
     @foreach($cv['work'] as $row)
-        <tr style="height: 8.4mm;">
-            <td class="c" style="height: 8.4mm;">{{ $row['from_y'] ?? '' }}</td><td class="c">{{ $row['from_m'] ?? '' }}</td>
+        <tr style="height: 7.3mm;">
+            <td class="c" style="height: 7.3mm;">{{ $row['from_y'] ?? '' }}</td><td class="c">{{ $row['from_m'] ?? '' }}</td>
             <td class="c">{{ $row['to_y'] ?? '' }}</td><td class="c">{{ $row['to_m'] ?? '' }}</td>
             <td>{{ $row['text'] ?? '' }}</td>
         </tr>
@@ -169,8 +169,8 @@
 <table class="grid">
     <tr class="hd"><td width="11%">取得年</td><td width="8%">月</td><td>免許・資格</td></tr>
     @foreach($cv['licenses'] as $row)
-        <tr style="height: 8.4mm;">
-            <td class="c" style="height: 8.4mm;">{{ $row['y'] ?? '' }}</td><td class="c">{{ $row['m'] ?? '' }}</td><td>{{ $row['text'] ?? '' }}</td>
+        <tr style="height: 7.3mm;">
+            <td class="c" style="height: 7.3mm;">{{ $row['y'] ?? '' }}</td><td class="c">{{ $row['m'] ?? '' }}</td><td>{{ $row['text'] ?? '' }}</td>
         </tr>
     @endforeach
 </table>
@@ -178,7 +178,7 @@
 {{-- 自己PR --}}
 <div class="sec" style="margin-top: 7pt;">自己PR <span>Self Introduction</span></div>
 <table class="grid">
-    <tr><td style="height: 62mm; vertical-align: top; padding: 6pt 8pt; line-height: 1.6;">{!! nl2br($v($cv['self_pr'])) !!}</td></tr>
+    <tr><td style="height: 55mm; vertical-align: top; padding: 6pt 8pt; line-height: 1.6;">{!! nl2br($v($cv['self_pr'])) !!}</td></tr>
 </table>
 
 {{-- その他 --}}
