@@ -46,6 +46,17 @@ class ViewStudent extends Page
         $hasPending = $profile && in_array($profile->visa_target_status, ['pending', 'changed'], true);
 
         return [
+            \Filament\Actions\ActionGroup::make([
+                Action::make('viewCv')->label(__('View PDF'))->icon('heroicon-o-eye')
+                    ->url(fn () => route('admin.student-cv', $this->record))->openUrlInNewTab(),
+                Action::make('downloadCv')->label(__('Download PDF'))->icon('heroicon-o-arrow-down-tray')
+                    ->url(fn () => route('admin.student-cv', [$this->record, 'download' => 1])),
+            ])
+                ->label(__('CV (履歴書)'))
+                ->icon('heroicon-o-document-text')
+                ->color('gray')
+                ->button(),
+
             Action::make('confirm_visa')
                 ->label(__('Confirm visa target'))
                 ->icon('heroicon-o-check-badge')

@@ -55,6 +55,8 @@ class MyProfile extends Page implements HasForms
                 'emergency_contact_name', 'emergency_contact_relation', 'emergency_contact_phone',
                 'height_cm', 'weight_kg', 'blood_type', 'allergies', 'medical_conditions',
                 'smoker', 'drinker', 'photo_path',
+                'name_kana', 'nationality', 'desired_job', 'address_kana', 'line_id',
+                'japan_visits_study', 'japan_visits_work', 'japan_visits_other', 'licenses', 'self_pr', 'cv_other',
             ]) ?? [],
             'educations'      => $user->educations->map->only(['level','institution','major','start_year','end_year','gpa','is_current'])->all(),
             'workExperiences' => $user->workExperiences->map->only(['company','position','start_date','end_date','is_current','description'])->all(),
@@ -209,9 +211,64 @@ class MyProfile extends Page implements HasForms
                         ]),
                     ]),
 
+                    // Extra fields for the Japanese CV (履歴書). Everything else on
+                    // the CV comes from the other tabs.
+                    Tab::make(__('CV (履歴書)'))->icon('heroicon-o-document-text')->schema([
+                        Section::make(__('For your Japanese CV'))
+                            ->description(__('These details only appear on your 履歴書. Name, address, education, work history, languages and health come from the other tabs. Use the "CV (履歴書)" button at the top to view or download it.'))
+                            ->columns(2)
+                            ->components([
+                                TextInput::make('studentProfile.name_kana')->label(__('Name in katakana (フリガナ)'))->placeholder('ブディ　サントソ')->maxLength(160),
+                                TextInput::make('studentProfile.nationality')->label(__('Nationality (国籍)'))->placeholder('インドネシア')->maxLength(80),
+                                TextInput::make('studentProfile.desired_job')->label(__('Position applied for (応募職種)'))->placeholder(__('e.g. Food processing (食品製造)'))->maxLength(160),
+                                TextInput::make('studentProfile.line_id')->label('LINE ID')->maxLength(80),
+                                TextInput::make('studentProfile.address_kana')->label(__('Address in katakana (フリガナ)'))->maxLength(255)->columnSpanFull(),
+                            ]),
+                        Section::make(__('Previous visits to Japan (来日歴)'))->columns(3)->components([
+                            TextInput::make('studentProfile.japan_visits_study')->label(__('Study (留学)'))->numeric()->minValue(0)->maxValue(99)->suffix(__('times')),
+                            TextInput::make('studentProfile.japan_visits_work')->label(__('Work, incl. working holiday (就職)'))->numeric()->minValue(0)->maxValue(99)->suffix(__('times')),
+                            TextInput::make('studentProfile.japan_visits_other')->label(__('Other, e.g. travel (その他)'))->numeric()->minValue(0)->maxValue(99)->suffix(__('times')),
+                        ]),
+                        Section::make(__('Licences & certifications (免許・資格)'))
+                            ->description(__('Language certificates with a date (Languages tab) are added automatically.'))
+                            ->components([
+                                Repeater::make('studentProfile.licenses')->label('')
+                                    ->columns(4)
+                                    ->defaultItems(0)
+                                    ->addActionLabel(__('Add licence'))
+                                    ->components([
+                                        TextInput::make('year')->label(__('Year'))->numeric()->minValue(1950)->maxValue(2100),
+                                        Select::make('month')->label(__('Month'))->options(array_combine(range(1, 12), range(1, 12)))->native(false),
+                                        TextInput::make('name')->label(__('Licence / certificate'))->required()->maxLength(160)->columnSpan(2),
+                                    ]),
+                            ]),
+                        Section::make()->components([
+                            Textarea::make('studentProfile.self_pr')->label(__('Self introduction (自己PR)'))->rows(7)->maxLength(1500)
+                                ->helperText(__('Your strengths, motivation to work in Japan and goals. Japanese is best; Indonesian or English is fine for a first draft.')),
+                            Textarea::make('studentProfile.cv_other')->label(__('Other notes (その他)'))->rows(2)->maxLength(500)
+                                ->helperText(__('Anything the employer should accommodate, e.g. halal food, prayer times, vegetarian. Allergies from the Health tab are added automatically.')),
+                        ]),
+                    ]),
+
                 ]),
             ])
             ->statePath('data');
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            \Filament\Actions\ActionGroup::make([
+                Action::make('viewCv')->label(__('View PDF'))->icon('heroicon-o-eye')
+                    ->url(fn () => route('cv.mine'))->openUrlInNewTab(),
+                Action::make('downloadCv')->label(__('Download PDF'))->icon('heroicon-o-arrow-down-tray')
+                    ->url(fn () => route('cv.mine', ['download' => 1])),
+            ])
+                ->label(__('CV (履歴書)'))
+                ->icon('heroicon-o-document-text')
+                ->button()
+                ->tooltip(__('Built from your saved profile. Save your changes first.')),
+        ];
     }
 
     protected function getFormActions(): array
@@ -238,7 +295,11 @@ class MyProfile extends Page implements HasForms
 
         // Update 1:1 profile
         $profile = $user->profile();
-        $profile->update($state['studentProfile'] ?? []);
+        $profileData = $state['studentProfile'] ?? [];
+        foreach (['japan_visits_study', 'japan_visits_work', 'japan_visits_other'] as $visits) {
+            $profileData[$visits] = (int) ($profileData[$visits] ?? 0);   // NOT NULL columns
+        }
+        $profile->update($profileData);
 
         // Sync 1:n relations: educations
         $this->syncRelation($user->educations(), $state['educations'] ?? []);

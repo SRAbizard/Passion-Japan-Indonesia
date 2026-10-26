@@ -30,6 +30,7 @@ class StudentProfile extends Model
             'drinker'                  => 'boolean',
             'visa_target_requested_at' => 'datetime',
             'visa_target_reviewed_at'  => 'datetime',
+            'licenses'                 => 'array',
         ];
     }
 
