@@ -8,16 +8,21 @@ use App\Models\Company;
 use App\Models\JobCategory;
 use App\Models\JobVacancy;
 use App\Models\VisaCategory;
+use App\Support\JobOrder;
 use BackedEnum;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -91,6 +96,7 @@ class JobVacancyResource extends Resource
                         ->maxSize(10240) // 10MB
                         ->columnSpanFull(),
                 ]),
+            static::jobOrderSection(),
             Section::make(__('Location'))->columns(2)->components([
                 TextInput::make('location_city')->label(__('City'))->maxLength(80),
                 TextInput::make('location_prefecture')->label(__('Prefecture'))->maxLength(80),
@@ -111,6 +117,45 @@ class JobVacancyResource extends Resource
                 Toggle::make('is_featured')->inline(false),
             ]),
         ]);
+    }
+
+    /**
+     * The structured Job Order (App\Support\JobOrder) behind the generated
+     * "Terjemahan Job Order" PDF. Labels stay in Indonesian with the
+     * Japanese term, because that is the language of the document.
+     */
+    protected static function jobOrderSection(): Section
+    {
+        $field = function (string $section, string $name, array $def): array {
+            [$label, $jp, $type] = $def;
+            $path  = "job_order.{$section}.{$name}";
+            $label = "{$label} ({$jp})";
+
+            return match ($type) {
+                'textarea'  => [Textarea::make($path)->label($label)->placeholder($def[3] ?? null)->rows(3)->maxLength(2000)->columnSpanFull()],
+                'select'    => [Select::make($path)->label($label)->options(JobOrder::EMPLOYMENT)->native(false)],
+                'checklist' => [
+                    CheckboxList::make($path)->label($label)->options(JobOrder::INSURANCE)->columns(2)->columnSpanFull(),
+                    TextInput::make("job_order.{$section}.insurance_note")->label(__('Insurance notes'))->maxLength(300)->columnSpanFull(),
+                ],
+                default     => [TextInput::make($path)->label($label)->placeholder($def[3] ?? null)->maxLength(500)],
+            };
+        };
+
+        return Section::make(__('Job Order'))
+            ->description(__('Fill this in to generate the "Terjemahan Job Order" PDF (buttons at the top of this page after saving). Empty fields are left out. In long fields, start a line with "- " to make a bullet point.'))
+            ->collapsible()
+            ->columns(2)
+            ->components([
+                TextInput::make('job_order_code')->label(__('Job Order code'))->placeholder('TG - PM')->maxLength(40)
+                    ->helperText(__('Shown in brackets after the company name in the PDF title.')),
+                Toggle::make('job_order_public')->label(__('Show the Job Order PDF on the public job page'))->inline(false),
+                Tabs::make('job-order')->columnSpanFull()->tabs(
+                    collect(JobOrder::sections())->map(fn (array $s, string $key) => Tab::make($s['title'])->columns(2)->schema(
+                        collect($s['fields'])->flatMap(fn (array $def, string $name) => $field($key, $name, $def))->all()
+                    ))->values()->all()
+                ),
+            ]);
     }
 
     public static function table(Table $table): Table

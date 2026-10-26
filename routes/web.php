@@ -24,6 +24,9 @@ Route::get('event/{slug}',  [EventController::class, 'show'])->name('event.show'
 
 Route::get('jobs',                [\App\Http\Controllers\JobController::class, 'index'])->name('job.index');
 Route::get('jobs/{slug}',         [\App\Http\Controllers\JobController::class, 'show'])->name('job.show');
+Route::get('jobs/{slug}/job-order.pdf', [\App\Http\Controllers\JobOrderPdfController::class, 'public'])->name('job.order-pdf');
+Route::get('admin/job-vacancies/{vacancy}/job-order.pdf', [\App\Http\Controllers\JobOrderPdfController::class, 'admin'])
+    ->name('admin.job-order-pdf');
 Route::post('jobs/{slug}/apply',  [\App\Http\Controllers\JobController::class, 'apply'])
     ->middleware('throttle:10,1')
     ->name('job.apply');

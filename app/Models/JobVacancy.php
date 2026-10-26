@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 #[Fillable([
     'slug', 'company_id', 'job_category_id', 'visa_category_id',
     'title', 'description', 'requirements', 'benefits', 'detail_pdf_path',
+    'job_order', 'job_order_code', 'job_order_public',
     'location_city', 'location_prefecture',
     'salary_min', 'salary_max', 'salary_currency', 'salary_period',
     'employment_type', 'positions',
@@ -30,6 +31,8 @@ class JobVacancy extends Model
             'description'  => 'array',
             'requirements' => 'array',
             'benefits'     => 'array',
+            'job_order'    => 'array',
+            'job_order_public' => 'boolean',
             'expires_at'   => 'date',
             'published_at' => 'datetime',
             'is_featured'  => 'boolean',
