@@ -22,6 +22,8 @@ class SitemapController extends Controller
             ['loc' => url('/event'),   'priority' => '0.7', 'changefreq' => 'daily',   'lastmod' => $now],
             ['loc' => url('/jobs'),      'priority' => '0.8', 'changefreq' => 'daily',   'lastmod' => $now],
             ['loc' => url('/gallery'),   'priority' => '0.6', 'changefreq' => 'weekly',  'lastmod' => $now],
+            ['loc' => url('/services'),  'priority' => '0.8', 'changefreq' => 'monthly', 'lastmod' => $now],
+            ['loc' => url('/for-employers'), 'priority' => '0.8', 'changefreq' => 'monthly', 'lastmod' => $now],
         ];
 
         foreach (Post::published()->latest('published_at')->get() as $p) {

@@ -1,0 +1,116 @@
+@extends('layouts.app')
+
+@section('title', __('Services') . ' — Passion Japan Indonesia')
+@section('og_title', __('Three routes to work in Japan — Passion Japan Indonesia'))
+@section('og_description', __('Tokutei Ginou, Internship and Engineer: who each route fits, what you need, and every step we handle with you.'))
+
+@php
+    use App\Support\HomepageDemoData as Demo;
+
+    // Requirement copy per route type (see MatchingData::visaRoutes()).
+    $copy = [
+        'ssw' => [
+            'for'  => __('For you if you already know basic Japanese and want to work straight away on a Japanese salary.'),
+            'reqs' => [__('Pass a Japanese test: JLPT N4 or JFT-Basic (A2)'), __('Pass the skills test for your field'), __('At least 18 years old and in good health')],
+            'note' => __('Specified Skilled Worker (i) allows a total stay of up to 5 years.'),
+        ],
+        'intern' => [
+            'for'  => __('For beginners with no work experience in Japan who want to learn while working.'),
+            'reqs' => [__('At least 18 years old, high school / vocational graduate'), __('Take language and work-culture training before departure'), __('Physically and mentally healthy')],
+            'note' => __('A contract-based programme with a host company in Japan.'),
+        ],
+        'engineer' => [
+            'for'  => __('For diploma (D3) or bachelor (S1) graduates who want to work as professionals.'),
+            'reqs' => [__('A D3/S1 degree matching the job, or related work experience'), __('Japanese level as required by the company (usually N3 or higher)'), __('A work contract with a Japanese company')],
+            'note' => __('The visa can be renewed for as long as you keep working.'),
+        ],
+    ];
+    $support = [
+        ['学習', __('Language training'), __('JLPT/JFT preparation at PJI Learning, our Japanese language platform.')],
+        ['面接', __('Mensetsu coaching'), __('Interview practice, self-introduction in Japanese and what Japanese companies look for.')],
+        ['書類', __('Documents & visa'), __('Passport, medical check-up, document sending and the Certificate of Eligibility.')],
+        ['到着', __('Support after arrival'), __('Help settling in and a contact person once you have started work in Japan.')],
+    ];
+    $academyUrl = \App\Support\SiteSettings::academyUrl();
+@endphp
+
+@section('content')
+<x-jp.page-hero
+    :eyebrow="__('Services') . ' · サービス'"
+    :title="__('Three routes to work in Japan.')"
+    :subtitle="__('Each route has its own requirements. Find the one that fits you, then let us handle every step with you.')"
+    :petals="8" />
+
+<section class="pj-section pt-0!">
+    <div class="pj-wrap">
+        @forelse($routes as $r)
+            @php $c = $copy[$r['type']] ?? null; @endphp
+            <article class="pj-route-card pj-card" id="{{ $r['slug'] }}">
+                <div class="grid gap-4 content-start">
+                    <span class="jp text-sm">{{ $r['jp'] }}</span>
+                    <h2>{{ $r['name'] }}</h2>
+                    @if($r['desc'])<p class="pj-lede">{{ $r['desc'] }}</p>@endif
+                    @if($c)
+                        <p class="font-semibold">{{ $c['for'] }}</p>
+                        <div>
+                            <p class="text-xs font-extrabold tracking-[.14em] uppercase opacity-70 mb-2">{{ __('What you need') }}</p>
+                            <ul class="reqs">@foreach($c['reqs'] as $req)<li>{{ $req }}</li>@endforeach</ul>
+                        </div>
+                        <p class="pj-note">{{ $c['note'] }}</p>
+                    @endif
+                    <div class="flex flex-wrap gap-3 mt-2">
+                        <a href="{{ route('job.index', ['visa' => $r['slug']]) }}" wire:navigate class="pj-btn is-red">
+                            {{ trans_choice('{0} See jobs|{1} See :count job|[2,*] See :count jobs', $r['jobs'], ['count' => $r['jobs']]) }} →
+                        </a>
+                        <a href="{{ route('job.index') }}#cek" wire:navigate class="pj-btn">{{ __('Check your match') }}</a>
+                    </div>
+                </div>
+                <div class="min-w-0">
+                    @if($r['workflow'])
+                        <p class="text-xs font-extrabold tracking-[.14em] uppercase opacity-70 mb-3">{{ __('Step by step') }}</p>
+                        <div class="pj-tickets">
+                            @foreach($r['workflow']['steps'] as $step)
+                                <div class="pj-ticket">
+                                    <span class="n">{{ str_pad($step['n'], 2, '0', STR_PAD_LEFT) }}</span>
+                                    <h4>{{ Demo::pick($step['title']) }}</h4>
+                                    @if(! empty($step['badge']))
+                                        <span class="badge {{ $step['badge']['color'] }}">{{ Demo::pick($step['badge']['label']) }}</span>
+                                    @endif
+                                </div>
+                            @endforeach
+                        </div>
+                        @if(! empty($r['workflow']['notes']))
+                            <div class="pj-note mt-4 grid gap-1">
+                                @foreach($r['workflow']['notes'] as $note)<p>• {{ Demo::pick($note) }}</p>@endforeach
+                            </div>
+                        @endif
+                    @endif
+                </div>
+            </article>
+        @empty
+            <div class="pj-empty pj-card"><p class="pj-lede mx-auto">{{ __('Visa routes are being prepared. Talk to us on WhatsApp in the meantime.') }}</p></div>
+        @endforelse
+    </div>
+</section>
+
+<section class="pj-section pt-0!">
+    <div class="pj-wrap">
+        <div class="pj-head">
+            <h2><span class="jp">サポート</span>{{ __('Support at every step') }}</h2>
+            <p class="pj-lede">{{ __('Whichever route you choose, the same team stays with you from the first consultation to your first day at work.') }}</p>
+        </div>
+        <div class="pj-cards-4">
+            @foreach($support as $i => [$jp, $title, $desc])
+                <div class="pj-mini-step pj-card">
+                    <span class="n">{{ $jp }}</span>
+                    <h3>{{ $title }}</h3>
+                    <p>{{ $desc }}</p>
+                    @if($i === 0 && $academyUrl)
+                        <a href="{{ $academyUrl }}" target="_blank" rel="noopener" class="font-bold underline underline-offset-4 text-sm">{{ __('Open PJI Learning') }} ↗</a>
+                    @endif
+                </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+@endsection

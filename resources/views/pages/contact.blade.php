@@ -18,6 +18,7 @@
         <div class="lg:col-span-2">
             <form id="contact-form" action="{{ route('contact.store') }}" method="POST" class="glass-card p-6 lg:p-10 space-y-5">
                 @csrf
+                <x-honeypot />
 
                 @if (session('status'))
                     <div class="rounded-xl border border-emerald-500/40 bg-emerald-500/10 px-4 py-3 text-emerald-300 text-sm">

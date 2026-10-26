@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ContactMessage;
 use App\Models\User;
 use App\Notifications\NewContactMessageNotification;
+use App\Support\SpamGuard;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
@@ -19,6 +20,11 @@ class ContactController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        // Bots get the normal success message but nothing is stored.
+        if (SpamGuard::isBot($request)) {
+            return back()->with('status', __('Thanks! Your message has been sent — we will get back to you within 24 hours.'))->withFragment('contact-form');
+        }
+
         $data = $request->validate([
             'name'    => ['required', 'string', 'max:120'],
             'email'   => ['required', 'string', 'email:rfc', 'max:191'],

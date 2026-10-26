@@ -72,18 +72,18 @@
         <div class="lg:col-span-2 space-y-8">
             <section>
                 <h2 class="font-display text-xl font-bold text-white">{{ __('Description') }}</h2>
-                <div class="prose prose-invert mt-4 max-w-none">{!! $vacancy->t('description') !!}</div>
+                <div class="prose prose-invert mt-4 max-w-none">{{ \App\Support\SafeHtml::clean($vacancy->t('description')) }}</div>
             </section>
             @if(! empty($vacancy->getTranslations('requirements')))
                 <section>
                     <h2 class="font-display text-xl font-bold text-white">{{ __('Requirements') }}</h2>
-                    <div class="prose prose-invert mt-4 max-w-none">{!! $vacancy->t('requirements') !!}</div>
+                    <div class="prose prose-invert mt-4 max-w-none">{{ \App\Support\SafeHtml::clean($vacancy->t('requirements')) }}</div>
                 </section>
             @endif
             @if(! empty($vacancy->getTranslations('benefits')))
                 <section>
                     <h2 class="font-display text-xl font-bold text-white">{{ __('Benefits') }}</h2>
-                    <div class="prose prose-invert mt-4 max-w-none">{!! $vacancy->t('benefits') !!}</div>
+                    <div class="prose prose-invert mt-4 max-w-none">{{ \App\Support\SafeHtml::clean($vacancy->t('benefits')) }}</div>
                 </section>
             @endif
 

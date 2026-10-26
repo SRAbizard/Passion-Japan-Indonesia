@@ -81,6 +81,29 @@ class SiteSettings
     }
 
     /**
+     * Homepage scrolling band phrases in the current locale (falling back to
+     * Indonesian), or null when the admin left the band empty — the view
+     * then uses its automatic text. $band is "red" or "ink".
+     *
+     * @return list<string>|null
+     */
+    public static function marquee(string $band): ?array
+    {
+        $items = Setting::get("homepage.marquee_{$band}", []);
+        if (! is_array($items) || empty($items)) {
+            return null;
+        }
+        $locale = app()->getLocale();
+        $out = collect($items)
+            ->map(fn ($i) => trim((string) (($i[$locale] ?? '') ?: ($i['id'] ?? ''))))
+            ->filter()
+            ->values()
+            ->all();
+
+        return $out ?: null;
+    }
+
+    /**
      * PJI Learning URL (the separate learning platform), or null
      * while it is not online yet — callers hide the E-Learning link then.
      */

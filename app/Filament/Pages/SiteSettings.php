@@ -68,7 +68,33 @@ class SiteSettings extends Page
         // Login page wallpaper
         $data['login__background_path'] = Setting::get('login.background_path');
 
+        // Homepage scrolling bands: [{id, en, ja}, …]
+        foreach (['red', 'ink'] as $band) {
+            $items = Setting::get("homepage.marquee_{$band}", []);
+            $data["marquee__{$band}"] = is_array($items) ? $items : [];
+        }
+
         $this->form->fill($data);
+    }
+
+    /** One scrolling band: a list of phrases, each in id / en / ja. */
+    private function marqueeRepeater(string $name, string $label, string $hint): Repeater
+    {
+        return Repeater::make($name)
+            ->label($label)
+            ->helperText($hint)
+            ->itemLabel(fn (array $state): ?string => $state['id'] ?? null)
+            ->collapsible()
+            ->collapsed()
+            ->reorderable()
+            ->defaultItems(0)
+            ->maxItems(12)
+            ->addActionLabel(__('Add text'))
+            ->components([
+                TextInput::make('id')->label('Indonesia')->required()->maxLength(60),
+                TextInput::make('en')->label('English')->maxLength(60)->placeholder(__('Optional — falls back to Indonesian')),
+                TextInput::make('ja')->label('日本語')->maxLength(60)->placeholder(__('Optional — falls back to Indonesian')),
+            ]);
     }
 
     private function keyToFormName(string $key): string
@@ -157,9 +183,9 @@ class SiteSettings extends Page
                                 ->columnSpanFull(),
                         ]),
                 ]),
-                Tab::make(__('Hero slideshow'))->icon('heroicon-o-photo')->schema([
-                    Section::make(__('Hero background slides'))
-                        ->description(__('Upload up to 4 background images for the homepage hero. Empty slots fall back to default Japan photos.'))
+                Tab::make(__('Homepage'))->icon('heroicon-o-home')->schema([
+                    Section::make(__('Hero background photos'))
+                        ->description(__('Up to 4 photos that fade behind the top of the homepage (headline and job search), down to the scrolling text. Empty slots use default Japan photos.'))
                         ->components([
                             Repeater::make('hero__slides')
                                 ->label('')
@@ -180,6 +206,13 @@ class SiteSettings extends Page
                                 ])
                                 ->defaultItems(0)
                                 ->addActionLabel(__('Add slide')),
+                        ]),
+                    Section::make(__('Scrolling text'))
+                        ->description(__('The two moving bands under the homepage hero. Leave a band empty to use its automatic text.'))
+                        ->columns(2)
+                        ->components([
+                            $this->marqueeRepeater('marquee__red', __('Red band'), __('Empty = the job category names from Job Categories.')),
+                            $this->marqueeRepeater('marquee__ink', __('Dark band'), __('Empty = "Official job openings", "Verified partner companies", …')),
                         ]),
                 ]),
                 Tab::make(__('Login background'))->icon('heroicon-o-photo')->schema([
@@ -294,6 +327,15 @@ class SiteSettings extends Page
             ->values()
             ->all();
         Setting::set('hero.slides', $slides, 'hero');
+
+        foreach (['red', 'ink'] as $band) {
+            $items = collect($state["marquee__{$band}"] ?? [])
+                ->map(fn ($i) => ['id' => trim((string) ($i['id'] ?? '')), 'en' => trim((string) ($i['en'] ?? '')), 'ja' => trim((string) ($i['ja'] ?? ''))])
+                ->filter(fn ($i) => $i['id'] !== '')
+                ->values()
+                ->all();
+            Setting::set("homepage.marquee_{$band}", $items, 'homepage');
+        }
 
         // Login page wallpaper single-file upload
         Setting::set('login.background_path', $state['login__background_path'] ?? null, 'login');

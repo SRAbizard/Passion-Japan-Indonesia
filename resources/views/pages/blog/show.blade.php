@@ -41,7 +41,7 @@
     @endif
 
     <div class="prose prose-invert prose-headings:font-display prose-headings:text-white prose-a:text-brand-400 mt-10 max-w-none text-surface-200 leading-relaxed">
-        {!! $post->t('body') !!}
+        {{ \App\Support\SafeHtml::clean($post->t('body')) }}
     </div>
 
     @if(! empty($post->tags))

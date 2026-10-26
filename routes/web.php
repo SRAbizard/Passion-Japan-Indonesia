@@ -28,6 +28,12 @@ Route::post('jobs/{slug}/apply',  [\App\Http\Controllers\JobController::class, '
     ->middleware('throttle:10,1')
     ->name('job.apply');
 
+Route::get('services', \App\Http\Controllers\ServicesController::class)->name('services');
+Route::get('for-employers',  [\App\Http\Controllers\EmployerController::class, 'show'])->name('employers');
+Route::post('for-employers', [\App\Http\Controllers\EmployerController::class, 'store'])
+    ->middleware('throttle:5,1')
+    ->name('employers.store');
+
 Route::get('gallery',         [\App\Http\Controllers\GalleryController::class, 'index'])->name('gallery.index');
 Route::get('gallery/{slug}',  [\App\Http\Controllers\GalleryController::class, 'show'])->name('gallery.show');
 

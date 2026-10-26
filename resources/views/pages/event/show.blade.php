@@ -54,7 +54,7 @@
     </div>
 
     <div class="prose prose-invert prose-headings:font-display prose-headings:text-white prose-a:text-brand-400 mt-10 max-w-none text-surface-200 leading-relaxed">
-        {!! $event->t('description') !!}
+        {{ \App\Support\SafeHtml::clean($event->t('description')) }}
     </div>
 
     @if($event->registration_url)

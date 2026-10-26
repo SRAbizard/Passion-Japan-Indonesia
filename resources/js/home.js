@@ -273,10 +273,12 @@ function boot() {
         words.forEach((w) => w.classList.add('on'));
     } else {
         ctx.add(() => {
-            ScrollTrigger.create({
-                trigger: '[data-pj-statement]', start: 'top 80%', end: 'bottom 45%', scrub: true,
-                onUpdate: (self) => { const n = Math.round(self.progress * words.length); words.forEach((w, i) => w.classList.toggle('on', i < n)); },
-            });
+            if (words.length) {
+                ScrollTrigger.create({
+                    trigger: '[data-pj-statement]', start: 'top 80%', end: 'bottom 45%', scrub: true,
+                    onUpdate: (self) => { const n = Math.round(self.progress * words.length); words.forEach((w, i) => w.classList.toggle('on', i < n)); },
+                });
+            }
 
             $$('[data-pj-countup]').forEach((b) => {
                 const raw = b.textContent.trim();
@@ -295,6 +297,7 @@ function boot() {
             cleanups.push(() => mm.revert());
             mm.add('(min-width: 901px)', () => {
                 const path = $('[data-pj-route-path]'), done = $('[data-pj-route-done]');
+                if (!path || !done) return;
                 const len = path.getTotalLength();
                 done.style.strokeDasharray = len; done.style.strokeDashoffset = len;
                 const marks = [0.06, 0.29, 0.52, 0.74, 0.96];
@@ -317,7 +320,7 @@ function boot() {
 
     /* ---------- hero entrance (every homepage visit) ---------- */
     const html = document.documentElement;
-    if (reduce) {
+    if (reduce || !$('.pj-hero')) {
         html.classList.add('pj-entered');
     } else {
         let entered = false;
@@ -340,7 +343,6 @@ function boot() {
                     .from('.pj-scene .cloud.c1', { x: 100, opacity: 0, duration: 0.6, ease: 'power2.out' }, 0.3)
                     .from('.pj-scene .cloud.c2', { x: -100, opacity: 0, duration: 0.6, ease: 'power2.out' }, 0.32)
                     .from('.pj-scene .crane', { x: -140, y: 70, rotate: -25, opacity: 0, duration: 0.7, ease: 'power2.out' }, 0.35)
-                    .from('.pj-scene .photo', { y: -100, rotate: 30, opacity: 0, duration: 0.55 }, 0.4)
                     .from('.pj-pass', { x: 200, rotate: 14, opacity: 0, duration: 0.55 }, 0.45);
                 // Hand the inline transforms back to the stylesheet afterwards.
                 tl.eventCallback('onComplete', () => gsap.set('.pj-hero .pj-sticker, .pj-hero h1 .l, .pj-hero h1 .flag, .pj-hero .pj-lede, .pj-hero .pj-finder, .pj-scene > *', { clearProps: 'transform,opacity' }));

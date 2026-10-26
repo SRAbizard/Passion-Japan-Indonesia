@@ -86,7 +86,7 @@
 
                 {{-- Program Passion dropdown — job portal + (external) PJI Learning --}}
                 <div class="relative group">
-                    <button type="button" class="pj-navlink inline-flex items-center gap-1 {{ request()->routeIs('job.*') ? 'is-active' : '' }}">
+                    <button type="button" class="pj-navlink inline-flex items-center gap-1 {{ request()->routeIs('job.*', 'services') ? 'is-active' : '' }}">
                         {{ __('Program Passion') }}
                         <svg class="h-3 w-3 opacity-60 transition group-hover:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
                     </button>
@@ -95,6 +95,10 @@
                             <a href="{{ route('job.index') }}" wire:navigate>
                                 <span class="block font-bold">{{ __('Job Vacancies') }}</span>
                                 <span class="block text-xs opacity-70">{{ __('Verified jobs from partner companies') }}</span>
+                            </a>
+                            <a href="{{ route('services') }}" wire:navigate>
+                                <span class="block font-bold">{{ __('Services') }}</span>
+                                <span class="block text-xs opacity-70">{{ __('Tokutei Ginou, Internship & Engineer routes') }}</span>
                             </a>
                             @if($academyUrl)
                                 <a href="{{ $academyUrl }}" target="_blank" rel="noopener">
@@ -115,13 +119,14 @@
 
                 {{-- Perusahaan dropdown — About + Contact --}}
                 <div class="relative group">
-                    <button type="button" class="pj-navlink inline-flex items-center gap-1 {{ request()->routeIs('about', 'contact') ? 'is-active' : '' }}">
+                    <button type="button" class="pj-navlink inline-flex items-center gap-1 {{ request()->routeIs('about', 'contact', 'employers') ? 'is-active' : '' }}">
                         {{ __('Company') }}
                         <svg class="h-3 w-3 opacity-60 transition group-hover:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
                     </button>
                     <div class="absolute left-0 top-full pt-2 hidden group-hover:block group-focus-within:block min-w-[200px] z-30">
                         <div class="pj-menu">
                             <a href="{{ route('about') }}" wire:navigate class="font-semibold">{{ __('About Us') }}</a>
+                            <a href="{{ route('employers') }}" wire:navigate class="font-semibold">{{ __('For Employers') }}</a>
                             <a href="{{ route('contact') }}" wire:navigate class="font-semibold">{{ __('Contact') }}</a>
                         </div>
                     </div>
@@ -178,6 +183,7 @@
                         <a href="{{ url('/') }}" wire:navigate>{{ __('Home') }}</a>
                         <p class="px-3 pt-3 pb-1 text-[10px] uppercase tracking-wider opacity-60 font-bold">{{ __('Program Passion') }}</p>
                         <a href="{{ route('job.index') }}" wire:navigate>{{ __('Job Vacancies') }}</a>
+                        <a href="{{ route('services') }}" wire:navigate>{{ __('Services') }}</a>
                         @if($academyUrl)
                             <a href="{{ $academyUrl }}" target="_blank" rel="noopener">{{ __('E-Learning') }} ↗</a>
                         @endif
@@ -186,6 +192,7 @@
                         @endforeach
                         <p class="px-3 pt-3 pb-1 text-[10px] uppercase tracking-wider opacity-60 font-bold">{{ __('Company') }}</p>
                         <a href="{{ route('about') }}" wire:navigate>{{ __('About Us') }}</a>
+                        <a href="{{ route('employers') }}" wire:navigate>{{ __('For Employers') }}</a>
                         <a href="{{ route('contact') }}" wire:navigate>{{ __('Contact') }}</a>
                         @guest
                             <a href="/dashboard/login" class="sm:hidden font-bold">{{ __('Login') }}</a>
@@ -259,6 +266,8 @@
                 <ul class="space-y-2 text-sm opacity-85">
                     <li><a href="{{ url('/') }}" wire:navigate>{{ __('Home') }}</a></li>
                     <li><a href="{{ route('job.index') }}" wire:navigate>{{ __('Job Vacancies') }}</a></li>
+                    <li><a href="{{ route('services') }}" wire:navigate>{{ __('Services') }}</a></li>
+                    <li><a href="{{ route('employers') }}" wire:navigate>{{ __('For Employers') }}</a></li>
                     @if($academyUrl)
                         <li><a href="{{ $academyUrl }}" target="_blank" rel="noopener">{{ __('E-Learning') }} ↗</a></li>
                     @endif

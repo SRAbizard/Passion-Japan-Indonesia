@@ -7,13 +7,14 @@ use App\Models\JobCategory;
 use App\Models\JobVacancy;
 use App\Models\VisaCategory;
 use App\Support\JapanRegions;
+use App\Support\MatchingData;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class JobController extends Controller
 {
-    public function index(Request $request): View
+    public function index(Request $request, MatchingData $matching): View
     {
         $q = JobVacancy::query()
             ->published()
@@ -40,6 +41,7 @@ class JobController extends Controller
             'visas'     => VisaCategory::orderBy('sort_order')->withCount('vacancies')->get(),
             'jobCats'   => JobCategory::orderBy('sort_order')->withCount('vacancies')->get(),
             'regions'   => JapanRegions::all(),
+            'matching'  => $matching,
         ]);
     }
 
