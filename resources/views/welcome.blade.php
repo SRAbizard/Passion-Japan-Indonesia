@@ -343,6 +343,7 @@
 @if($albums->isNotEmpty())
 <section class="pj-section pj-gallery" id="galeri">
     <div class="pj-scallop absolute top-0 inset-x-0" aria-hidden="true"></div>
+    <span class="pj-gallery-deco" aria-hidden="true">思い出</span>
     <div class="pj-wrap">
         <div class="pj-head">
             <h2><span class="jp">ギャラリー</span>{{ __('From our albums') }}</h2>
