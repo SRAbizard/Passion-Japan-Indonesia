@@ -48,6 +48,7 @@
 :root {
     --pj-washi: #F5EDE0;     /* page paper */
     --pj-washi-2: #EEE3D2;   /* alternate band */
+    --pj-hero-bg: #E8DAC3;   /* inner-page title band, a shade darker than the page */
     --pj-kami: #FFFAF2;      /* card paper */
     --pj-ink: #1D1730;       /* text */
     --pj-ink-soft: #7d7062;  /* muted text */
@@ -64,6 +65,7 @@
 html.dark {
     --pj-washi: #15111F;
     --pj-washi-2: #1B1628;
+    --pj-hero-bg: #0D0A14;
     --pj-kami: #221C33;
     --pj-ink: #F5EDE0;
     --pj-ink-soft: #ADA295;
@@ -285,7 +287,17 @@ html.light .pj-footer .text-white { color: #F5EDE0 !important; }
 .pj-footer a:hover { color: var(--pj-kin); }
 
 /* Page hero (inner pages) */
-.pj-page-hero { position: relative; overflow: hidden; isolation: isolate; }
+/* Like the homepage hero, the band slides up under the sticky header so its
+   colour reaches the top of the window. */
+.pj-page-hero {
+    position: relative; overflow: hidden; isolation: isolate; background: var(--pj-hero-bg);
+    margin-top: -6rem; padding-top: 6rem;
+}
+/* Scalloped bottom edge: page-coloured bumps rising into the darker band. */
+.pj-page-hero::after {
+    content: ""; position: absolute; inset: auto 0 0; height: 22px; pointer-events: none;
+    background: radial-gradient(circle at 11px 22px, var(--pj-washi) 11px, transparent 11.5px) 0 0 / 22px 22px repeat-x;
+}
 .pj-page-hero h1 { text-shadow: 4px 4px 0 var(--pj-sakura); }
 .pj-page-hero .pj-hero-art {
     position: absolute; z-index: -1; right: 0; bottom: 0; width: min(640px, 58vw); height: auto; max-height: 100%;
