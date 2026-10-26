@@ -170,40 +170,32 @@ class SiteSettings
     }
 
     /**
-     * Hero slideshow slides — admin can upload up to 4 images. Each
-     * entry merges admin-uploaded image (if any) with a sensible
-     * fallback Unsplash photo + brand-tinted background colour so
-     * there's never an empty frame.
+     * Hero background photos — the admin can upload up to 4. When none
+     * are uploaded (or every upload is gone from the disk), the three
+     * bundled Japan photos in public/images/hero are shown instead.
      *
-     * @return array<int, array{image: string, color: string}>
+     * @return array<int, array{image: string}>
      */
     public static function heroSlides(): array
     {
-        $defaults = [
-            ['image' => 'https://images.unsplash.com/photo-1480796927426-f609979314bd?auto=format&fit=crop&w=1920&q=70', 'color' => '#4a0f07'],
-            ['image' => 'https://images.unsplash.com/photo-1522383225653-ed111181a951?auto=format&fit=crop&w=1920&q=70', 'color' => '#6d160a'],
-            ['image' => 'https://images.unsplash.com/photo-1528360983277-13d401cdc186?auto=format&fit=crop&w=1920&q=70', 'color' => '#2a0805'],
-            ['image' => 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=1920&q=70', 'color' => '#0e1124'],
-        ];
+        $uploaded = collect(Setting::get('hero.slides', []) ?: [])
+            ->pluck('image_path')
+            ->filter(fn ($path) => is_string($path) && $path !== ''
+                && \Illuminate\Support\Facades\Storage::disk('public')->exists($path))
+            ->take(4)
+            ->map(fn (string $path) => ['image' => asset('storage/'.$path)])
+            ->values()
+            ->all();
 
-        $stored = Setting::get('hero.slides', null);
-        if (! is_array($stored) || empty($stored)) {
-            return $defaults;
+        if ($uploaded) {
+            return $uploaded;
         }
 
-        // Fill up to 4 slots, falling back to defaults for empty slots
-        // (or for an uploaded file that is no longer on the disk).
-        $out = [];
-        for ($i = 0; $i < 4; $i++) {
-            $slide     = $stored[$i] ?? null;
-            $imagePath = $slide['image_path'] ?? null;
-            $out[] = [
-                'image' => $imagePath && \Illuminate\Support\Facades\Storage::disk('public')->exists($imagePath)
-                    ? asset('storage/'.$imagePath)
-                    : $defaults[$i]['image'],
-                'color' => $defaults[$i]['color'],
-            ];
-        }
-        return $out;
+        // Unsplash photos (free to use): Mt Fuji & Chureito pagoda,
+        // Yasaka pagoda in Kyoto, Tokyo Tower skyline.
+        return array_map(
+            fn (int $i) => ['image' => asset("images/hero/japan-{$i}.jpg")],
+            [1, 2, 3],
+        );
     }
 }

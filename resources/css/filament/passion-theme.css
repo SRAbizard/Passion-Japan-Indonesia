@@ -151,7 +151,6 @@
     --pj-red: #B32510;
     --pj-sakura: #F5C3C8;
     --pj-kin: #F1AF2E;
-    --pj-grid: rgba(29, 23, 48, .06);
 }
 .dark {
     --pj-washi: #15111F;
@@ -161,15 +160,10 @@
     --pj-shadow-c: #000000;
     --pj-red: #D23A22;
     --pj-sakura: #6B3442;
-    --pj-grid: rgba(245, 237, 224, .05);
 }
 
 body:has(.pj-auth) {
     background-color: var(--pj-washi) !important;
-    background-image:
-        linear-gradient(var(--pj-grid) 1px, transparent 1px),
-        linear-gradient(90deg, var(--pj-grid) 1px, transparent 1px) !important;
-    background-size: 36px 36px !important;
 }
 body:has(.pj-auth) .fi-simple-layout,
 body:has(.pj-auth) .fi-body { background: transparent !important; }
@@ -284,11 +278,7 @@ body:has(.pj-auth) .fi-simple-main .fi-link { color: var(--pj-red) !important; f
    ─────────────────────────────────────────────────────────────────── */
 .fi-body {
     background-color: var(--pj-washi) !important;
-    background-image:
-        linear-gradient(var(--pj-grid) 1px, transparent 1px),
-        linear-gradient(90deg, var(--pj-grid) 1px, transparent 1px) !important;
-    background-size: 36px 36px !important;
-    background-position: 0 0 !important;
+    background-image: none !important;
 }
 .fi-topbar {
     background: var(--pj-kami) !important;

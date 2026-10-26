@@ -185,7 +185,7 @@ class SiteSettings extends Page
                 ]),
                 Tab::make(__('Homepage'))->icon('heroicon-o-home')->schema([
                     Section::make(__('Hero background photos'))
-                        ->description(__('Up to 4 photos that fade behind the top of the homepage (headline and job search), down to the scrolling text. Empty slots use default Japan photos.'))
+                        ->description(__('Up to 4 photos that fade behind the top of the homepage (headline and job search), down to the scrolling text. With no photos uploaded, 3 default Japan photos are shown.'))
                         ->components([
                             Repeater::make('hero__slides')
                                 ->label('')

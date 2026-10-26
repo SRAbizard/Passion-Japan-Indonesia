@@ -1106,7 +1106,7 @@
     "Up to 1 GB. For large files, raise upload_max_filesize + post_max_size in php.ini.": "Maksimal 1 GB. Untuk file besar, naikkan upload_max_filesize dan post_max_size di php.ini.",
     "Homepage": "Beranda",
     "Hero background photos": "Foto latar bagian atas Home",
-    "Up to 4 photos that fade behind the top of the homepage (headline and job search), down to the scrolling text. Empty slots use default Japan photos.": "Maksimal 4 foto yang berganti di belakang bagian atas Home (judul dan kolom cari kerja), sampai batas teks berjalan. Slot kosong memakai foto Jepang bawaan.",
+    "Up to 4 photos that fade behind the top of the homepage (headline and job search), down to the scrolling text. With no photos uploaded, 3 default Japan photos are shown.": "Maksimal 4 foto yang berganti di belakang bagian atas Home (judul dan kolom cari kerja), sampai batas teks berjalan. Jika belum ada foto yang diunggah, 3 foto Jepang bawaan yang ditampilkan.",
     "Scrolling text": "Teks berjalan",
     "The two moving bands under the homepage hero. Leave a band empty to use its automatic text.": "Dua pita teks berjalan di bawah bagian atas Home. Kosongkan untuk memakai teks otomatis.",
     "Red band": "Pita merah",

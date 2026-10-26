@@ -1119,7 +1119,7 @@
     "Up to 1 GB. For large files, raise upload_max_filesize + post_max_size in php.ini.": "最大1GB。大きなファイルはphp.iniのupload_max_filesizeとpost_max_sizeを引き上げてください。",
     "Homepage": "ホーム",
     "Hero background photos": "トップの背景写真",
-    "Up to 4 photos that fade behind the top of the homepage (headline and job search), down to the scrolling text. Empty slots use default Japan photos.": "ホーム上部（見出しと求人検索）の背景に切り替わる写真を最大4枚。流れる文字の手前まで表示されます。空欄の場合は標準の日本の写真を使用します。",
+    "Up to 4 photos that fade behind the top of the homepage (headline and job search), down to the scrolling text. With no photos uploaded, 3 default Japan photos are shown.": "ホーム上部（見出しと求人検索）の背景に切り替わる写真を最大4枚。流れる文字の手前まで表示されます。写真が未登録の場合は、標準の日本の写真3枚が表示されます。",
     "Scrolling text": "流れる文字",
     "The two moving bands under the homepage hero. Leave a band empty to use its automatic text.": "ホーム上部の下にある2本の流れる帯。空欄の場合は自動のテキストを表示します。",
     "Red band": "赤い帯",

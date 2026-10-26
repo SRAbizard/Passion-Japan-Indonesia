@@ -96,10 +96,6 @@
                                 <span class="block font-bold">{{ __('Job Vacancies') }}</span>
                                 <span class="block text-xs opacity-70">{{ __('Verified jobs from partner companies') }}</span>
                             </a>
-                            <a href="{{ route('services') }}" wire:navigate>
-                                <span class="block font-bold">{{ __('Services') }}</span>
-                                <span class="block text-xs opacity-70">{{ __('Tokutei Ginou, Internship & Engineer routes') }}</span>
-                            </a>
                             @if($academyUrl)
                                 <a href="{{ $academyUrl }}" target="_blank" rel="noopener">
                                     <span class="flex items-center gap-1.5 font-bold">
@@ -183,7 +179,6 @@
                         <a href="{{ url('/') }}" wire:navigate>{{ __('Home') }}</a>
                         <p class="px-3 pt-3 pb-1 text-[10px] uppercase tracking-wider opacity-60 font-bold">{{ __('Program Passion') }}</p>
                         <a href="{{ route('job.index') }}" wire:navigate>{{ __('Job Vacancies') }}</a>
-                        <a href="{{ route('services') }}" wire:navigate>{{ __('Services') }}</a>
                         @if($academyUrl)
                             <a href="{{ $academyUrl }}" target="_blank" rel="noopener">{{ __('E-Learning') }} ↗</a>
                         @endif
