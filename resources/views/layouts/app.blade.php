@@ -301,7 +301,7 @@
             </div>
         </div>
         <div class="border-t border-white/10">
-            <div class="mx-auto max-w-7xl px-6 py-5 text-xs opacity-70">
+            <div class="mx-auto max-w-7xl px-6 pt-5 pb-24 text-xs opacity-70">
                 <div class="flex flex-wrap items-center justify-between gap-x-6 gap-y-2">
                     <p>&copy; {{ date('Y') }} PT. Passion Japan Indonesia. {{ __('All rights reserved.') }}</p>
                     <nav class="flex flex-wrap gap-x-4 gap-y-1" aria-label="{{ __('Legal') }}">
