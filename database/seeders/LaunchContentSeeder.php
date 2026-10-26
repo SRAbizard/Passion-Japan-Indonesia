@@ -145,16 +145,10 @@ HTML,
             EventCategory::updateOrCreate(['slug' => $c['slug']], ['name' => $c['name'], 'color' => $c['color'], 'sort_order' => $i + 1]);
         }
 
-        $cover   = $this->asset('kelistrikan-1.jpg', 'events');
-        $welcome = '/storage/'.$this->asset('kelistrikan-welcome.png', 'events');
-        $photo2  = '/storage/'.$this->asset('kelistrikan-2.jpg', 'events');
-        $photo3  = '/storage/'.$this->asset('kelistrikan-3.jpg', 'events');
-
         $companies = '<ul>'.collect([
             'オカデン', '昭和電工社', '東邦電気産業', '中島電気工事', '洛南エンジニアリング',
             '尾形電気工事', '鳳電気土木', '森電気工業', '丹和', '晶和電気工業',
         ])->map(fn ($name) => "<li>{$name}</li>")->implode('').'</ul>';
-        $gallery = "<p><img src=\"{$welcome}\" alt=\"\"></p><p><img src=\"{$photo2}\" alt=\"\"></p><p><img src=\"{$photo3}\" alt=\"\"></p>";
 
         Event::updateOrCreate(['slug' => 'interview-bidang-kelistrikan-internship'], [
             'event_category_id' => EventCategory::where('slug', 'interview-perusahaan')->value('id'),
@@ -167,19 +161,19 @@ HTML,
                 'id' => '<p>Passion Japan Indonesia menyambut perwakilan sepuluh perusahaan kelistrikan dari Jepang yang datang langsung untuk mewawancarai calon peserta program <strong>Internship (magang) bidang kelistrikan</strong>.</p>'
                     .'<p>Peserta yang telah mengikuti pelatihan bahasa dan persiapan kerja di Passion Japan akan menjalani interview tatap muka dengan masing-masing perusahaan.</p>'
                     .'<h3>Perusahaan yang hadir</h3>'.$companies
-                    .'<p>Semoga sukses untuk seluruh peserta! がんばってください！</p>'.$gallery,
+                    .'<p>Semoga sukses untuk seluruh peserta! がんばってください！</p>',
                 'en' => '<p>Passion Japan Indonesia welcomes representatives of ten Japanese electrical companies who are visiting in person to interview candidates for the <strong>electrical work Internship programme</strong>.</p>'
                     .'<p>Candidates who completed language training and work preparation at Passion Japan will have face-to-face interviews with each company.</p>'
                     .'<h3>Participating companies</h3>'.$companies
-                    .'<p>Good luck to all candidates! がんばってください！</p>'.$gallery,
+                    .'<p>Good luck to all candidates! がんばってください！</p>',
                 'ja' => '<p>Passion Japan Indonesiaは、<strong>電気工事分野の技能実習</strong>候補者の面接のため来訪される、日本の電気工事会社10社の皆さまをお迎えします。</p>'
                     .'<p>Passion Japanで日本語研修と就労準備を受けた候補者が、各社との対面面接に臨みます。</p>'
                     .'<h3>参加企業</h3>'.$companies
-                    .'<p>候補者の皆さん、がんばってください！</p>'.$gallery,
+                    .'<p>候補者の皆さん、がんばってください！</p>',
             ],
             'organizer' => ['id' => 'Passion Japan Indonesia', 'en' => 'Passion Japan Indonesia', 'ja' => 'Passion Japan Indonesia'],
             'location'  => ['id' => 'Kantor Passion Japan Indonesia', 'en' => 'Passion Japan Indonesia office', 'ja' => 'Passion Japan Indonesia 事務所'],
-            'image_path'   => $cover,
+            'image_path'   => $this->asset('kelistrikan-welcome.png', 'events'),
             'starts_at'    => '2026-10-29 09:00:00',
             'ends_at'      => '2026-10-29 16:00:00',
             'published_at' => '2026-10-26 09:00:00',
@@ -187,31 +181,35 @@ HTML,
         ]);
     }
 
-    /**
-     * The Kaneyo interview album. No photos are bundled yet, so it stays
-     * unpublished until photos are added in Admin → Gallery.
-     */
+    /** The Kaneyo interview album with its three group photos. */
     private function seedGallery(): void
     {
-        $album = Gallery::firstOrNew(['slug' => 'interview-offline-kaneyo-2026']);
+        // Matched on the earlier slug too, so a database seeded before the
+        // rename is updated instead of getting a second album.
+        $album = Gallery::whereIn('slug', ['wawancara-offline-kaneyo-2026', 'interview-offline-kaneyo-2026'])->first()
+            ?? new Gallery(['sort_order' => 0]);
         $album->fill([
+            'slug'  => 'wawancara-offline-kaneyo-2026',
             'title' => [
-                'id' => 'Interview Offline Driver, Kensetsu, dan Doboku di Perusahaan Kaneyo',
-                'en' => 'Offline Interviews for Driver, Kensetsu and Doboku at Kaneyo',
-                'ja' => 'カネヨ社 ドライバー・建設・土木 対面面接',
+                'id' => 'Wawancara Offline Driver, Konstruksi Bangunan, Teknik Sipil di Perusahaan Kaneyo',
+                'en' => 'Offline Interviews for Driver, Building Construction and Civil Engineering at Kaneyo',
+                'ja' => 'カネヨ社 ドライバー・建築・土木 対面面接',
             ],
             'caption' => [
-                'id' => 'Dokumentasi interview tatap muka calon pekerja bidang Driver, Kensetsu (konstruksi) dan Doboku (teknik sipil) bersama perusahaan Kaneyo, 22 Oktober 2026.',
-                'en' => 'Face-to-face interviews of Driver, Kensetsu (construction) and Doboku (civil engineering) candidates with Kaneyo, 22 October 2026.',
-                'ja' => '2026年10月22日、カネヨ社によるドライバー・建設・土木分野の候補者との対面面接の記録。',
+                'id' => 'Dokumentasi wawancara tatap muka calon pekerja bidang Driver, Konstruksi Bangunan dan Teknik Sipil bersama perusahaan Kaneyo, 22 Oktober 2026.',
+                'en' => 'Face-to-face interviews of Driver, Building Construction and Civil Engineering candidates with Kaneyo, 22 October 2026.',
+                'ja' => '2026年10月22日、カネヨ社によるドライバー・建築・土木分野の候補者との対面面接の記録。',
             ],
-            'taken_at' => '2026-10-22',
-        ]);
-        if (! $album->exists) {
-            $album->is_published = false;
-            $album->sort_order   = 0;
+            'taken_at'     => '2026-10-22',
+            'is_published' => true,
+        ])->save();
+
+        foreach ([1, 2, 3] as $i) {
+            $album->items()->updateOrCreate(
+                ['image_path' => $this->asset("kaneyo-{$i}.jpg", 'gallery')],
+                ['type' => 'image', 'sort_order' => $i, 'is_published' => true],
+            );
         }
-        $album->save();
     }
 
     /** Give each testimonial without a photo one of the bundled avatars. */
