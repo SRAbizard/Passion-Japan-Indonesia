@@ -54,7 +54,7 @@ class ViewStudent extends Page
                 Action::make('downloadCv')->label(__('Download PDF'))->icon('heroicon-o-arrow-down-tray')
                     ->url(fn () => route('admin.student-cv', [$this->record, 'download' => 1])),
             ])
-                ->label(__('CV (履歴書)'))
+                ->label(__('Japanese CV'))
                 ->icon('heroicon-o-document-text')
                 ->color('gray')
                 ->button(),

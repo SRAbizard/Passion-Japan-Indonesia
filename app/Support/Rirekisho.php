@@ -19,6 +19,23 @@ class Rirekisho
     /** Rows per table in the template; extra entries add rows. */
     public const ROWS = ['education' => 4, 'work' => 10, 'licenses' => 4];
 
+    /** Profile nationality (stored in English) → how the CV writes it. */
+    public const NATIONALITIES = [
+        'Indonesia'   => 'インドネシア',
+        'Philippines' => 'フィリピン',
+        'Vietnam'     => 'ベトナム',
+        'Myanmar'     => 'ミャンマー',
+        'Nepal'       => 'ネパール',
+        'Thailand'    => 'タイ',
+        'Cambodia'    => 'カンボジア',
+        'Sri Lanka'   => 'スリランカ',
+        'Bangladesh'  => 'バングラデシュ',
+        'India'       => 'インド',
+        'Mongolia'    => 'モンゴル',
+        'Uzbekistan'  => 'ウズベキスタン',
+        'Japan'       => '日本',
+    ];
+
     /** Profile religion → the template's 宗教 dropdown values. */
     private const RELIGIONS = [
         'islam'     => 'イスラム教',
@@ -50,7 +67,7 @@ class Rirekisho
             'name_kana'    => $p?->name_kana,
             'name'         => Str::upper($p?->full_name ?: $user->name),
             'gender'       => match ($p?->gender) { 'male' => '男', 'female' => '女', default => null },
-            'nationality'  => $p?->nationality ?: 'インドネシア',
+            'nationality'  => self::NATIONALITIES[$p?->nationality ?: 'Indonesia'] ?? $p->nationality,
             'birth'        => $birth,
             'age'          => $birth?->age,
             'desired_job'  => $desiredJob ?: $p?->desired_job,
