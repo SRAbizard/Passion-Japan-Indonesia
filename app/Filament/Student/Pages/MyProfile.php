@@ -77,6 +77,7 @@ class MyProfile extends Page implements HasForms
                             TextInput::make('email')->label(__('Email'))->email()->disabled()
                                 ->helperText(__('Contact admin to change email')),
                             TextInput::make('phone')->label(__('Phone'))->tel()->maxLength(32),
+                            TextInput::make('studentProfile.line_id')->label('LINE ID')->maxLength(80),
                         ]),
                         Section::make(__('Photo'))->components([
                             FileUpload::make('studentProfile.photo_path')->label(__('Profile photo'))
@@ -87,12 +88,14 @@ class MyProfile extends Page implements HasForms
                     Tab::make(__('Biodata'))->icon('heroicon-o-identification')->schema([
                         Section::make(__('Personal information'))->columns(2)->components([
                             TextInput::make('studentProfile.full_name')->label(__('Full legal name'))->maxLength(160),
+                            TextInput::make('studentProfile.name_kana')->label(__('Name in katakana (フリガナ)'))->placeholder('ブディ　サントソ')->maxLength(160),
                             TextInput::make('studentProfile.nickname')->label(__('Nickname'))->maxLength(80),
                             Select::make('studentProfile.gender')->label(__('Gender'))
                                 ->options(['male' => __('Male'), 'female' => __('Female')])->native(false),
                             DatePicker::make('studentProfile.birthdate')->label(__('Birth date'))
                                 ->maxDate(now())->displayFormat('d M Y'),
                             TextInput::make('studentProfile.birthplace')->label(__('Birth place'))->maxLength(120),
+                            TextInput::make('studentProfile.nationality')->label(__('Nationality (国籍)'))->placeholder('インドネシア')->maxLength(80),
                             TextInput::make('studentProfile.religion')->label(__('Religion'))->maxLength(40),
                             Select::make('studentProfile.marital_status')->label(__('Marital status'))
                                 ->options([
@@ -107,11 +110,22 @@ class MyProfile extends Page implements HasForms
                             TextInput::make('studentProfile.passport_number')->label(__('Passport number'))->maxLength(32),
                             DatePicker::make('studentProfile.passport_expires_at')->label(__('Passport expires'))->displayFormat('d M Y'),
                         ]),
+                        Section::make(__('Work in Japan'))->columns(3)->components([
+                            TextInput::make('studentProfile.desired_job')->label(__('Position applied for (応募職種)'))->placeholder(__('e.g. Food processing (食品製造)'))->maxLength(160)->columnSpanFull(),
+                            TextInput::make('studentProfile.japan_visits_study')->label(__('Visits to Japan: study (留学)'))->numeric()->minValue(0)->maxValue(99)->suffix(__('times')),
+                            TextInput::make('studentProfile.japan_visits_work')->label(__('Visits to Japan: work, incl. working holiday (就職)'))->numeric()->minValue(0)->maxValue(99)->suffix(__('times')),
+                            TextInput::make('studentProfile.japan_visits_other')->label(__('Visits to Japan: other, e.g. travel (その他)'))->numeric()->minValue(0)->maxValue(99)->suffix(__('times')),
+                        ]),
+                        Section::make(__('Self introduction (自己PR)'))->components([
+                            Textarea::make('studentProfile.self_pr')->label('')->rows(7)->maxLength(1500)
+                                ->helperText(__('Your strengths, motivation to work in Japan and goals. Japanese is best; Indonesian or English is fine for a first draft.')),
+                        ]),
                     ]),
 
                     Tab::make(__('Address'))->icon('heroicon-o-home')->schema([
                         Section::make()->columns(2)->components([
                             Textarea::make('studentProfile.address')->label(__('Street address'))->rows(2)->columnSpanFull(),
+                            TextInput::make('studentProfile.address_kana')->label(__('City & province in katakana (フリガナ)'))->placeholder('タシクマラヤ、西ジャワ')->maxLength(255)->columnSpanFull(),
                             TextInput::make('studentProfile.city')->label(__('City'))->maxLength(80),
                             TextInput::make('studentProfile.province')->label(__('Province'))->maxLength(80),
                             TextInput::make('studentProfile.postal_code')->label(__('Postal code'))->maxLength(16),
@@ -144,6 +158,19 @@ class MyProfile extends Page implements HasForms
                                 Toggle::make('is_current')->label(__('Currently studying'))->inline(false),
                             ])
                             ->defaultItems(0),
+                        Section::make(__('Licences & certifications (免許・資格)'))
+                            ->description(__('Language certificates with a date (Languages tab) are added automatically.'))
+                            ->components([
+                                Repeater::make('studentProfile.licenses')->label('')
+                                    ->columns(4)
+                                    ->defaultItems(0)
+                                    ->addActionLabel(__('Add licence'))
+                                    ->components([
+                                        TextInput::make('year')->label(__('Year'))->numeric()->minValue(1950)->maxValue(2100),
+                                        Select::make('month')->label(__('Month'))->options(array_combine(range(1, 12), range(1, 12)))->native(false),
+                                        TextInput::make('name')->label(__('Licence / certificate'))->required()->maxLength(160)->columnSpan(2),
+                                    ]),
+                            ]),
                     ]),
 
                     Tab::make(__('Work experience'))->icon('heroicon-o-briefcase')->schema([
@@ -208,47 +235,10 @@ class MyProfile extends Page implements HasForms
                         Section::make()->components([
                             Textarea::make('studentProfile.allergies')->label(__('Allergies'))->rows(2),
                             Textarea::make('studentProfile.medical_conditions')->label(__('Medical conditions'))->rows(2),
+                            Textarea::make('studentProfile.cv_other')->label(__('Other notes (その他)'))->rows(2)->maxLength(500)
+                                ->helperText(__('Anything the employer should accommodate, e.g. halal food, prayer times, vegetarian. Allergies are added to your CV automatically.')),
                             Toggle::make('studentProfile.smoker')->label(__('Smoker'))->inline(false),
                             Toggle::make('studentProfile.drinker')->label(__('Drinks alcohol'))->inline(false),
-                        ]),
-                    ]),
-
-                    // Extra fields for the Japanese CV (履歴書). Everything else on
-                    // the CV comes from the other tabs.
-                    Tab::make(__('CV (履歴書)'))->icon('heroicon-o-document-text')->schema([
-                        Section::make(__('For your Japanese CV'))
-                            ->description(__('These details only appear on your 履歴書. Name, address, education, work history, languages and health come from the other tabs. Use the "CV (履歴書)" button at the top to view or download it.'))
-                            ->columns(2)
-                            ->components([
-                                TextInput::make('studentProfile.name_kana')->label(__('Name in katakana (フリガナ)'))->placeholder('ブディ　サントソ')->maxLength(160),
-                                TextInput::make('studentProfile.nationality')->label(__('Nationality (国籍)'))->placeholder('インドネシア')->maxLength(80),
-                                TextInput::make('studentProfile.desired_job')->label(__('Position applied for (応募職種)'))->placeholder(__('e.g. Food processing (食品製造)'))->maxLength(160),
-                                TextInput::make('studentProfile.line_id')->label('LINE ID')->maxLength(80),
-                                TextInput::make('studentProfile.address_kana')->label(__('Address in katakana (フリガナ)'))->maxLength(255)->columnSpanFull(),
-                            ]),
-                        Section::make(__('Previous visits to Japan (来日歴)'))->columns(3)->components([
-                            TextInput::make('studentProfile.japan_visits_study')->label(__('Study (留学)'))->numeric()->minValue(0)->maxValue(99)->suffix(__('times')),
-                            TextInput::make('studentProfile.japan_visits_work')->label(__('Work, incl. working holiday (就職)'))->numeric()->minValue(0)->maxValue(99)->suffix(__('times')),
-                            TextInput::make('studentProfile.japan_visits_other')->label(__('Other, e.g. travel (その他)'))->numeric()->minValue(0)->maxValue(99)->suffix(__('times')),
-                        ]),
-                        Section::make(__('Licences & certifications (免許・資格)'))
-                            ->description(__('Language certificates with a date (Languages tab) are added automatically.'))
-                            ->components([
-                                Repeater::make('studentProfile.licenses')->label('')
-                                    ->columns(4)
-                                    ->defaultItems(0)
-                                    ->addActionLabel(__('Add licence'))
-                                    ->components([
-                                        TextInput::make('year')->label(__('Year'))->numeric()->minValue(1950)->maxValue(2100),
-                                        Select::make('month')->label(__('Month'))->options(array_combine(range(1, 12), range(1, 12)))->native(false),
-                                        TextInput::make('name')->label(__('Licence / certificate'))->required()->maxLength(160)->columnSpan(2),
-                                    ]),
-                            ]),
-                        Section::make()->components([
-                            Textarea::make('studentProfile.self_pr')->label(__('Self introduction (自己PR)'))->rows(7)->maxLength(1500)
-                                ->helperText(__('Your strengths, motivation to work in Japan and goals. Japanese is best; Indonesian or English is fine for a first draft.')),
-                            Textarea::make('studentProfile.cv_other')->label(__('Other notes (その他)'))->rows(2)->maxLength(500)
-                                ->helperText(__('Anything the employer should accommodate, e.g. halal food, prayer times, vegetarian. Allergies from the Health tab are added automatically.')),
                         ]),
                     ]),
 

@@ -55,7 +55,8 @@ class Rirekisho
             'age'          => $birth?->age,
             'desired_job'  => $desiredJob ?: $p?->desired_job,
             'address_kana' => $p?->address_kana,
-            'address'      => Str::upper(trim(($p?->postal_code ? '〒'.$p->postal_code.' ' : '').collect([$p?->address, $p?->city, $p?->province])->filter()->implode(', '))),
+            // Only "CITY, PROVINCE", as in the filled-in example.
+            'address'      => Str::upper(collect([$p?->city, $p?->province])->filter()->implode(', ')),
             'phone'        => $user->phone ?: '-',
             'email'        => $user->email ?: '-',
             'line'         => $p?->line_id ?: '-',

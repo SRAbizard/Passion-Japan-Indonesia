@@ -1207,5 +1207,11 @@
     "Built from your saved profile. Save your changes first.": "保存済みのプロフィールから作成されます。先に変更を保存してください。",
     "Download Word (.docx)": "Wordをダウンロード（.docx）",
     "Start month": "入学月",
-    "End month": "卒業月"
+    "End month": "卒業月",
+    "Work in Japan": "日本での就労",
+    "Visits to Japan: study (留学)": "来日歴：留学",
+    "Visits to Japan: work, incl. working holiday (就職)": "来日歴：就職（ワーホリ含む）",
+    "Visits to Japan: other, e.g. travel (その他)": "来日歴：その他（旅行等）",
+    "City & province in katakana (フリガナ)": "市・州のフリガナ",
+    "Anything the employer should accommodate, e.g. halal food, prayer times, vegetarian. Allergies are added to your CV automatically.": "受け入れ側で配慮が必要なこと（ハラール食、礼拝時間、ベジタリアン等）。アレルギーは履歴書に自動で追加されます。"
 }
