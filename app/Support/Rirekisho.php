@@ -19,6 +19,13 @@ class Rirekisho
     /** Rows per table in the template; extra entries add rows. */
     public const ROWS = ['education' => 4, 'work' => 10, 'licenses' => 4];
 
+    /** Education levels a student can enter: senior high school and up. */
+    public const EDUCATION_LEVELS = [
+        'sma' => 'SMA', 'smk' => 'SMK',
+        'd1' => 'D1', 'd2' => 'D2', 'd3' => 'D3', 'd4' => 'D4',
+        's1' => 'S1', 's2' => 'S2', 's3' => 'S3',
+    ];
+
     /** Profile nationality (stored in English) → how the CV writes it. */
     public const NATIONALITIES = [
         'Indonesia'   => 'インドネシア',
@@ -53,14 +60,11 @@ class Rirekisho
 
     public static function data(User $user, ?string $desiredJob = null): array
     {
-        $user->loadMissing('studentProfile', 'educations', 'workExperiences', 'languages');
+        $user->loadMissing('studentProfile', 'educations', 'workExperiences');
         $p = $user->studentProfile;
 
-        $birth    = $p?->birthdate;
-        $japanese = $user->languages->first(fn ($l) => self::isJapanese($l->language));
-        $others   = $user->languages->reject(fn ($l) => $l === $japanese)
-            ->map(fn ($l) => trim($l->language.($l->proficiency ? " ({$l->proficiency})" : '')))->implode('、');
-        $photo    = $p?->photo_path ? storage_path('app/public/'.$p->photo_path) : null;
+        $birth = $p?->birthdate;
+        $photo = $p?->photo_path ? storage_path('app/public/'.$p->photo_path) : null;
 
         return [
             'today'        => now(),
@@ -78,8 +82,8 @@ class Rirekisho
             'email'        => $user->email ?: '-',
             'line'         => $p?->line_id ?: '-',
             'visits'       => [(int) $p?->japan_visits_study, (int) $p?->japan_visits_work, (int) $p?->japan_visits_other],
-            'japanese'     => $japanese ? trim($japanese->proficiency ?: $japanese->language) : null,
-            'other_lang'   => $others ?: '-',
+            'japanese'     => Certificates::japaneseLevel($p?->licenses),
+            'other_lang'   => Certificates::otherLanguages($p?->licenses) ?: '-',
             'healthy'      => blank($p?->medical_conditions),
             'health_note'  => $p?->medical_conditions,
             'height'       => $p?->height_cm,
@@ -89,7 +93,7 @@ class Rirekisho
             'photo'        => $photo && is_file($photo) ? $photo : null,
             'education'    => self::education($user),
             'work'         => self::work($user),
-            'licenses'     => self::licenses($user),
+            'licenses'     => self::licenses($p?->licenses),
             'self_pr'      => $p?->self_pr,
             'other'        => collect([
                 $p?->cv_other,
@@ -102,9 +106,10 @@ class Rirekisho
     private static function education(User $user): array
     {
         return $user->educations
+            ->filter(fn ($e) => isset(self::EDUCATION_LEVELS[$e->level]))
             ->sortBy(fn ($e) => sprintf('%04d%02d', $e->start_year ?? $e->end_year ?? 0, $e->start_month ?? 0))
             ->map(function ($e) {
-                $level  = $e->level && $e->level !== 'other' ? Str::upper($e->level) : null;
+                $level  = self::EDUCATION_LEVELS[$e->level];
                 $detail = collect([$e->major, $level])->filter()->implode(' – ');
 
                 return [
@@ -125,35 +130,14 @@ class Rirekisho
         ])->values()->all();
     }
 
-    /** Dated language certificates (named the Japanese way) plus the licences entered on the profile. */
-    private static function licenses(User $user): array
+    /** The certificates picked on the profile, oldest first; undated ones last. */
+    private static function licenses(?array $licenses): array
     {
-        $fromLanguages = $user->languages->filter(fn ($l) => $l->proficiency && $l->taken_at)->map(fn ($l) => [
-            'y' => $l->taken_at->year, 'm' => $l->taken_at->month, 'text' => self::certificateName($l->language, $l->proficiency),
-        ]);
-        $entered = collect($user->studentProfile?->licenses ?? [])->filter(fn ($l) => filled($l['name'] ?? null))->map(fn ($l) => [
-            'y' => $l['year'] ?? null, 'm' => $l['month'] ?? null, 'text' => $l['name'],
-        ]);
-
-        return $fromLanguages->concat($entered)->sortBy(fn ($l) => sprintf('%04d%02d', (int) $l['y'], (int) $l['m']))->values()->all();
-    }
-
-    /** "JLPT N4" → "日本語能力試験N4　合格", "JFT A2" → "国際交流基金日本語基礎テストA2　合格". */
-    private static function certificateName(string $language, string $proficiency): string
-    {
-        if (preg_match('/JLPT\s*(N[1-5])/i', $proficiency, $m)) {
-            return '日本語能力試験'.Str::upper($m[1]).'　合格';
-        }
-        if (preg_match('/JFT[^A-Z0-9]*(A1|A2)?/i', $proficiency, $m)) {
-            return '国際交流基金日本語基礎テスト'.Str::upper($m[1] ?? '').'　合格';
-        }
-
-        return trim($language.' '.$proficiency);
-    }
-
-    private static function isJapanese(?string $language): bool
-    {
-        return Str::contains(Str::lower((string) $language), ['japan', 'jepang', '日本']);
+        return collect($licenses ?? [])
+            ->map(fn ($l) => ['y' => $l['year'] ?? null, 'm' => $l['month'] ?? null, 'text' => Certificates::cvText($l)])
+            ->filter(fn ($l) => filled($l['text']))
+            ->sortBy(fn ($l) => sprintf('%04d%02d', $l['y'] ? (int) $l['y'] : 9999, (int) $l['m']))
+            ->values()->all();
     }
 
     private static function religion(?string $value): ?string

@@ -33,7 +33,6 @@ class ViewStudent extends Page
             'educations',
             'workExperiences',
             'familyMembers',
-            'languages',
             'studentDocuments.verifier',
             'applications.vacancy.visaCategory',
             'applications.vacancy.company',

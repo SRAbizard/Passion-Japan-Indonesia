@@ -3,6 +3,8 @@
 namespace App\Filament\Student\Pages;
 
 use App\Models\User;
+use App\Support\Certificates;
+use App\Support\Rirekisho;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
@@ -18,6 +20,7 @@ use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -42,7 +45,7 @@ class MyProfile extends Page implements HasForms
         $user = auth()->user();
         // Ensure profile row exists
         $user->profile();
-        $user->refresh()->load('studentProfile', 'educations', 'workExperiences', 'familyMembers', 'languages');
+        $user->refresh()->load('studentProfile', 'educations', 'workExperiences', 'familyMembers');
 
         $this->form->fill([
             'name'  => $user->name,
@@ -56,12 +59,13 @@ class MyProfile extends Page implements HasForms
                 'height_cm', 'weight_kg', 'blood_type', 'allergies', 'medical_conditions',
                 'smoker', 'drinker', 'photo_path',
                 'name_kana', 'nationality', 'desired_job', 'address_kana', 'line_id',
-                'japan_visits_study', 'japan_visits_work', 'japan_visits_other', 'licenses', 'self_pr', 'cv_other',
+                'japan_visits_study', 'japan_visits_work', 'japan_visits_other', 'self_pr', 'cv_other',
             ]) ?? [],
-            'educations'      => $user->educations->map->only(['level','institution','major','start_year','start_month','end_year','end_month','gpa','is_current'])->all(),
+            // Only the levels still offered (SMA and up).
+            'educations'      => $user->educations->filter(fn ($e) => isset(Rirekisho::EDUCATION_LEVELS[$e->level]))->map->only(['level','institution','major','start_year','start_month','end_year','end_month','gpa','is_current'])->all(),
             'workExperiences' => $user->workExperiences->map->only(['company','position','start_date','end_date','is_current','description'])->all(),
             'familyMembers'   => $user->familyMembers->map->only(['relation','name','occupation','phone','address'])->all(),
-            'languages'       => $user->languages->map->only(['language','proficiency','certificate_number','taken_at','certificate_path'])->all(),
+            'certificates'    => Certificates::byGroup($user->studentProfile?->licenses),
         ]);
     }
 
@@ -104,7 +108,7 @@ class MyProfile extends Page implements HasForms
                             DatePicker::make('studentProfile.birthdate')->label(__('Birth date'))
                                 ->maxDate(now())->displayFormat('d M Y'),
                             TextInput::make('studentProfile.birthplace')->label(__('Birth place'))->maxLength(120),
-                            Select::make('studentProfile.nationality')->label(__('Nationality'))->options(fn () => collect(\App\Support\Rirekisho::NATIONALITIES)->map(fn ($ja, $en) => __($en)))->default('Indonesia')->native(false),
+                            Select::make('studentProfile.nationality')->label(__('Nationality'))->options(fn () => collect(Rirekisho::NATIONALITIES)->map(fn ($ja, $en) => __($en)))->default('Indonesia')->native(false),
                             TextInput::make('studentProfile.religion')->label(__('Religion'))->maxLength(40),
                             Select::make('studentProfile.marital_status')->label(__('Marital status'))
                                 ->options([
@@ -153,10 +157,7 @@ class MyProfile extends Page implements HasForms
                             ->itemLabel(fn (array $state): ?string => $state['institution'] ?? __('New entry'))
                             ->components([
                                 Select::make('level')->label(__('Level'))
-                                    ->options([
-                                        'sd'=>'SD','smp'=>'SMP','sma'=>'SMA','smk'=>'SMK',
-                                        'd1'=>'D1','d3'=>'D3','s1'=>'S1','s2'=>'S2','s3'=>'S3','other'=>__('Other'),
-                                    ])->required()->native(false),
+                                    ->options(Rirekisho::EDUCATION_LEVELS)->required()->native(false),
                                 TextInput::make('institution')->label(__('Institution'))->required()->maxLength(160),
                                 TextInput::make('major')->label(__('Major / Field'))->maxLength(120),
                                 TextInput::make('gpa')->label(__('GPA'))->maxLength(16),
@@ -167,19 +168,6 @@ class MyProfile extends Page implements HasForms
                                 Toggle::make('is_current')->label(__('Currently studying'))->inline(false),
                             ])
                             ->defaultItems(0),
-                        Section::make(__('Licences & certifications'))
-                            ->description(__('Language certificates with a date (Languages tab) are added automatically.'))
-                            ->components([
-                                Repeater::make('studentProfile.licenses')->label('')
-                                    ->columns(4)
-                                    ->defaultItems(0)
-                                    ->addActionLabel(__('Add licence'))
-                                    ->components([
-                                        TextInput::make('year')->label(__('Year'))->numeric()->minValue(1950)->maxValue(2100),
-                                        Select::make('month')->label(__('Month'))->options(array_combine(range(1, 12), range(1, 12)))->native(false),
-                                        TextInput::make('name')->label(__('Licence / certificate'))->required()->maxLength(160)->columnSpan(2),
-                                    ]),
-                            ]),
                     ]),
 
                     Tab::make(__('Work experience'))->icon('heroicon-o-briefcase')->schema([
@@ -217,21 +205,10 @@ class MyProfile extends Page implements HasForms
                             ->defaultItems(0),
                     ]),
 
-                    Tab::make(__('Languages'))->icon('heroicon-o-language')->schema([
-                        Repeater::make('languages')->label('')
-                            ->columns(2)
-                            ->collapsible()
-                            ->itemLabel(fn (array $state): ?string => ($state['language'] ?? __('Language')) . ' — ' . ($state['proficiency'] ?? ''))
-                            ->components([
-                                TextInput::make('language')->label(__('Language'))->required()->placeholder('Japanese / English')->maxLength(80),
-                                TextInput::make('proficiency')->label(__('Proficiency'))->placeholder('JLPT N3 / IELTS 6.5')->maxLength(80),
-                                TextInput::make('certificate_number')->label(__('Certificate number'))->maxLength(80),
-                                DatePicker::make('taken_at')->label(__('Date taken'))->displayFormat('d M Y'),
-                                FileUpload::make('certificate_path')->label(__('Certificate file'))
-                                    ->disk('public')->directory('students/language-certs')
-                                    ->acceptedFileTypes(['application/pdf','image/jpeg','image/png'])->columnSpanFull(),
-                            ])
-                            ->defaultItems(0),
+                    Tab::make(__('Licences & certifications'))->icon('heroicon-o-check-badge')->schema([
+                        $this->certificateSection('language', __('Language certificates'), __('Add language certificate')),
+                        $this->certificateSection('ssw', __('SSW certificates'), __('Add SSW certificate')),
+                        $this->certificateSection('other', __('Others'), __('Add other licence')),
                     ]),
 
                     Tab::make(__('Health'))->icon('heroicon-o-heart')->schema([
@@ -254,6 +231,35 @@ class MyProfile extends Page implements HasForms
                 ]),
             ])
             ->statePath('data');
+    }
+
+    /** One certificate group of the Licences tab: a dropdown per entry, plus a score for TOEFL/IELTS or a name for "Other". */
+    private function certificateSection(string $group, string $title, string $addLabel): Section
+    {
+        $months = array_combine(range(1, 12), range(1, 12));
+
+        return Section::make($title)->components([
+            Repeater::make("certificates.{$group}")->label('')
+                ->columns(4)
+                ->defaultItems(0)
+                ->addActionLabel($addLabel)
+                ->components([
+                    Select::make('type')->label(__('Certificate'))
+                        ->options(fn () => Certificates::options($group))
+                        ->required()->native(false)->live()
+                        ->when($group !== 'other', fn (Select $s) => $s->distinct()->disableOptionsWhenSelectedInSiblingRepeaterItems())
+                        ->columnSpan($group === 'other' ? 1 : 2),
+                    TextInput::make('score')->label(__('Score'))
+                        ->placeholder(fn (Get $get) => $get('type') === 'ielts' ? '6.5' : '550')
+                        ->numeric()->minValue(0)->maxValue(990)->required()
+                        ->visible(fn (Get $get) => in_array($get('type'), Certificates::SCORED, true)),
+                    TextInput::make('name')->label(__('Certificate name'))->maxLength(160)->required()
+                        ->helperText(__('Written on your CV as typed.'))
+                        ->visible(fn (Get $get) => $get('type') === 'other'),
+                    TextInput::make('year')->label(__('Year'))->numeric()->minValue(1950)->maxValue(2100),
+                    Select::make('month')->label(__('Month'))->options($months)->native(false),
+                ]),
+        ]);
     }
 
     protected function getHeaderActions(): array
@@ -302,13 +308,13 @@ class MyProfile extends Page implements HasForms
         foreach (['japan_visits_study', 'japan_visits_work', 'japan_visits_other'] as $visits) {
             $profileData[$visits] = (int) ($profileData[$visits] ?? 0);   // NOT NULL columns
         }
+        $profileData['licenses'] = Certificates::flatten($state['certificates'] ?? []);
         $profile->update($profileData);
 
         // Sync 1:n relations: educations
         $this->syncRelation($user->educations(), $state['educations'] ?? []);
         $this->syncRelation($user->workExperiences(), $state['workExperiences'] ?? []);
         $this->syncRelation($user->familyMembers(), $state['familyMembers'] ?? []);
-        $this->syncRelation($user->languages(), $state['languages'] ?? []);
 
         Notification::make()
             ->title(__('Profile updated'))
