@@ -35,8 +35,8 @@ class Certificates
             'ssw_automotive'    => ['SSW Automotive maintenance', '自動車整備分野特定技能1号評価試験'],
         ],
         'other' => [
-            'sim_a'  => ['SIM A', 'インドネシアA運転情報'],
-            'sim_b1' => ['SIM B1', 'インドネシアB1運転情報'],
+            'sim_a'  => ['SIM A', 'インドネシアA運転免許証'],
+            'sim_b1' => ['SIM B1', 'インドネシアB1運転免許証'],
             'toefl'  => ['TOEFL', 'TOEFL'],
             'ielts'  => ['IELTS', 'IELTS'],
             'other'  => ['Other', null],
