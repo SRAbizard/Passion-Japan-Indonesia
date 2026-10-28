@@ -49,7 +49,7 @@ class AdminPanelProvider extends PanelProvider
             // at panel-boot time (before the locale middleware runs).
             ->userMenuItems([
                 MenuItem::make()
-                    ->label(__('Back to website'))
+                    ->label(fn (): string => __('Back to website'))
                     ->url(fn () => url('/'))
                     ->icon('heroicon-o-globe-alt')
                     ->openUrlInNewTab(false),

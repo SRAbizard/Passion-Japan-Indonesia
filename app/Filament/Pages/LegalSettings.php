@@ -84,7 +84,7 @@ class LegalSettings extends Page
                     Section::make(__('Fee table'))
                         ->description(__('Listed at /fees. Leave empty to show "the fee breakdown is being prepared". Names and notes fall back to Indonesian.'))
                         ->components([
-                            Repeater::make('fees')->label('')
+                            Repeater::make('fees')->label(__('Fee table'))->hiddenLabel()
                                 ->columns(3)
                                 ->collapsible()
                                 ->reorderable()
@@ -115,7 +115,7 @@ class LegalSettings extends Page
     {
         return Tabs::make("{$doc}-langs")->tabs(
             collect(self::LANGS)->map(fn ($label, $lang) => Tab::make($label)->schema([
-                RichEditor::make("{$doc}_{$lang}")->label('')->helperText($lang === 'id' ? $hint : null)
+                RichEditor::make("{$doc}_{$lang}")->label(strtoupper($lang))->hiddenLabel()->helperText($lang === 'id' ? $hint : null)
                     ->required($lang === 'id')
                     ->toolbarButtons([['h2', 'h3', 'bold', 'italic', 'link'], ['bulletList', 'orderedList'], ['undo', 'redo']]),
             ]))->values()->all()

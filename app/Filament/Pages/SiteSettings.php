@@ -188,7 +188,7 @@ class SiteSettings extends Page
                         ->description(__('Up to 4 photos that fade behind the top of the homepage (headline and job search), down to the scrolling text. With no photos uploaded, 3 default Japan photos are shown.'))
                         ->components([
                             Repeater::make('hero__slides')
-                                ->label('')
+                                ->label(__('Hero background photos'))->hiddenLabel()
                                 ->itemLabel(fn (array $state): ?string =>
                                     filled($state['image_path'] ?? null) ? basename($state['image_path']) : __('New slide'))
                                 ->minItems(0)
@@ -250,7 +250,7 @@ class SiteSettings extends Page
                         ->description(__('Offices shown in the homepage footer, About, and Contact pages. Each address links to Google Maps when clicked. Leave Maps URL blank to auto-search by address.'))
                         ->components([
                             Repeater::make('contact__offices')
-                                ->label('')
+                                ->label(__('Offices'))->hiddenLabel()
                                 ->columns(2)
                                 ->itemLabel(fn (array $state): ?string =>
                                     trim(($state['city'] ?? '').', '.($state['country'] ?? ''), ', ') ?: __('New office'))

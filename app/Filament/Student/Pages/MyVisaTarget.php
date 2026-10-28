@@ -51,7 +51,7 @@ class MyVisaTarget extends Page implements HasForms
                     ->description(__('This determines which documents you need to upload. Your choice will be reviewed by an admin.'))
                     ->components([
                         Radio::make('primary_visa_category_id')
-                            ->label('')
+                            ->label(__('Visa target'))->hiddenLabel()
                             ->options(fn () => VisaCategory::orderBy('sort_order')->get()
                                 ->mapWithKeys(fn ($v) => [$v->id => $v->t('name')]))
                             ->descriptions(fn () => VisaCategory::orderBy('sort_order')->get()

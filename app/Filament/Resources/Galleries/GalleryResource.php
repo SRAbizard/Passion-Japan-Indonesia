@@ -55,7 +55,7 @@ class GalleryResource extends Resource
                 ->description(__('Shown on the album card in the public gallery. If empty, the first item\'s thumbnail is used.'))
                 ->components([
                     FileUpload::make('cover_image_path')
-                        ->label('')
+                        ->label(__('Cover image'))->hiddenLabel()
                         ->image()
                         ->disk('public')
                         ->directory('gallery/covers')

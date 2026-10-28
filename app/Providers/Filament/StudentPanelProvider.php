@@ -42,7 +42,7 @@ class StudentPanelProvider extends PanelProvider
             ->sidebarCollapsibleOnDesktop()
             ->userMenuItems([
                 \Filament\Navigation\MenuItem::make()
-                    ->label(__('Back to website'))
+                    ->label(fn (): string => __('Back to website'))
                     ->url(fn () => url('/'))
                     ->icon('heroicon-o-globe-alt'),
             ])
