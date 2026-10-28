@@ -164,11 +164,11 @@ class MyProfile extends Page implements HasForms
                                 Select::make('level')->label(__('Level'))
                                     ->options(Rirekisho::EDUCATION_LEVELS)->required()->native(false),
                                 TextInput::make('institution')->label(__('Institution'))->required()->maxLength(160),
-                                TextInput::make('major')->label(__('Major / Field'))->maxLength(120),
                                 TextInput::make('start_year')->label(__('Start year'))->numeric()->minValue(1950)->maxValue(2100),
                                 Select::make('start_month')->label(__('Start month'))->options(array_combine(range(1, 12), range(1, 12)))->native(false),
                                 TextInput::make('end_year')->label(__('End year'))->numeric()->minValue(1950)->maxValue(2100),
                                 Select::make('end_month')->label(__('End month'))->options(array_combine(range(1, 12), range(1, 12)))->native(false),
+                                TextInput::make('major')->label(__('Major / Field'))->maxLength(120),
                                 Toggle::make('is_current')->label(__('Currently studying'))->inline(false),
                             ])
                             ->defaultItems(0),
