@@ -30,5 +30,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Event::listen(Registered::class, AssignDefaultRoleOnRegistration::class);
+
+        // Labels Filament derives from column names ("Sort order", "Is
+        // published") go through lang/*.json like every other label.
+        \Filament\Forms\Components\Field::configureUsing(fn ($field) => $field->translateLabel());
+        \Filament\Tables\Columns\Column::configureUsing(fn ($column) => $column->translateLabel());
+        \Filament\Infolists\Components\Entry::configureUsing(fn ($entry) => $entry->translateLabel());
     }
 }
