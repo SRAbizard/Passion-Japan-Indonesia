@@ -56,14 +56,18 @@ class MyProfile extends Page implements HasForms
                 'id_number', 'passport_number', 'passport_expires_at',
                 'address', 'city', 'province', 'postal_code',
                 'emergency_contact_name', 'emergency_contact_relation', 'emergency_contact_phone',
-                'height_cm', 'weight_kg', 'blood_type', 'allergies', 'medical_conditions',
+                'height_cm', 'weight_kg', 'blood_type',
                 'smoker', 'drinker', 'photo_path',
                 'name_kana', 'nationality', 'desired_job', 'address_kana', 'line_id',
                 'japan_visits_study', 'japan_visits_work', 'japan_visits_other', 'self_pr', 'cv_other',
             ]) ?? [],
             // Only the levels still offered (SMA and up).
-            'educations'      => $user->educations->filter(fn ($e) => isset(Rirekisho::EDUCATION_LEVELS[$e->level]))->map->only(['level','institution','major','start_year','start_month','end_year','end_month','gpa','is_current'])->all(),
-            'workExperiences' => $user->workExperiences->map->only(['company','position','start_date','end_date','is_current','description'])->all(),
+            'educations'      => $user->educations->filter(fn ($e) => isset(Rirekisho::EDUCATION_LEVELS[$e->level]))->map->only(['level','institution','major','start_year','start_month','end_year','end_month','is_current'])->all(),
+            'workExperiences' => $user->workExperiences->map(fn ($w) => [
+                'company' => $w->company, 'position' => $w->position, 'is_current' => $w->is_current,
+                'start_year' => $w->start_date?->year, 'start_month' => $w->start_date?->month,
+                'end_year' => $w->end_date?->year, 'end_month' => $w->end_date?->month,
+            ])->all(),
             'familyMembers'   => $user->familyMembers->map->only(['relation','name','occupation','phone','address'])->all(),
             'certificates'    => Certificates::byGroup($user->studentProfile?->licenses),
         ]);
@@ -130,7 +134,7 @@ class MyProfile extends Page implements HasForms
                             TextInput::make('studentProfile.japan_visits_other')->label(__('Visits to Japan: other, e.g. travel'))->numeric()->minValue(0)->maxValue(99)->suffix(__('times')),
                         ]),
                         Section::make(__('Self introduction'))->components([
-                            Textarea::make('studentProfile.self_pr')->label('')->rows(7)->maxLength(1500)
+                            Textarea::make('studentProfile.self_pr')->label(__('Self introduction'))->hiddenLabel()->rows(7)->maxLength(1500)
                                 ->helperText(__('Your strengths, motivation to work in Japan and goals. Japanese is best; Indonesian or English is fine for a first draft.')),
                         ]),
                     ]),
@@ -151,7 +155,8 @@ class MyProfile extends Page implements HasForms
                     ]),
 
                     Tab::make(__('Education'))->icon('heroicon-o-academic-cap')->schema([
-                        Repeater::make('educations')->label('')
+                        Repeater::make('educations')->label(__('Education'))->hiddenLabel()
+                            ->addActionLabel(__('Add education'))
                             ->columns(2)
                             ->collapsible()
                             ->itemLabel(fn (array $state): ?string => $state['institution'] ?? __('New entry'))
@@ -160,7 +165,6 @@ class MyProfile extends Page implements HasForms
                                     ->options(Rirekisho::EDUCATION_LEVELS)->required()->native(false),
                                 TextInput::make('institution')->label(__('Institution'))->required()->maxLength(160),
                                 TextInput::make('major')->label(__('Major / Field'))->maxLength(120),
-                                TextInput::make('gpa')->label(__('GPA'))->maxLength(16),
                                 TextInput::make('start_year')->label(__('Start year'))->numeric()->minValue(1950)->maxValue(2100),
                                 Select::make('start_month')->label(__('Start month'))->options(array_combine(range(1, 12), range(1, 12)))->native(false),
                                 TextInput::make('end_year')->label(__('End year'))->numeric()->minValue(1950)->maxValue(2100),
@@ -171,23 +175,26 @@ class MyProfile extends Page implements HasForms
                     ]),
 
                     Tab::make(__('Work experience'))->icon('heroicon-o-briefcase')->schema([
-                        Repeater::make('workExperiences')->label('')
+                        Repeater::make('workExperiences')->label(__('Work experience'))->hiddenLabel()
+                            ->addActionLabel(__('Add work experience'))
                             ->columns(2)
                             ->collapsible()
                             ->itemLabel(fn (array $state): ?string => $state['company'] ?? __('New entry'))
                             ->components([
                                 TextInput::make('company')->label(__('Company'))->required()->maxLength(160),
                                 TextInput::make('position')->label(__('Position'))->required()->maxLength(120),
-                                DatePicker::make('start_date')->label(__('Start date')),
-                                DatePicker::make('end_date')->label(__('End date')),
+                                TextInput::make('start_year')->label(__('Start year'))->numeric()->minValue(1950)->maxValue(2100),
+                                Select::make('start_month')->label(__('Start month'))->options(array_combine(range(1, 12), range(1, 12)))->native(false),
+                                TextInput::make('end_year')->label(__('End year'))->numeric()->minValue(1950)->maxValue(2100),
+                                Select::make('end_month')->label(__('End month'))->options(array_combine(range(1, 12), range(1, 12)))->native(false),
                                 Toggle::make('is_current')->label(__('Currently working'))->inline(false),
-                                Textarea::make('description')->label(__('Description'))->rows(3)->columnSpanFull(),
                             ])
                             ->defaultItems(0),
                     ]),
 
                     Tab::make(__('Family'))->icon('heroicon-o-users')->schema([
-                        Repeater::make('familyMembers')->label('')
+                        Repeater::make('familyMembers')->label(__('Family'))->hiddenLabel()
+                            ->addActionLabel(__('Add family member'))
                             ->columns(2)
                             ->collapsible()
                             ->itemLabel(fn (array $state): ?string => $state['name'] ?? __('New entry'))
@@ -219,10 +226,8 @@ class MyProfile extends Page implements HasForms
                                 ->options(['A'=>'A','B'=>'B','AB'=>'AB','O'=>'O'])->native(false),
                         ]),
                         Section::make()->components([
-                            Textarea::make('studentProfile.allergies')->label(__('Allergies'))->rows(2),
-                            Textarea::make('studentProfile.medical_conditions')->label(__('Medical conditions'))->rows(2),
-                            Textarea::make('studentProfile.cv_other')->label(__('Other notes'))->rows(2)->maxLength(500)
-                                ->helperText(__('Anything the employer should accommodate, e.g. halal food, prayer times, vegetarian. Allergies are added to your CV automatically.')),
+                            Textarea::make('studentProfile.cv_other')->label(__('Other notes (allergies, medical conditions, etc.)'))->rows(3)->maxLength(1000)
+                                ->helperText(__('Allergies, medical conditions, and anything the employer should accommodate, e.g. halal food, prayer times. If you do not tick smoker or alcohol, your CV adds that you do not smoke or drink.')),
                             Toggle::make('studentProfile.smoker')->label(__('Smoker'))->inline(false),
                             Toggle::make('studentProfile.drinker')->label(__('Drinks alcohol'))->inline(false),
                         ]),
@@ -239,7 +244,7 @@ class MyProfile extends Page implements HasForms
         $months = array_combine(range(1, 12), range(1, 12));
 
         return Section::make($title)->components([
-            Repeater::make("certificates.{$group}")->label('')
+            Repeater::make("certificates.{$group}")->label($title)->hiddenLabel()
                 ->columns(4)
                 ->defaultItems(0)
                 ->addActionLabel($addLabel)
@@ -313,7 +318,13 @@ class MyProfile extends Page implements HasForms
 
         // Sync 1:n relations: educations
         $this->syncRelation($user->educations(), $state['educations'] ?? []);
-        $this->syncRelation($user->workExperiences(), $state['workExperiences'] ?? []);
+        // Work history is entered as month + year; stored as the first of the month.
+        $monthDate = fn ($y, $m) => $y ? sprintf('%04d-%02d-01', $y, $m ?: 1) : null;
+        $this->syncRelation($user->workExperiences(), collect($state['workExperiences'] ?? [])->map(fn ($w) => [
+            'company' => $w['company'] ?? null, 'position' => $w['position'] ?? null, 'is_current' => (bool) ($w['is_current'] ?? false),
+            'start_date' => $monthDate($w['start_year'] ?? null, $w['start_month'] ?? null),
+            'end_date' => $monthDate($w['end_year'] ?? null, $w['end_month'] ?? null),
+        ])->all());
         $this->syncRelation($user->familyMembers(), $state['familyMembers'] ?? []);
 
         Notification::make()

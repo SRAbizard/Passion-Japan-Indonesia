@@ -105,7 +105,7 @@ class ItemsRelationManager extends RelationManager
         ->defaultSort('sort_order')
         ->reorderable('sort_order')
         ->headerActions([
-            CreateAction::make()->label(__('+ Tambah Foto / Video'))->icon('heroicon-o-plus-circle'),
+            CreateAction::make()->label(__('+ Add photo / video'))->icon('heroicon-o-plus-circle'),
         ])
         ->recordActions([
             EditAction::make(),

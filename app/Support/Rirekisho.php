@@ -84,8 +84,9 @@ class Rirekisho
             'visits'       => [(int) $p?->japan_visits_study, (int) $p?->japan_visits_work, (int) $p?->japan_visits_other],
             'japanese'     => Certificates::japaneseLevel($p?->licenses),
             'other_lang'   => Certificates::otherLanguages($p?->licenses) ?: '-',
-            'healthy'      => blank($p?->medical_conditions),
-            'health_note'  => $p?->medical_conditions,
+            // Medical conditions now go in the free "other notes" (その他) box.
+            'healthy'      => true,
+            'health_note'  => null,
             'height'       => $p?->height_cm,
             'weight'       => $p?->weight_kg,
             'religion'     => self::religion($p?->religion),
@@ -95,10 +96,7 @@ class Rirekisho
             'work'         => self::work($user),
             'licenses'     => self::licenses($p?->licenses),
             'self_pr'      => $p?->self_pr,
-            'other'        => collect([
-                $p?->cv_other,
-                $p?->allergies ? 'アレルギー：'.$p->allergies : null,
-            ])->filter()->implode("\n"),
+            'other'        => self::other($p),
         ];
     }
 
@@ -138,6 +136,23 @@ class Rirekisho
             ->filter(fn ($l) => filled($l['text']))
             ->sortBy(fn ($l) => sprintf('%04d%02d', $l['y'] ? (int) $l['y'] : 9999, (int) $l['m']))
             ->values()->all();
+    }
+
+    /**
+     * The student's own notes, then the habits they did not tick, as in the
+     * agency's example ("お酒は飲みません。"); skipped when the notes already
+     * mention them.
+     */
+    private static function other(?\App\Models\StudentProfile $p): string
+    {
+        $notes  = trim((string) $p?->cv_other);
+        $habits = collect([
+            ! $p?->smoker && ! Str::contains($notes, ['タバコ', 'たばこ', '煙草', '喫煙']) ? 'タバコは吸いません。' : null,
+            ! $p?->drinker && ! Str::contains($notes, ['お酒', '酒', '飲酒']) ? 'お酒は飲みません。' : null,
+        ])->filter()->implode('');
+
+        return collect([$notes, $habits])->filter()->implode("
+");
     }
 
     private static function religion(?string $value): ?string
