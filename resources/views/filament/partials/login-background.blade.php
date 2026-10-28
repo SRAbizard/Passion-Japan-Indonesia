@@ -1,9 +1,9 @@
 {{-- "Misi ke Jepang" backdrop for every Filament auth page (login,
      register, password reset, email verification) in both panels.
      Desktop: illustrated mission panel on the left, the form card on the
-     right. Phones: a light sun + petals behind the centred card. The
-     admin-uploaded login wallpaper (Website Settings → Login page
-     wallpaper) shows as the tilted polaroid. Styles live in
+     right. The login wallpaper (Website Settings → Login page wallpaper,
+     or the bundled Japan photo) fills the whole page under a wash, like
+     the homepage hero; petals fall over it. Styles live in
      resources/css/filament/passion-theme.css under `.pj-auth`. --}}
 @php
     $route = request()->route()?->getName() ?? '';
@@ -21,7 +21,7 @@
 @endphp
 
 <div class="pj-auth" aria-hidden="true">
-    <div class="pj-auth-sun"></div>
+    <div class="pj-auth-bg" style="background-image: url('{{ $photo }}')"></div>
 
     <div class="pj-auth-art">
         <span class="pj-auth-sticker">日本へのミッション · {{ __('Mission to Japan') }}</span>
@@ -33,7 +33,6 @@
                 <path d="M0 200 L120 70 Q150 40 170 38 L230 38 Q250 40 280 70 L400 200 Z" fill="#2B4795" stroke="var(--pj-line)" stroke-width="3" stroke-linejoin="round"/>
                 <path d="M148 58 Q160 40 172 38 L228 38 Q240 40 252 58 L236 72 L222 60 L208 76 L196 60 L182 74 L166 62 Z" fill="#FFFAF2" stroke="var(--pj-line)" stroke-width="3" stroke-linejoin="round"/>
             </svg>
-            <div class="pj-auth-photo"><div class="frame" style="background-image: url('{{ $photo }}')"></div></div>
             <div class="pj-auth-pass">
                 <div class="main">
                     <span class="top">搭乗券 · BOARDING PASS</span>

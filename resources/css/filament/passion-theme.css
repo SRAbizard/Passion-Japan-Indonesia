@@ -170,10 +170,14 @@ body:has(.pj-auth) .fi-body { background: transparent !important; }
 body:has(.pj-auth) .fi-simple-main-ctn { position: relative; z-index: 10; }
 
 .pj-auth { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; color: var(--pj-ink); }
-.pj-auth-sun {
-    position: absolute; right: -90px; top: -90px; width: 300px; aspect-ratio: 1; border-radius: 50%;
-    background: var(--pj-red); border: 3px solid var(--pj-line); box-shadow: 8px 8px 0 var(--pj-shadow-c); opacity: .9;
+/* Full-page wallpaper with a slow settle-in zoom, under an even wash on
+   phones and, on desktop, a wash that is strongest behind the headline. */
+.pj-auth-bg {
+    position: absolute; inset: 0; background: center / cover no-repeat #6A170E;
+    animation: pj-auth-settle 9s ease-out both;
 }
+.pj-auth-bg::after { content: ""; position: absolute; inset: 0; background: color-mix(in srgb, var(--pj-washi) 62%, transparent); }
+@keyframes pj-auth-settle { from { transform: scale(1.06); } to { transform: scale(1); } }
 .pj-auth-art { display: none; }
 .pj-auth-petals span {
     position: absolute; top: -30px; width: var(--s); height: var(--s);
@@ -189,7 +193,11 @@ body:has(.pj-auth) .fi-simple-main-ctn { position: relative; z-index: 10; }
 @media (min-width: 1024px) {
     body:has(.pj-auth) .fi-simple-main-ctn { padding-right: clamp(40px, 7vw, 120px); }
     body:has(.pj-auth) .fi-simple-main { margin-inline-start: auto !important; margin-inline-end: 0 !important; }
-    .pj-auth-sun { display: none; }
+    .pj-auth-bg::after {
+        background:
+            linear-gradient(90deg, color-mix(in srgb, var(--pj-washi) 74%, transparent) 0%, color-mix(in srgb, var(--pj-washi) 52%, transparent) 42%, color-mix(in srgb, var(--pj-washi) 14%, transparent) 72%, color-mix(in srgb, var(--pj-washi) 30%, transparent) 100%),
+            linear-gradient(0deg, color-mix(in srgb, var(--pj-washi) 55%, transparent) 0%, transparent 22%);
+    }
     .pj-auth-art {
         display: grid; gap: 1.1rem; justify-items: start; align-content: center;
         position: absolute; left: clamp(40px, 6vw, 110px); top: 0; bottom: 0; width: min(44vw, 580px);
@@ -210,11 +218,6 @@ body:has(.pj-auth) .fi-simple-main-ctn { position: relative; z-index: 10; }
         background: var(--pj-red); border: 3px solid var(--pj-line); box-shadow: 6px 6px 0 var(--pj-shadow-c);
     }
     .pj-auth-fuji { position: absolute; left: 0; bottom: 8%; width: 100%; height: auto; }
-    .pj-auth-photo {
-        position: absolute; right: -2%; top: -8%; width: 30%; padding: 6px 6px 16px; background: var(--pj-kami);
-        border: 3px solid var(--pj-line); border-radius: 6px; box-shadow: 5px 5px 0 var(--pj-shadow-c); transform: rotate(7deg);
-    }
-    .pj-auth-photo .frame { aspect-ratio: 1; border: 2px solid var(--pj-line); border-radius: 3px; background: center / cover no-repeat #6A170E; }
     .pj-auth-pass {
         position: absolute; left: 6%; bottom: -4%; width: 62%; display: grid; grid-template-columns: 1fr auto; overflow: hidden;
         background: var(--pj-kami); border: 3px solid var(--pj-line); border-radius: 16px; box-shadow: 6px 6px 0 var(--pj-shadow-c); transform: rotate(-4deg);
@@ -269,7 +272,7 @@ body:has(.pj-auth) .fi-simple-main .fi-link { color: var(--pj-red) !important; f
 .pj-auth-back a { display: inline-flex; align-items: center; gap: .4rem; font-size: .88rem; font-weight: 700; color: var(--pj-ink); opacity: .75; }
 .pj-auth-back a:hover { opacity: 1; color: var(--pj-red); }
 
-@media (prefers-reduced-motion: reduce) { .pj-auth-petals span { animation: none; display: none; } }
+@media (prefers-reduced-motion: reduce) { .pj-auth-petals span { animation: none; display: none; } .pj-auth-bg { animation: none; } }
 
 /* ─────────────────────────────────────────────────────────────────────
    PANEL CHROME — admin + student panels in the "Misi ke Jepang" style:
