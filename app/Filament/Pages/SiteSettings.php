@@ -120,9 +120,9 @@ class SiteSettings extends Page
                 ]),
                 Tab::make(__('Social media'))->icon('heroicon-o-share')->schema([
                     Section::make()->columns(1)->components([
-                        TextInput::make('social__instagram')->url()->prefix('https://'),
-                        TextInput::make('social__facebook')->url()->prefix('https://'),
-                        TextInput::make('social__tiktok')->url()->prefix('https://'),
+                        TextInput::make('social__instagram')->label('Instagram')->url()->prefix('https://'),
+                        TextInput::make('social__facebook')->label('Facebook')->url()->prefix('https://'),
+                        TextInput::make('social__tiktok')->label('TikTok')->url()->prefix('https://'),
                     ]),
                 ]),
                 Tab::make('PJI Learning')->icon('heroicon-o-academic-cap')->schema([
